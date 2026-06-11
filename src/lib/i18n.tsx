@@ -12,7 +12,7 @@ type Dict = typeof translations.fr;
 
 export const translations = {
   fr: {
-    nav: { services: "Services", why: "Pourquoi nous", gallery: "Galerie", faq: "FAQ", contact: "Contact", book: "Prendre RDV" },
+    nav: { services: "Services", why: "Pourquoi nous", gallery: "Galerie", faq: "FAQ", contact: "Contact", book: "Prendre RDV", servicesPage: "Nos services", galleryPage: "Galerie", bookingPage: "Réserver" },
     hero: {
       eyebrow: "Salon de coiffure & microshading — Tongres",
       title: "Des années de passion au service de votre beauté",
@@ -84,6 +84,38 @@ export const translations = {
       linksTitle: "Liens",
       rights: "Tous droits réservés.",
     },
+    bookingPage: {
+      eyebrow: "Réservation",
+      title: "Prenez rendez-vous",
+      subtitle: "Choisissez votre service, votre créneau, et laissez vos coordonnées. Nous confirmons rapidement.",
+      infoTitle: "Comment ça marche",
+      infoItems: [
+        { t: "Choisissez un service et un créneau", d: "Sélectionnez la prestation souhaitée, une date et l'heure qui vous convient." },
+        { t: "Laissez vos coordonnées", d: "Nom, téléphone — c'est tout. L'email est optionnel." },
+        { t: "On vous rappelle", d: "Nous confirmons votre rendez-vous par téléphone dans les plus brefs délais." },
+      ],
+      hoursTitle: "Horaires",
+      contactTitle: "Contact direct",
+    },
+    servicesPage: {
+      bookCta: "Réserver ce service",
+      ctaTitle: "Un service vous intéresse ?",
+      ctaSub: "Prenez rendez-vous en ligne ou appelez-nous directement.",
+    },
+    galleryPage: {
+      title: "Nos réalisations",
+      subtitle: "Chaque coiffure est unique. Voici quelques exemples de notre travail au salon.",
+      filterAll: "Tout voir",
+      filterTresses: "Tresses",
+      filterTissage: "Tissage",
+      filterLocks: "Locks & crochet",
+      filterMicroshading: "Microshading",
+      filterCoupes: "Coupes",
+      filterChignons: "Chignons",
+      empty: "Aucune réalisation dans cette catégorie pour le moment.",
+      ctaTitle: "Vous aimez ce que vous voyez ?",
+      ctaSub: "Prenez rendez-vous et laissez-nous sublimer vos cheveux.",
+    },
     admin: {
       title: "GiGi L — Tableau de bord",
       newBadge: "nouveau",
@@ -98,7 +130,7 @@ export const translations = {
     },
   },
   nl: {
-    nav: { services: "Diensten", why: "Waarom wij", gallery: "Galerij", faq: "FAQ", contact: "Contact", book: "Reserveer" },
+    nav: { services: "Diensten", why: "Waarom wij", gallery: "Galerij", faq: "FAQ", contact: "Contact", book: "Reserveer", servicesPage: "Onze diensten", galleryPage: "Galerij", bookingPage: "Reserveren" },
     hero: {
       eyebrow: "Kapsalon & microshading — Tongeren",
       title: "Jaren van passie ten dienste van uw schoonheid",
@@ -170,6 +202,38 @@ export const translations = {
       linksTitle: "Links",
       rights: "Alle rechten voorbehouden.",
     },
+    bookingPage: {
+      eyebrow: "Reservering",
+      title: "Maak een afspraak",
+      subtitle: "Kies uw dienst, tijdslot en vul uw gegevens in. Wij bevestigen zo snel mogelijk.",
+      infoTitle: "Hoe werkt het",
+      infoItems: [
+        { t: "Kies een dienst en tijdslot", d: "Selecteer de gewenste behandeling, een datum en een uur dat u past." },
+        { t: "Geef uw gegevens op", d: "Naam en telefoonnummer — dat is alles. E-mail is optioneel." },
+        { t: "Wij bellen u terug", d: "We bevestigen uw afspraak zo snel mogelijk telefonisch." },
+      ],
+      hoursTitle: "Openingsuren",
+      contactTitle: "Direct contact",
+    },
+    servicesPage: {
+      bookCta: "Reserveer deze dienst",
+      ctaTitle: "Interesse in een dienst?",
+      ctaSub: "Maak online een afspraak of bel ons direct.",
+    },
+    galleryPage: {
+      title: "Ons werk",
+      subtitle: "Elke coiffure is uniek. Hier zijn een paar voorbeelden van ons werk in het salon.",
+      filterAll: "Alles",
+      filterTresses: "Vlechten",
+      filterTissage: "Weaves",
+      filterLocks: "Locks & crochet",
+      filterMicroshading: "Microshading",
+      filterCoupes: "Knipbeurten",
+      filterChignons: "Opsteekkapsels",
+      empty: "Nog geen realisaties in deze categorie.",
+      ctaTitle: "Ziet u iets wat u aanspreekt?",
+      ctaSub: "Maak een afspraak en laat ons uw haar sublimeren.",
+    },
     admin: {
       title: "GiGi L — Dashboard",
       newBadge: "nieuw",
@@ -184,7 +248,7 @@ export const translations = {
     },
   },
   en: {
-    nav: { services: "Services", why: "Why us", gallery: "Gallery", faq: "FAQ", contact: "Contact", book: "Book now" },
+    nav: { services: "Services", why: "Why us", gallery: "Gallery", faq: "FAQ", contact: "Contact", book: "Book now", servicesPage: "Our services", galleryPage: "Gallery", bookingPage: "Book" },
     hero: {
       eyebrow: "Hair salon & microshading — Tongeren",
       title: "Years of passion, devoted to your beauty",
@@ -267,6 +331,38 @@ export const translations = {
       actions: { confirm: "Confirm", cancel: "Cancel" },
       login: { title: "Admin area", password: "Password", submit: "Sign in", error: "Wrong password" },
       empty: "No requests yet.",
+    },
+    bookingPage: {
+      eyebrow: "Book now",
+      title: "Make an appointment",
+      subtitle: "Pick your service, choose a slot and leave your details. We'll confirm shortly.",
+      infoTitle: "How it works",
+      infoItems: [
+        { t: "Choose a service and time slot", d: "Select the treatment you want, a date and a time that works for you." },
+        { t: "Leave your details", d: "Name and phone number — that's it. Email is optional." },
+        { t: "We'll call you back", d: "We confirm your appointment by phone as soon as possible." },
+      ],
+      hoursTitle: "Opening hours",
+      contactTitle: "Direct contact",
+    },
+    servicesPage: {
+      bookCta: "Book this service",
+      ctaTitle: "Interested in a service?",
+      ctaSub: "Book online or call us directly.",
+    },
+    galleryPage: {
+      title: "Our work",
+      subtitle: "Every hairstyle is unique. Here are some examples of what we do at the salon.",
+      filterAll: "All",
+      filterTresses: "Braids",
+      filterTissage: "Weaves",
+      filterLocks: "Locks & crochet",
+      filterMicroshading: "Microshading",
+      filterCoupes: "Cuts",
+      filterChignons: "Updos",
+      empty: "No photos in this category yet.",
+      ctaTitle: "Like what you see?",
+      ctaSub: "Book an appointment and let us elevate your look.",
     },
   },
 } satisfies Record<Lang, unknown>;

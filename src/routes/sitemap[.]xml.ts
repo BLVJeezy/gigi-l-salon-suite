@@ -18,6 +18,21 @@ export const Route = createFileRoute("/sitemap.xml")({
     <xhtml:link rel="alternate" hreflang="en" href="${BASE_URL}/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${BASE_URL}/" />
   </url>
+  <url>
+    <loc>${BASE_URL}/services</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${BASE_URL}/galerie</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${BASE_URL}/reservations</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
 </urlset>`;
         return new Response(xml, {
           headers: { "Content-Type": "application/xml", "Cache-Control": "public, max-age=3600" },
