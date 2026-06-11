@@ -337,7 +337,45 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
         <button onClick={() => setAnchor(new Date())} className="px-3 py-1 border border-border text-sm">{t.admin.today}</button>
         <button onClick={() => shift(1)} className="px-3 py-1 border border-border">→</button>
       </div>
-      <div className="grid grid-cols-7 gap-px bg-border border border-border overflow-x-auto">
+
+      {/* Mobile/tablet: stacked day cards */}
+      <div className="lg:hidden space-y-3">
+        {days.map(d => {
+          const iso = d.toISOString().slice(0, 10);
+          const dayBookings = visible.filter(b => b.booking_date === iso)
+            .sort((a,b) => a.booking_time.localeCompare(b.booking_time));
+          const isToday = iso === new Date().toISOString().slice(0, 10);
+          return (
+            <div key={iso} className={`bg-card border ${isToday ? "border-gold" : "border-border"}`}>
+              <div className={`px-4 py-2.5 flex items-baseline justify-between ${isToday ? "bg-gold/15" : "bg-sand"}`}>
+                <div className="flex items-baseline gap-2 min-w-0">
+                  <span className="text-xs uppercase tracking-wider text-smoke">{d.toLocaleDateString(undefined, { weekday: "short" })}</span>
+                  <span className="font-display text-lg">{d.getDate()}/{d.getMonth() + 1}</span>
+                </div>
+                <span className="text-xs text-gold-deep font-medium shrink-0">{dayBookings.length} {dayBookings.length === 1 ? "rdv" : "rdv"}</span>
+              </div>
+              {dayBookings.length === 0 ? (
+                <div className="px-4 py-3 text-xs text-smoke">—</div>
+              ) : (
+                <div className="p-2 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {dayBookings.map(b => (
+                    <div key={b.id} className={`px-3 py-2 text-xs border ${b.status === "confirmed" ? "bg-green-100 border-green-300" : "bg-gold/15 border-gold"}`}>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-medium">{b.booking_time.slice(0,5)}</span>
+                        <span className="text-smoke truncate">{b.name}</span>
+                      </div>
+                      <div className="text-smoke truncate mt-0.5">{b.service}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop: 7-column grid */}
+      <div className="hidden lg:grid grid-cols-7 gap-px bg-border border border-border overflow-x-auto">
         {days.map(d => {
           const iso = d.toISOString().slice(0, 10);
           const dayBookings = visible.filter(b => b.booking_date === iso);
