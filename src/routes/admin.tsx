@@ -199,8 +199,8 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
   );
 }
 
-const Th = ({ children }: { children: React.ReactNode }) => <th className="text-left px-4 py-3">{children}</th>;
-const Td = ({ children }: { children: React.ReactNode }) => <td className="px-4 py-3">{children}</td>;
+const Th = ({ children }: { children?: React.ReactNode }) => <th className="text-left px-4 py-3">{children}</th>;
+const Td = ({ children }: { children?: React.ReactNode }) => <td className="px-4 py-3">{children}</td>;
 
 const HOURS = Array.from({ length: 10 }, (_, i) => 9 + i); // 09..18
 
