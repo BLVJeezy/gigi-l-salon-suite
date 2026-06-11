@@ -115,3 +115,23 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+export const sendTestEmail = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string(), to: z.string().email() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { sendEmail } = await import("./email.server");
+    const res = await sendEmail({
+      to: data.to,
+      subject: "Test — Gigi L Coiffure email werkt ✓",
+      html: `<div style="font-family:Arial,sans-serif;padding:24px;background:#0F0F10;color:#F5F1E8">
+        <h2 style="color:#C9A961;font-family:Georgia,serif">Test geslaagd</h2>
+        <p>Als je dit ziet, verstuurt Resend correct vanuit je admin.</p>
+        <p style="color:#a8a39a;font-size:12px">Verzonden: ${new Date().toLocaleString("fr-BE")}</p>
+      </div>`,
+    });
+    if (!res.ok) throw new Error(res.error || "Verzenden mislukt");
+    return { ok: true };
+  });
