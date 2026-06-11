@@ -67,7 +67,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
     const password = String(new FormData(e.currentTarget).get("password") ?? "");
     try {
       const res = await login({ data: { password } });
-      if (res.ok) onSuccess(); else setErr(true);
+      if (res.ok && res.token) { setToken(res.token); onSuccess(); } else setErr(true);
     } catch { setErr(true); } finally { setLoading(false); }
   }
 
@@ -93,7 +93,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
-  const logout = useServerFn(adminLogout);
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<"leads" | "day" | "week">("leads");
@@ -101,8 +100,10 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const refresh = async () => {
     setLoading(true);
+    const token = getToken();
+    if (!token) { onLogout(); return; }
     try {
-      const r = await list();
+      const r = await list({ data: { token } });
       setBookings(r.bookings as Booking[]);
     } catch (e) {
       console.error("listBookings failed", e);
@@ -116,11 +117,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const newCount = bookings.filter(b => b.status === "new").length;
 
   async function setStatus(id: string, status: "confirmed" | "cancelled") {
-    await update({ data: { id, status } });
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    await update({ data: { token, id, status } });
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
   }
 
-  async function doLogout() { await logout(); onLogout(); }
+  async function doLogout() { onLogout(); }
 
   return (
     <div className="min-h-screen bg-ivory">
