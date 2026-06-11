@@ -1,6 +1,5 @@
 // All landing-page sections in one file for easy maintenance.
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
 
@@ -20,22 +19,25 @@ export function Hero() {
             {t.hero.subtitle}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            {/* Mobile: link to booking page. Desktop: anchor to inline form below. */}
-            <Link
-              to="/reservations"
-              className="btn-gold btn-gold-hover lg:hidden"
-            >
-              {t.hero.ctaBook}
-            </Link>
+            {/* Desktop CTA → scrollt naar inline form */}
             <a href="#contact" className="btn-gold btn-gold-hover hidden lg:inline-flex">
               {t.hero.ctaBook}
             </a>
-            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors">
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors hidden lg:inline-flex">
               +32 484 16 49 05
             </a>
           </div>
         </div>
-        {/* Inline form — desktop only */}
+
+        {/* Mobile: form + phone inline under hero text */}
+        <div className="lg:hidden fade-in-up space-y-3">
+          <BookingForm />
+          <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors w-full text-center">
+            +32 484 16 49 05
+          </a>
+        </div>
+
+        {/* Desktop: form in right column */}
         <div id="contact" className="fade-in-up hidden lg:block">
           <BookingForm />
         </div>
