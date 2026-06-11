@@ -1,7 +1,8 @@
-// Booking form — 3-step wizard embedded in the hero.
-// Step 1: Service → Date → Time
-// Step 2: Name · Email · Phone
-// Step 3: Success
+// Booking form — 4-step wizard
+// Step 1: Kies dienst
+// Step 2: Kies datum
+// Step 3: Kies uur
+// Step 4: Naam · Email · Telefoon
 // POSTs via createBooking server fn (unchanged).
 import { useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -14,33 +15,59 @@ const TIME_SLOTS = [
   "16:00","16:30","17:00","17:30",
 ];
 
-type Step = 1 | 2;
+type Step = 1 | 2 | 3 | 4;
+const TOTAL = 4;
 
-// ─── Step indicator ────────────────────────────────────────────────────────
-function StepDots({ current }: { current: Step }) {
+// ─── Step indicator ──────────────────────────────────────────────────────────
+function StepBar({ current }: { current: Step }) {
   return (
-    <div className="flex items-center gap-2 mb-6">
-      {([1, 2] as Step[]).map((n) => (
-        <div key={n} className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5 mb-6">
+      {Array.from({ length: TOTAL }, (_, i) => i + 1).map((n) => (
+        <div key={n} className="flex items-center gap-1.5 flex-1">
           <div
-            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
-              n === current
+            className={`w-6 h-6 flex-shrink-0 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
+              n < current
+                ? "bg-gold/60 text-ink"
+                : n === current
                 ? "bg-gold text-ink"
-                : n < current
-                ? "bg-gold/40 text-ink"
-                : "bg-white/10 text-ivory/40"
+                : "bg-white/10 text-ivory/30"
             }`}
           >
             {n < current ? "✓" : n}
           </div>
-          {n < 2 && <div className={`h-px w-8 ${n < current ? "bg-gold/60" : "bg-white/10"}`} />}
+          {n < TOTAL && (
+            <div className={`h-px flex-1 transition-colors ${n < current ? "bg-gold/40" : "bg-white/10"}`} />
+          )}
         </div>
       ))}
     </div>
   );
 }
 
-// ─── Main component ─────────────────────────────────────────────────────────
+// ─── Summary pill ─────────────────────────────────────────────────────────────
+function SummaryPill({
+  service, date, time, onEdit,
+}: {
+  service?: string; date?: string; time?: string; onEdit: (s: Step) => void;
+}) {
+  const { t } = useT();
+  return (
+    <div className="bg-ink border border-gold/20 px-3 py-2.5 text-xs text-ivory/60 flex flex-wrap gap-x-3 gap-y-1 mb-4">
+      {service && (
+        <button type="button" onClick={() => onEdit(1)} className="text-gold hover:underline">{service}</button>
+      )}
+      {date && (
+        <button type="button" onClick={() => onEdit(2)} className="hover:text-ivory hover:underline">{date}</button>
+      )}
+      {time && (
+        <button type="button" onClick={() => onEdit(3)} className="hover:text-ivory hover:underline">{time}</button>
+      )}
+      <span className="ml-auto text-ivory/30">{t.form.edit ?? "Wijzigen"}</span>
+    </div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 export function BookingForm() {
   const { t, lang } = useT();
   const submit = useServerFn(createBooking);
@@ -48,7 +75,6 @@ export function BookingForm() {
   const [step, setStep] = useState<Step>(1);
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
 
-  // Form values
   const [service, setService] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -59,14 +85,7 @@ export function BookingForm() {
   const today = new Date().toISOString().slice(0, 10);
   const serviceOptions = t.services.items.map((s) => s.t);
 
-  // ── Step 1 submit ──
-  function handleStep1(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStep(2);
-  }
-
-  // ── Step 2 submit → send to server ──
-  async function handleStep2(e: FormEvent<HTMLFormElement>) {
+  async function handleFinalSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
     try {
@@ -80,7 +99,7 @@ export function BookingForm() {
     }
   }
 
-  // ── Success screen ──
+  // ── Success ──
   if (status === "ok") {
     return (
       <div className="bg-carbon border border-gold/40 p-8 text-center">
@@ -96,28 +115,35 @@ export function BookingForm() {
   return (
     <div className="bg-carbon border border-gold/30 p-6 sm:p-7">
       <h3 className="font-display text-ivory text-2xl mb-1">{t.form.title}</h3>
-      <StepDots current={step} />
+      <StepBar current={step} />
 
-      {/* ── STEP 1 ── */}
+      {/* ── STAP 1 — Kies dienst ── */}
       {step === 1 && (
-        <form onSubmit={handleStep1} className="space-y-4">
-          {/* Service */}
-          <div>
-            <Label>{t.form.service} *</Label>
-            <select
-              required
-              value={service}
-              onChange={(e) => setService(e.target.value)}
-              className={inputCls}
-            >
-              <option value="">{t.form.servicePlaceholder}</option>
-              {serviceOptions.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+        <div className="space-y-4">
+          <Label>{t.form.service} *</Label>
+          <div className="flex flex-col gap-2">
+            {serviceOptions.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => { setService(s); setStep(2); }}
+                className={`w-full text-left px-4 py-3 text-sm border transition-colors ${
+                  service === s
+                    ? "bg-gold text-ink border-gold font-medium"
+                    : "bg-ink border-gold/20 text-ivory/80 hover:border-gold/60 hover:text-ivory"
+                }`}
+              >
+                {s}
+              </button>
+            ))}
           </div>
+        </div>
+      )}
 
-          {/* Date */}
+      {/* ── STAP 2 — Kies datum ── */}
+      {step === 2 && (
+        <div className="space-y-4">
+          <SummaryPill service={service} onEdit={setStep} />
           <div>
             <Label>{t.form.date} *</Label>
             <input
@@ -125,12 +151,26 @@ export function BookingForm() {
               required
               min={today}
               value={date}
+              autoFocus
               onChange={(e) => setDate(e.target.value)}
               className={inputCls}
             />
           </div>
+          <button
+            type="button"
+            disabled={!date}
+            onClick={() => setStep(3)}
+            className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {t.form.next ?? "Volgende →"}
+          </button>
+        </div>
+      )}
 
-          {/* Time slots */}
+      {/* ── STAP 3 — Kies uur ── */}
+      {step === 3 && (
+        <div className="space-y-4">
+          <SummaryPill service={service} date={date} onEdit={setStep} />
           <div>
             <Label>{t.form.time} *</Label>
             <div className="grid grid-cols-4 gap-1.5">
@@ -138,8 +178,8 @@ export function BookingForm() {
                 <button
                   key={slot}
                   type="button"
-                  onClick={() => setTime(slot)}
-                  className={`py-2 text-xs tracking-wider border transition-colors ${
+                  onClick={() => { setTime(slot); setStep(4); }}
+                  className={`py-2.5 text-xs tracking-wider border transition-colors ${
                     time === slot
                       ? "bg-gold text-ink border-gold font-medium"
                       : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
@@ -149,36 +189,14 @@ export function BookingForm() {
                 </button>
               ))}
             </div>
-            {/* hidden input so form validation can require a time */}
-            <input type="hidden" name="booking_time" value={time} required />
           </div>
-
-          <button
-            type="submit"
-            disabled={!service || !date || !time}
-            className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed mt-2"
-          >
-            {t.form.next ?? "Suivant →"}
-          </button>
-        </form>
+        </div>
       )}
 
-      {/* ── STEP 2 ── */}
-      {step === 2 && (
-        <form onSubmit={handleStep2} className="space-y-4">
-          {/* Summary pill */}
-          <div className="bg-ink border border-gold/20 px-4 py-3 text-xs text-ivory/60 flex flex-wrap gap-x-4 gap-y-1">
-            <span className="text-gold">{service}</span>
-            <span>{date}</span>
-            <span>{time}</span>
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="ml-auto text-ivory/40 hover:text-gold underline underline-offset-2"
-            >
-              {t.form.edit ?? "Modifier"}
-            </button>
-          </div>
+      {/* ── STAP 4 — Naam · Email · Telefoon ── */}
+      {step === 4 && (
+        <form onSubmit={handleFinalSubmit} className="space-y-4">
+          <SummaryPill service={service} date={date} time={time} onEdit={setStep} />
 
           <Field label={t.form.name} value={name} onChange={setName} required autoFocus />
           <Field label={t.form.email} value={email} onChange={setEmail} type="email" />
@@ -210,7 +228,7 @@ export function BookingForm() {
   );
 }
 
-// ─── Shared helpers ──────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 const inputCls =
   "w-full bg-ink border border-gold/20 text-ivory px-3 py-2.5 text-sm focus:outline-none focus:border-gold transition-colors";
 
