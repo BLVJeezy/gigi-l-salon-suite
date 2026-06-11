@@ -35,6 +35,8 @@ export const translations = {
       success: "Demande envoyée ! Nous vous rappellerons rapidement.",
       error: "Une erreur est survenue. Veuillez réessayer ou appeler le salon.",
       onlineLink: "Ou réservez via notre agenda en ligne",
+      next: "Suivant →",
+      edit: "Modifier",
     },
     services: {
       eyebrow: "Nos services",
@@ -119,6 +121,8 @@ export const translations = {
       success: "Aanvraag verzonden! We bellen u snel terug.",
       error: "Er is iets misgegaan. Probeer opnieuw of bel het salon.",
       onlineLink: "Of boek via onze online agenda",
+      next: "Volgende →",
+      edit: "Wijzigen",
     },
     services: {
       eyebrow: "Onze diensten",
@@ -203,6 +207,8 @@ export const translations = {
       success: "Request sent! We'll call you back shortly.",
       error: "Something went wrong. Please try again or call the salon.",
       onlineLink: "Or book through our online agenda",
+      next: "Next →",
+      edit: "Change",
     },
     services: {
       eyebrow: "Our services",
