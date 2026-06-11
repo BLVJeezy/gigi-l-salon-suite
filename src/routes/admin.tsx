@@ -181,41 +181,93 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
   const { t } = useT();
   if (bookings.length === 0) return <p className="text-smoke">{t.admin.empty}</p>;
   return (
-    <div className="overflow-x-auto bg-card border border-border">
-      <table className="w-full text-sm">
-        <thead className="bg-sand text-ink text-xs uppercase tracking-wider">
-          <tr>
-            <Th>Client</Th><Th>Service</Th><Th>Date / Heure</Th><Th>Contact</Th><Th>Message</Th><Th>Status</Th><Th></Th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {bookings.map(b => (
-            <tr key={b.id} className="align-top">
-              <Td><div className="font-medium text-ink">{b.name}</div><div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString()}</div></Td>
-              <Td>{b.service}</Td>
-              <Td>
-                <div>{b.booking_date}</div>
+    <>
+      {/* Mobile + tablet: card list */}
+      <div className="lg:hidden space-y-3">
+        {bookings.map(b => (
+          <div key={b.id} className="bg-card border border-border p-4">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+              <div className="min-w-0">
+                <div className="font-medium text-ink truncate">{b.name}</div>
+                <div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString()}</div>
+              </div>
+              <StatusBadge status={b.status} />
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-y-2 gap-x-3 text-sm">
+              <div className="col-span-2">
+                <div className="text-[10px] uppercase tracking-wider text-smoke">Service</div>
+                <div className="text-ink">{b.service}</div>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-smoke">Date</div>
+                <div className="text-ink">{b.booking_date}</div>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-smoke">Heure</div>
                 <div className="text-gold font-medium">{b.booking_time.slice(0,5)}</div>
-              </Td>
-              <Td>
-                <a href={`tel:${b.phone}`} className="text-ink hover:text-gold block">{b.phone}</a>
-                {b.email && <a href={`mailto:${b.email}`} className="text-xs text-smoke hover:text-gold">{b.email}</a>}
-              </Td>
-              <Td><div className="max-w-xs text-xs text-smoke whitespace-pre-wrap">{b.message ?? "—"}</div></Td>
-              <Td><StatusBadge status={b.status} /></Td>
-              <Td>
-                {b.status !== "confirmed" && (
-                  <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 bg-green-600 text-white hover:bg-green-700">{t.admin.actions.confirm}</button>
-                )}
-                {b.status !== "cancelled" && (
-                  <button onClick={() => setStatus(b.id, "cancelled")} className="text-xs px-2 py-1 bg-red-600 text-white hover:bg-red-700">{t.admin.actions.cancel}</button>
-                )}
-              </Td>
+              </div>
+              <div className="col-span-2">
+                <div className="text-[10px] uppercase tracking-wider text-smoke">Contact</div>
+                <a href={`tel:${b.phone}`} className="text-ink hover:text-gold block truncate">{b.phone}</a>
+                {b.email && <a href={`mailto:${b.email}`} className="text-xs text-smoke hover:text-gold block truncate">{b.email}</a>}
+              </div>
+              {b.message && (
+                <div className="col-span-2">
+                  <div className="text-[10px] uppercase tracking-wider text-smoke">Message</div>
+                  <div className="text-xs text-smoke whitespace-pre-wrap">{b.message}</div>
+                </div>
+              )}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a href={`tel:${b.phone}`} className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 border border-gold text-gold-deep">📞 Call</a>
+              {b.status !== "confirmed" && (
+                <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-green-600 text-white hover:bg-green-700">{t.admin.actions.confirm}</button>
+              )}
+              {b.status !== "cancelled" && (
+                <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-red-600 text-white hover:bg-red-700">{t.admin.actions.cancel}</button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="hidden lg:block overflow-x-auto bg-card border border-border">
+        <table className="w-full text-sm">
+          <thead className="bg-sand text-ink text-xs uppercase tracking-wider">
+            <tr>
+              <Th>Client</Th><Th>Service</Th><Th>Date / Heure</Th><Th>Contact</Th><Th>Message</Th><Th>Status</Th><Th></Th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {bookings.map(b => (
+              <tr key={b.id} className="align-top">
+                <Td><div className="font-medium text-ink">{b.name}</div><div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString()}</div></Td>
+                <Td>{b.service}</Td>
+                <Td>
+                  <div>{b.booking_date}</div>
+                  <div className="text-gold font-medium">{b.booking_time.slice(0,5)}</div>
+                </Td>
+                <Td>
+                  <a href={`tel:${b.phone}`} className="text-ink hover:text-gold block">{b.phone}</a>
+                  {b.email && <a href={`mailto:${b.email}`} className="text-xs text-smoke hover:text-gold">{b.email}</a>}
+                </Td>
+                <Td><div className="max-w-xs text-xs text-smoke whitespace-pre-wrap">{b.message ?? "—"}</div></Td>
+                <Td><StatusBadge status={b.status} /></Td>
+                <Td>
+                  {b.status !== "confirmed" && (
+                    <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 bg-green-600 text-white hover:bg-green-700">{t.admin.actions.confirm}</button>
+                  )}
+                  {b.status !== "cancelled" && (
+                    <button onClick={() => setStatus(b.id, "cancelled")} className="text-xs px-2 py-1 bg-red-600 text-white hover:bg-red-700">{t.admin.actions.cancel}</button>
+                  )}
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 
