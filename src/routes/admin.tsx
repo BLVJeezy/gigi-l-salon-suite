@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  adminLogin, adminCheck, listBookings, updateBookingStatus,
+  adminLogin, adminCheck, listBookings, updateBookingStatus, sendTestEmail,
 } from "@/lib/admin.functions";
 import { LangProvider, useT } from "@/lib/i18n";
 
@@ -93,6 +93,24 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
+  const testEmail = useServerFn(sendTestEmail);
+  const [testing, setTesting] = useState(false);
+
+  async function doTestEmail() {
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    const to = window.prompt("Verstuur testmail naar:", "jasonbalongo@gmail.com");
+    if (!to) return;
+    setTesting(true);
+    try {
+      await testEmail({ data: { token, to } });
+      window.alert(`✓ Testmail verzonden naar ${to}`);
+    } catch (e) {
+      window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
+    } finally {
+      setTesting(false);
+    }
+  }
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<"leads" | "day" | "week">("leads");
@@ -137,7 +155,10 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               </span>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <button onClick={doTestEmail} disabled={testing} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
+              {testing ? "…" : "Test email"}
+            </button>
             <button onClick={refresh} className="btn-gold-outline text-xs px-3 py-2">{t.admin.refresh}</button>
             <button onClick={doLogout} className="btn-gold-outline text-xs px-3 py-2">{t.admin.logout}</button>
           </div>
