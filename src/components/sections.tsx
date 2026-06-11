@@ -1,5 +1,6 @@
 // All landing-page sections in one file for easy maintenance.
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
 
@@ -19,13 +20,23 @@ export function Hero() {
             {t.hero.subtitle}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <a href="#contact" className="btn-gold btn-gold-hover">{t.hero.ctaBook}</a>
+            {/* Mobile: link to booking page. Desktop: anchor to inline form below. */}
+            <Link
+              to="/reservations"
+              className="btn-gold btn-gold-hover lg:hidden"
+            >
+              {t.hero.ctaBook}
+            </Link>
+            <a href="#contact" className="btn-gold btn-gold-hover hidden lg:inline-flex">
+              {t.hero.ctaBook}
+            </a>
             <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors">
               +32 484 16 49 05
             </a>
           </div>
         </div>
-        <div id="contact" className="fade-in-up">
+        {/* Inline form — desktop only */}
+        <div id="contact" className="fade-in-up hidden lg:block">
           <BookingForm />
         </div>
       </div>
