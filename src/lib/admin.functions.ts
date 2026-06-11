@@ -97,11 +97,8 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
     // Email client on status change (best-effort).
     try {
       if (booking?.email && (data.status === "confirmed" || data.status === "cancelled")) {
-        const { sendEmail } = await import("./email.server");
-        const { clientBookingConfirmedEmail, clientBookingCancelledEmail, signCancelToken } = await import("./email-templates.server").then(async (m) => ({
-          ...m,
-          signCancelToken: (await import("./email.server")).signCancelToken,
-        }));
+        const { sendEmail, signCancelToken } = await import("./email.server");
+        const { clientBookingConfirmedEmail, clientBookingCancelledEmail } = await import("./email-templates.server");
         if (data.status === "confirmed") {
           const token = await signCancelToken(booking.id);
           const origin = process.env.SITE_URL || "https://gigi-l-salon-suite.lovable.app";
