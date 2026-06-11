@@ -92,7 +92,15 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const refresh = async () => {
     setLoading(true);
-    try { const r = await list(); setBookings(r.bookings as Booking[]); } finally { setLoading(false); }
+    try {
+      const r = await list();
+      setBookings(r.bookings as Booking[]);
+    } catch (e) {
+      console.error("listBookings failed", e);
+      onLogout();
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => { void refresh(); /* eslint-disable-next-line */ }, []);
 
