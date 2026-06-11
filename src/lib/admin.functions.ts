@@ -7,12 +7,20 @@ import { z } from "zod";
 const SESSION_NAME = "gigil_admin";
 
 function getSessionConfig() {
-  const password = process.env.SESSION_SECRET;
-  if (!password || password.length < 32) {
-    // useSession requires a 32+ char password. Pad fallback for dev safety.
-    return { password: (password ?? "") + "x".repeat(64), name: SESSION_NAME, maxAge: 60 * 60 * 8 };
-  }
-  return { password, name: SESSION_NAME, maxAge: 60 * 60 * 8 };
+  const raw = process.env.SESSION_SECRET ?? "";
+  // useSession requires a 32+ char password. Pad fallback for dev safety.
+  const password = raw.length >= 32 ? raw : raw + "x".repeat(64);
+  return {
+    password,
+    name: SESSION_NAME,
+    maxAge: 60 * 60 * 8,
+    cookie: {
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax" as const,
+      secure: true,
+    },
+  };
 }
 
 type SessionData = { admin?: true };
@@ -23,7 +31,9 @@ async function getSession() {
 
 async function requireAdmin() {
   const s = await getSession();
-  if (!s.data.admin) throw new Error("Unauthorized");
+  if (!s.data.admin) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
 }
 
 export const adminLogin = createServerFn({ method: "POST" })
