@@ -1,11 +1,16 @@
-// Admin dashboard — password-gated via httpOnly session cookie.
+// Admin dashboard — password-gated via signed token (sessionStorage).
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  adminLogin, adminLogout, adminCheck, listBookings, updateBookingStatus,
+  adminLogin, adminCheck, listBookings, updateBookingStatus,
 } from "@/lib/admin.functions";
 import { LangProvider, useT } from "@/lib/i18n";
+
+const TOKEN_KEY = "gigil_admin_token";
+const getToken = () => (typeof window === "undefined" ? null : sessionStorage.getItem(TOKEN_KEY));
+const setToken = (t: string) => sessionStorage.setItem(TOKEN_KEY, t);
+const clearToken = () => sessionStorage.removeItem(TOKEN_KEY);
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -39,11 +44,15 @@ function AdminPage() {
   const check = useServerFn(adminCheck);
   const [authed, setAuthed] = useState<boolean | null>(null);
 
-  useEffect(() => { check().then(r => setAuthed(r.authenticated)).catch(() => setAuthed(false)); }, [check]);
+  useEffect(() => {
+    const token = getToken();
+    if (!token) { setAuthed(false); return; }
+    check({ data: { token } }).then(r => setAuthed(r.authenticated)).catch(() => setAuthed(false));
+  }, [check]);
 
   if (authed === null) return <div className="min-h-screen bg-ink text-ivory flex items-center justify-center">…</div>;
   if (!authed) return <LoginScreen onSuccess={() => setAuthed(true)} />;
-  return <Dashboard onLogout={() => setAuthed(false)} />;
+  return <Dashboard onLogout={() => { clearToken(); setAuthed(false); }} />;
 }
 
 function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
@@ -58,7 +67,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
     const password = String(new FormData(e.currentTarget).get("password") ?? "");
     try {
       const res = await login({ data: { password } });
-      if (res.ok) onSuccess(); else setErr(true);
+      if (res.ok && res.token) { setToken(res.token); onSuccess(); } else setErr(true);
     } catch { setErr(true); } finally { setLoading(false); }
   }
 
@@ -84,7 +93,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
-  const logout = useServerFn(adminLogout);
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<"leads" | "day" | "week">("leads");
@@ -92,8 +100,10 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const refresh = async () => {
     setLoading(true);
+    const token = getToken();
+    if (!token) { onLogout(); return; }
     try {
-      const r = await list();
+      const r = await list({ data: { token } });
       setBookings(r.bookings as Booking[]);
     } catch (e) {
       console.error("listBookings failed", e);
@@ -107,11 +117,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const newCount = bookings.filter(b => b.status === "new").length;
 
   async function setStatus(id: string, status: "confirmed" | "cancelled") {
-    await update({ data: { id, status } });
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    await update({ data: { token, id, status } });
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
   }
 
-  async function doLogout() { await logout(); onLogout(); }
+  async function doLogout() { onLogout(); }
 
   return (
     <div className="min-h-screen bg-ivory">
