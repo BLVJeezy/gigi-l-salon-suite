@@ -32,7 +32,7 @@ async function getSession() {
 async function requireAdmin() {
   const s = await getSession();
   if (!s.data.admin) {
-    throw new Response("Unauthorized", { status: 401 });
+    throw new Error("Unauthorized");
   }
 }
 
