@@ -1,5 +1,5 @@
 // Server function: public booking submission.
-// Uses the publishable Supabase client (RLS INSERT policy allows anyone).
+// Inserts the booking, then sends owner + client emails (best-effort).
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -29,10 +29,34 @@ export const createBooking = createServerFn({ method: "POST" })
       lang: data.lang,
       status: "new" as const,
     };
-    const { error } = await supabaseAdmin.from("bookings").insert(payload);
-    if (error) {
+    const { data: inserted, error } = await supabaseAdmin
+      .from("bookings")
+      .insert(payload)
+      .select("*")
+      .single();
+    if (error || !inserted) {
       console.error("createBooking error", error);
       throw new Error("Could not save booking");
     }
+
+    // Fire-and-forget emails — don't fail the booking if email errors.
+    try {
+      const { sendEmail } = await import("./email.server");
+      const { ownerNewBookingEmail, clientBookingReceivedEmail } = await import("./email-templates.server");
+      const owner = process.env.OWNER_EMAIL;
+      const tasks: Promise<unknown>[] = [];
+      if (owner) {
+        const t = ownerNewBookingEmail(inserted);
+        tasks.push(sendEmail({ to: owner, subject: t.subject, html: t.html, replyTo: inserted.email ?? undefined }));
+      }
+      if (inserted.email) {
+        const t = clientBookingReceivedEmail(inserted);
+        tasks.push(sendEmail({ to: inserted.email, subject: t.subject, html: t.html }));
+      }
+      await Promise.allSettled(tasks);
+    } catch (e) {
+      console.error("createBooking email error", e);
+    }
+
     return { ok: true };
   });

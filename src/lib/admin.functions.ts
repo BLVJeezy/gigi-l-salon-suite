@@ -86,7 +86,32 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await requireAdmin(data.token);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("bookings").update({ status: data.status }).eq("id", data.id);
+    const { data: booking, error } = await supabaseAdmin
+      .from("bookings")
+      .update({ status: data.status })
+      .eq("id", data.id)
+      .select("*")
+      .single();
     if (error) throw new Error(error.message);
+
+    // Email client on status change (best-effort).
+    try {
+      if (booking?.email && (data.status === "confirmed" || data.status === "cancelled")) {
+        const { sendEmail, signCancelToken } = await import("./email.server");
+        const { clientBookingConfirmedEmail, clientBookingCancelledEmail } = await import("./email-templates.server");
+        if (data.status === "confirmed") {
+          const token = await signCancelToken(booking.id);
+          const origin = process.env.SITE_URL || "https://gigi-l-salon-suite.lovable.app";
+          const cancelUrl = `${origin}/annuler/${token}`;
+          const t = clientBookingConfirmedEmail(booking, cancelUrl);
+          await sendEmail({ to: booking.email, subject: t.subject, html: t.html });
+        } else {
+          const t = clientBookingCancelledEmail(booking);
+          await sendEmail({ to: booking.email, subject: t.subject, html: t.html });
+        }
+      }
+    } catch (e) {
+      console.error("updateBookingStatus email error", e);
+    }
     return { ok: true };
   });
