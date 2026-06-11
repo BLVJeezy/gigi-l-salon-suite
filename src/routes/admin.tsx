@@ -317,9 +317,13 @@ function DayView({ bookings }: { bookings: Booking[] }) {
   );
 }
 
+function fmtISO(d: Date) { return d.toISOString().slice(0, 10); }
+
 function WeekView({ bookings }: { bookings: Booking[] }) {
   const { t } = useT();
   const [anchor, setAnchor] = useState<Date>(new Date());
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+
   const monday = new Date(anchor);
   const day = (monday.getDay() + 6) % 7; // 0 = Monday
   monday.setDate(monday.getDate() - day);
@@ -327,67 +331,118 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
     const d = new Date(monday); d.setDate(d.getDate() + i);
     return d;
   });
+  const sunday = days[6];
   const visible = bookings.filter(b => b.status !== "cancelled");
   const shift = (n: number) => { const d = new Date(anchor); d.setDate(d.getDate() + n * 7); setAnchor(d); };
+  const rangeLabel = `${monday.getDate()}/${monday.getMonth() + 1} – ${sunday.getDate()}/${sunday.getMonth() + 1}/${sunday.getFullYear()}`;
+  const todayIso = fmtISO(new Date());
+
+  const dayBookingsFor = (iso: string) =>
+    bookings.filter(b => b.booking_date === iso)
+      .sort((a, b) => a.booking_time.localeCompare(b.booking_time));
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-5">
-        <button onClick={() => shift(-1)} className="px-3 py-1 border border-border">←</button>
-        <button onClick={() => setAnchor(new Date())} className="px-3 py-1 border border-border text-sm">{t.admin.today}</button>
-        <button onClick={() => shift(1)} className="px-3 py-1 border border-border">→</button>
+      {/* Navigation bar */}
+      <div className="mb-5 bg-card border border-border p-3 sm:p-4">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => shift(-1)}
+            aria-label="Précédent"
+            className="flex items-center gap-1 px-3 py-2 border border-border hover:bg-sand text-sm"
+          >
+            <span aria-hidden>←</span>
+            <span className="hidden sm:inline">Préc.</span>
+          </button>
+          <div className="min-w-0 text-center">
+            <div className="font-display text-base sm:text-lg truncate">{rangeLabel}</div>
+            <div className="text-[10px] sm:text-xs uppercase tracking-wider text-smoke">Semaine</div>
+          </div>
+          <button
+            onClick={() => shift(1)}
+            aria-label="Suivant"
+            className="flex items-center gap-1 px-3 py-2 border border-border hover:bg-sand text-sm"
+          >
+            <span className="hidden sm:inline">Suiv.</span>
+            <span aria-hidden>→</span>
+          </button>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setAnchor(new Date())}
+            className="px-3 py-2 border border-gold text-gold-deep text-xs uppercase tracking-wider hover:bg-gold/10"
+          >
+            {t.admin.today}
+          </button>
+          <label className="flex items-center gap-2 ml-auto">
+            <span className="text-xs text-smoke uppercase tracking-wider">Aller à</span>
+            <input
+              type="date"
+              value={fmtISO(anchor)}
+              onChange={(e) => {
+                if (e.target.value) setAnchor(new Date(e.target.value + "T00:00:00"));
+              }}
+              className="bg-ivory border border-border px-2 py-1.5 text-sm"
+            />
+          </label>
+        </div>
       </div>
 
-      {/* Mobile/tablet: stacked day cards */}
-      <div className="lg:hidden space-y-3">
+      {/* Mobile/tablet: stacked day cards (clickable) */}
+      <div className="lg:hidden space-y-2">
         {days.map(d => {
-          const iso = d.toISOString().slice(0, 10);
-          const dayBookings = visible.filter(b => b.booking_date === iso)
-            .sort((a,b) => a.booking_time.localeCompare(b.booking_time));
-          const isToday = iso === new Date().toISOString().slice(0, 10);
+          const iso = fmtISO(d);
+          const list = visible.filter(b => b.booking_date === iso);
+          const isToday = iso === todayIso;
           return (
-            <div key={iso} className={`bg-card border ${isToday ? "border-gold" : "border-border"}`}>
-              <div className={`px-4 py-2.5 flex items-baseline justify-between ${isToday ? "bg-gold/15" : "bg-sand"}`}>
-                <div className="flex items-baseline gap-2 min-w-0">
-                  <span className="text-xs uppercase tracking-wider text-smoke">{d.toLocaleDateString(undefined, { weekday: "short" })}</span>
-                  <span className="font-display text-lg">{d.getDate()}/{d.getMonth() + 1}</span>
+            <button
+              key={iso}
+              onClick={() => setSelectedDay(iso)}
+              className={`w-full text-left bg-card border ${isToday ? "border-gold" : "border-border"} hover:border-gold transition-colors`}
+            >
+              <div className={`px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 ${isToday ? "bg-gold/15" : "bg-sand"}`}>
+                <div className="text-center w-12 shrink-0">
+                  <div className="text-[10px] uppercase tracking-wider text-smoke">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
+                  <div className="font-display text-2xl leading-none">{d.getDate()}</div>
                 </div>
-                <span className="text-xs text-gold-deep font-medium shrink-0">{dayBookings.length} {dayBookings.length === 1 ? "rdv" : "rdv"}</span>
-              </div>
-              {dayBookings.length === 0 ? (
-                <div className="px-4 py-3 text-xs text-smoke">—</div>
-              ) : (
-                <div className="p-2 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {dayBookings.map(b => (
-                    <div key={b.id} className={`px-3 py-2 text-xs border ${b.status === "confirmed" ? "bg-green-100 border-green-300" : "bg-gold/15 border-gold"}`}>
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-medium">{b.booking_time.slice(0,5)}</span>
-                        <span className="text-smoke truncate">{b.name}</span>
-                      </div>
-                      <div className="text-smoke truncate mt-0.5">{b.service}</div>
+                <div className="min-w-0">
+                  <div className="text-sm text-ink">
+                    {list.length === 0 ? <span className="text-smoke italic">Aucun rdv</span> :
+                      <span className="font-medium">{list.length} rendez-vous</span>}
+                  </div>
+                  {list.length > 0 && (
+                    <div className="text-xs text-smoke truncate">
+                      {list.slice(0, 2).map(b => `${b.booking_time.slice(0,5)} ${b.name}`).join(" · ")}
+                      {list.length > 2 ? ` +${list.length - 2}` : ""}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
+                <span className="text-gold text-lg shrink-0" aria-hidden>›</span>
+              </div>
+            </button>
           );
         })}
       </div>
 
-      {/* Desktop: 7-column grid */}
+      {/* Desktop: 7-column grid (clickable) */}
       <div className="hidden lg:grid grid-cols-7 gap-px bg-border border border-border overflow-x-auto">
         {days.map(d => {
-          const iso = d.toISOString().slice(0, 10);
-          const dayBookings = visible.filter(b => b.booking_date === iso);
+          const iso = fmtISO(d);
+          const list = visible.filter(b => b.booking_date === iso);
+          const isToday = iso === todayIso;
           return (
-            <div key={iso} className="bg-card min-h-[260px] min-w-[140px]">
-              <div className="bg-sand px-3 py-2 text-center">
+            <button
+              key={iso}
+              onClick={() => setSelectedDay(iso)}
+              className={`bg-card min-h-[260px] min-w-[140px] text-left hover:bg-sand/50 transition-colors ${isToday ? "ring-2 ring-gold ring-inset" : ""}`}
+            >
+              <div className={`px-3 py-2 text-center ${isToday ? "bg-gold/15" : "bg-sand"}`}>
                 <div className="text-xs uppercase tracking-wider text-smoke">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
                 <div className="font-display text-lg">{d.getDate()}/{d.getMonth() + 1}</div>
-                <div className="text-xs text-gold">{dayBookings.length}</div>
+                <div className="text-xs text-gold">{list.length}</div>
               </div>
               <div className="p-2 space-y-1.5">
-                {dayBookings.sort((a,b) => a.booking_time.localeCompare(b.booking_time)).map(b => (
+                {list.sort((a,b) => a.booking_time.localeCompare(b.booking_time)).map(b => (
                   <div key={b.id} className={`px-2 py-1.5 text-xs border ${b.status === "confirmed" ? "bg-green-100 border-green-300" : "bg-gold/15 border-gold"}`}>
                     <div className="font-medium">{b.booking_time.slice(0,5)}</div>
                     <div className="truncate">{b.name}</div>
@@ -395,9 +450,91 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </button>
           );
         })}
+      </div>
+
+      {selectedDay && (
+        <DayDetailsModal
+          iso={selectedDay}
+          bookings={dayBookingsFor(selectedDay)}
+          onClose={() => setSelectedDay(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Booking[]; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+  }, [onClose]);
+
+  const d = new Date(iso + "T00:00:00");
+  const title = d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-ink/60" onClick={onClose}>
+      <div
+        className="bg-ivory w-full sm:max-w-2xl max-h-[90vh] sm:max-h-[85vh] flex flex-col border border-gold/30 sm:rounded-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="bg-ink text-ivory px-5 py-4 flex items-start justify-between gap-3 border-b border-gold/30">
+          <div className="min-w-0">
+            <div className="font-display text-lg sm:text-xl capitalize truncate">{title}</div>
+            <div className="text-xs text-ivory/60 uppercase tracking-wider mt-0.5">
+              {bookings.length} {bookings.length === 1 ? "rendez-vous" : "rendez-vous"}
+            </div>
+          </div>
+          <button onClick={onClose} aria-label="Fermer" className="text-ivory/80 hover:text-gold text-2xl leading-none shrink-0">×</button>
+        </div>
+
+        <div className="overflow-y-auto p-4 sm:p-5 space-y-3">
+          {bookings.length === 0 && <p className="text-smoke text-center py-8">Aucun rendez-vous</p>}
+          {bookings.map(b => (
+            <div key={b.id} className={`border p-4 ${b.status === "cancelled" ? "bg-red-50 border-red-200 opacity-60" : b.status === "confirmed" ? "bg-green-50 border-green-300" : "bg-gold/10 border-gold"}`}>
+              <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3">
+                <div className="text-center shrink-0">
+                  <div className="font-display text-2xl text-gold-deep leading-none">{b.booking_time.slice(0,5)}</div>
+                </div>
+                <div className="min-w-0">
+                  <div className="font-medium text-ink truncate">{b.name}</div>
+                  <div className="text-sm text-smoke truncate">{b.service}</div>
+                </div>
+                <StatusBadge status={b.status} />
+              </div>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                <a href={`tel:${b.phone}`} className="flex items-center gap-2 text-ink hover:text-gold truncate">
+                  <span aria-hidden>📞</span><span className="truncate">{b.phone}</span>
+                </a>
+                {b.email && (
+                  <a href={`mailto:${b.email}`} className="flex items-center gap-2 text-ink hover:text-gold truncate">
+                    <span aria-hidden>✉️</span><span className="truncate">{b.email}</span>
+                  </a>
+                )}
+              </div>
+              {b.message && (
+                <div className="mt-3 pt-3 border-t border-border">
+                  <div className="text-[10px] uppercase tracking-wider text-smoke mb-1">Message</div>
+                  <div className="text-sm text-ink whitespace-pre-wrap">{b.message}</div>
+                </div>
+              )}
+              <div className="mt-2 text-[10px] text-smoke uppercase tracking-wider">
+                Reçu le {new Date(b.created_at).toLocaleString()}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="border-t border-border p-3 bg-sand">
+          <button onClick={onClose} className="w-full px-4 py-2.5 border border-ink text-ink hover:bg-ink hover:text-ivory text-sm uppercase tracking-wider">
+            Fermer
+          </button>
+        </div>
       </div>
     </div>
   );
