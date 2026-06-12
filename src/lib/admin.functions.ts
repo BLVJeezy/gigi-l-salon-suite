@@ -135,3 +135,54 @@ export const sendTestEmail = createServerFn({ method: "POST" })
     if (!res.ok) throw new Error(res.error || "Verzenden mislukt");
     return { ok: true };
   });
+
+export const sendExampleEmails = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string(), to: z.string().email() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { sendEmail, signCancelToken } = await import("./email.server");
+    const { ownerNewBookingEmail, clientBookingReceivedEmail, clientBookingConfirmedEmail, clientBookingCancelledEmail } = await import("./email-templates.server");
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dummy = {
+      id: crypto.randomUUID(),
+      name: "Jason Balongo",
+      phone: "+32 484 16 49 05",
+      email: data.to,
+      service: "Coupe Femme + Brushing",
+      booking_date: tomorrow.toISOString().slice(0, 10),
+      booking_time: "14:00:00",
+      message: "Voorbeeld bericht — een korte opmerking.",
+    };
+
+    const origin = process.env.SITE_URL || "https://gigi-l-salon-suite.lovable.app";
+    const cancelToken = await signCancelToken(dummy.id);
+    const cancelUrl = `${origin}/annuler/${cancelToken}`;
+
+    const templates = [
+      { name: "1. Nouvelle réservation (owner)", fn: () => ownerNewBookingEmail(dummy) },
+      { name: "2. Réservation reçue (client)", fn: () => clientBookingReceivedEmail(dummy) },
+      { name: "3. Réservation confirmée (client)", fn: () => clientBookingConfirmedEmail(dummy, cancelUrl) },
+      { name: "4. Réservation annulée (client)", fn: () => clientBookingCancelledEmail(dummy) },
+    ];
+
+    const results: { name: string; ok: boolean; error?: string }[] = [];
+    for (const t of templates) {
+      try {
+        const mail = t.fn();
+        const res = await sendEmail({ to: data.to, subject: `[VOORBEELD] ${mail.subject}`, html: mail.html });
+        results.push({ name: t.name, ok: res.ok, error: res.error });
+      } catch (e) {
+        results.push({ name: t.name, ok: false, error: String(e) });
+      }
+    }
+
+    const failed = results.filter(r => !r.ok);
+    if (failed.length > 0) {
+      throw new Error(`Mislukt: ${failed.map(f => f.name).join(", ")}`);
+    }
+    return { ok: true, sent: results.length };
+  });
