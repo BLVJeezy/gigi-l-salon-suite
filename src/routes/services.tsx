@@ -11,9 +11,24 @@ export const Route = createFileRoute("/services")({
       { title: "Nos services — GiGi L Coiffure Tongres" },
       { name: "description", content: "Tresses africaines, tissage, locks, microshading, perruques, mèches, ongles et maquillage à Tongres. Découvrez tous les services de GiGi L Coiffure." },
       { property: "og:title", content: "Nos services — GiGi L Coiffure" },
+      { property: "og:description", content: "Tresses, tissage, locks, microshading, ongles et perruques à Tongres." },
+      { property: "og:type", content: "website" },
       { property: "og:url", content: "https://gigilcoiffure.be/services" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/services" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: "https://gigilcoiffure.be/" },
+            { "@type": "ListItem", position: 2, name: "Services", item: "https://gigilcoiffure.be/services" },
+          ],
+        }),
+      },
+    ],
   }),
   component: () => (
     <LangProvider>

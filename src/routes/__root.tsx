@@ -77,16 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "A luxury, multilingual salon website for GiGi L Coiffure, offering hair, microshading, and beauty services." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "A luxury, multilingual salon website for GiGi L Coiffure, offering hair, microshading, and beauty services." },
+      { title: "GiGi L Coiffure — Salon de coiffure à Tongres" },
+      { name: "description", content: "Salon de coiffure africaine et européenne à Tongres : tresses, tissage, locks, microshading, ongles et perruques. Spécialiste des cheveux bouclés, frisés et crépus." },
+      { name: "author", content: "GiGi L Coiffure" },
+      { name: "robots", content: "index, follow" },
+      { property: "og:title", content: "GiGi L Coiffure — Salon de coiffure à Tongres" },
+      { property: "og:description", content: "Salon spécialisé cheveux bouclés, frisés et crépus à Tongres. Tresses, tissage, microshading, ongles et perruques." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "A luxury, multilingual salon website for GiGi L Coiffure, offering hair, microshading, and beauty services." },
+      { property: "og:site_name", content: "GiGi L Coiffure" },
+      { property: "og:locale", content: "fr_BE" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "GiGi L Coiffure — Salon de coiffure à Tongres" },
+      { name: "twitter:description", content: "Salon spécialisé cheveux bouclés, frisés et crépus à Tongres. Tresses, tissage, microshading, ongles et perruques." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e55038d5-a1dd-4305-9820-c71f204eec96/id-preview-1d785840--f94e0263-b10f-4e07-8a89-3fb872bc24d0.lovable.app-1781178979248.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e55038d5-a1dd-4305-9820-c71f204eec96/id-preview-1d785840--f94e0263-b10f-4e07-8a89-3fb872bc24d0.lovable.app-1781178979248.png" },
     ],
@@ -105,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <HeadContent />
       </head>

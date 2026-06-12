@@ -37,6 +37,8 @@ export const translations = {
       onlineLink: "Ou réservez via notre agenda en ligne",
       next: "Suivant →",
       edit: "Modifier",
+      categoryLabel: "Choisissez une catégorie",
+      categories: { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" },
     },
     services: {
       eyebrow: "Nos services",
@@ -159,6 +161,8 @@ export const translations = {
       onlineLink: "Of boek via onze online agenda",
       next: "Volgende →",
       edit: "Wijzigen",
+      categoryLabel: "Kies een categorie",
+      categories: { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" },
     },
     services: {
       eyebrow: "Onze diensten",
@@ -281,6 +285,8 @@ export const translations = {
       onlineLink: "Or book through our online agenda",
       next: "Next →",
       edit: "Change",
+      categoryLabel: "Choose a category",
+      categories: { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" },
     },
     services: {
       eyebrow: "Our services",
