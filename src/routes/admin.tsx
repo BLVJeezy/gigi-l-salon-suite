@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  adminLogin, adminCheck, listBookings, updateBookingStatus, sendTestEmails,
+  adminLogin, adminCheck, listBookings, updateBookingStatus,
 } from "@/lib/admin.functions";
 import {
-  listServices, updateService, addService, deleteService, type ServiceItem,
+  listServices, updateService, addService, deleteService, seedServices, type ServiceItem,
 } from "@/lib/services.functions";
 import { LangProvider, useT } from "@/lib/i18n";
 
@@ -127,22 +127,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
-  const testEmails = useServerFn(sendTestEmails);
-  const [sendingTests, setSendingTests] = useState(false);
-
-  async function doTestEmails() {
-    const token = getToken();
-    if (!token) { onLogout(); return; }
-    setSendingTests(true);
-    try {
-      const res = await testEmails({ data: { token, to: "jasonbalongo@gmail.com" } });
-      window.alert(`✓ ${res.sent} testmails in queue gezet → jasonbalongo@gmail.com`);
-    } catch (e) {
-      window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
-    } finally {
-      setSendingTests(false);
-    }
-  }
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<"leads" | "day" | "week" | "diensten">("leads");
@@ -188,9 +172,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             )}
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button onClick={doTestEmails} disabled={sendingTests} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
-              {sendingTests ? "…" : "Test mails (Lovable Notify)"}
-            </button>
             <button onClick={refresh} className="btn-gold-outline text-xs px-3 py-2">{t.admin.refresh}</button>
             <button onClick={doLogout} className="btn-gold-outline text-xs px-3 py-2">{t.admin.logout}</button>
           </div>
@@ -618,6 +599,7 @@ function ServicesView({ onLogout }: { onLogout: () => void }) {
   const update = useServerFn(updateService);
   const add = useServerFn(addService);
   const del = useServerFn(deleteService);
+  const seed = useServerFn(seedServices);
 
   const [items, setItems] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -627,7 +609,11 @@ function ServicesView({ onLogout }: { onLogout: () => void }) {
     const token = getToken();
     if (!token) { onLogout(); return; }
     setLoading(true);
-    try { setItems((await list({ data: { token } })).services); }
+    try {
+      // Ensure all booking-form services exist (idempotent), then list.
+      await seed({ data: { token } });
+      setItems((await list({ data: { token } })).services);
+    }
     catch { onLogout(); }
     finally { setLoading(false); }
   };

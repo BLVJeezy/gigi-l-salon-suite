@@ -98,3 +98,42 @@ export const deleteService = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+// Canonical service list — mirrors the booking form exactly.
+const SEED: { category: "coiffure" | "nails" | "microshading"; name: string; duration_min: number; sort_order: number }[] = [
+  { category: "coiffure", name: "Tresses africaines", duration_min: 180, sort_order: 1 },
+  { category: "coiffure", name: "Coupes européennes", duration_min: 60, sort_order: 2 },
+  { category: "coiffure", name: "Locks & crochet", duration_min: 120, sort_order: 3 },
+  { category: "coiffure", name: "Tissages", duration_min: 120, sort_order: 4 },
+  { category: "coiffure", name: "Chignons & événements", duration_min: 90, sort_order: 5 },
+  { category: "coiffure", name: "Colorations", duration_min: 120, sort_order: 6 },
+  { category: "coiffure", name: "Perruques & mèches", duration_min: 90, sort_order: 7 },
+  { category: "nails", name: "Pose complète", duration_min: 90, sort_order: 1 },
+  { category: "nails", name: "Retouche", duration_min: 60, sort_order: 2 },
+  { category: "nails", name: "Dépose de gel", duration_min: 30, sort_order: 3 },
+  { category: "nails", name: "Réparation 1 doigt", duration_min: 15, sort_order: 4 },
+  { category: "nails", name: "Pédicure sans tips", duration_min: 60, sort_order: 5 },
+  { category: "nails", name: "Vernis semi-permanent", duration_min: 45, sort_order: 6 },
+  { category: "microshading", name: "Microshading", duration_min: 120, sort_order: 1 },
+  { category: "microshading", name: "Retouche", duration_min: 60, sort_order: 2 },
+];
+
+// Idempotent: inserts any canonical service that's missing (matched by category+name).
+// Leaves existing rows (and their prices/durations) untouched.
+export const seedServices = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ token: z.string() }).parse(input))
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as unknown as { from: (t: string) => any };
+    const { data: existing, error } = await db.from("services").select("category,name");
+    if (error) throw new Error(error.message);
+    const have = new Set((existing ?? []).map((r: { category: string; name: string }) => `${r.category}|${r.name}`));
+    const missing = SEED.filter((s) => !have.has(`${s.category}|${s.name}`))
+      .map((s) => ({ ...s, price_cents: null, active: true }));
+    if (missing.length) {
+      const { error: insErr } = await db.from("services").insert(missing);
+      if (insErr) throw new Error(insErr.message);
+    }
+    return { ok: true, added: missing.length };
+  });

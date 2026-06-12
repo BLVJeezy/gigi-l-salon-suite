@@ -55,7 +55,7 @@ export const Route = createFileRoute("/")({
           ],
           aggregateRating: { "@type": "AggregateRating", ratingValue: "4.6", reviewCount: "28" },
           openingHoursSpecification: [
-            { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Thursday", "Friday", "Saturday"], opens: "09:00", closes: "18:00" },
+            { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Thursday", "Friday", "Saturday"], opens: "09:00", closes: "20:00" },
           ],
           makesOffer: [
             { "@type": "Offer", itemOffered: { "@type": "Service", name: "Tresses africaines" } },

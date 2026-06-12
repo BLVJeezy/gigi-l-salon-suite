@@ -50,43 +50,43 @@ export function Hero() {
 }
 
 // Subtle trust signals — Google rating, client count, certified salon.
-// Kept understated to match the luxury feel: thin gold dividers, small caps.
+// Mobile: 3-column grid, compact and centered. Desktop: inline row with dividers.
 function TrustBadges() {
   const { t } = useT();
   return (
-    <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-x-8">
+    <div className="mt-8 sm:mt-10 grid grid-cols-3 sm:flex sm:flex-wrap sm:items-center gap-y-4 sm:gap-x-8 border-t border-gold/15 pt-6 sm:border-0 sm:pt-0">
       {/* Google rating */}
-      <div className="flex items-center gap-2.5">
-        <div className="flex text-gold text-sm" aria-hidden>
+      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2.5 text-center sm:text-left">
+        <div className="flex text-gold text-xs sm:text-sm" aria-hidden>
           {"★★★★★".split("").map((s, i) => (
             <span key={i} className={i === 4 ? "opacity-50" : ""}>{s}</span>
           ))}
         </div>
         <div className="leading-tight">
           <div className="text-ivory text-sm font-medium">4,6/5</div>
-          <div className="text-ivory/45 text-[11px] tracking-wide">{t.hero.badges.reviews}</div>
+          <div className="text-ivory/45 text-[10px] sm:text-[11px] tracking-wide">{t.hero.badges.reviews}</div>
         </div>
       </div>
 
       <span className="hidden sm:block w-px h-8 bg-gold/20" aria-hidden />
 
       {/* Clients */}
-      <div className="flex items-center gap-2.5">
-        <span className="text-gold text-xl leading-none font-display" aria-hidden>✓</span>
+      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2.5 text-center sm:text-left">
+        <span className="text-gold text-lg sm:text-xl leading-none font-display" aria-hidden>✓</span>
         <div className="leading-tight">
           <div className="text-ivory text-sm font-medium">{t.hero.badges.clientsCount}</div>
-          <div className="text-ivory/45 text-[11px] tracking-wide">{t.hero.badges.clients}</div>
+          <div className="text-ivory/45 text-[10px] sm:text-[11px] tracking-wide">{t.hero.badges.clients}</div>
         </div>
       </div>
 
       <span className="hidden sm:block w-px h-8 bg-gold/20" aria-hidden />
 
       {/* Certified */}
-      <div className="flex items-center gap-2.5">
-        <span className="text-gold text-lg leading-none" aria-hidden>♛</span>
+      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2.5 text-center sm:text-left">
+        <span className="text-gold text-base sm:text-lg leading-none" aria-hidden>♛</span>
         <div className="leading-tight">
           <div className="text-ivory text-sm font-medium">{t.hero.badges.certifiedTitle}</div>
-          <div className="text-ivory/45 text-[11px] tracking-wide">{t.hero.badges.certifiedSub}</div>
+          <div className="text-ivory/45 text-[10px] sm:text-[11px] tracking-wide">{t.hero.badges.certifiedSub}</div>
         </div>
       </div>
     </div>
@@ -234,6 +234,21 @@ export function Footer() {
             <li><a className="text-ivory/80 hover:text-gold" href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook →</a></li>
           </ul>
         </div>
+      </div>
+
+      {/* Google Maps embed */}
+      <div className="border-t border-gold/15">
+        <iframe
+          title="GiGi L Coiffure — Koninksemsteenweg 144, Tongeren"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2523.0227220048405!2d5.452718676974883!3d50.775152363931205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c0f4051dfa34cf%3A0x2417dcea3df95f23!2sGIGI%20L%20coiffure!5e0!3m2!1snl!2sbe!4v1781304556487!5m2!1snl!2sbe"
+          width="100%"
+          height="360"
+          style={{ border: 0, filter: "grayscale(0.3) contrast(1.05)" }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="block"
+        />
       </div>
 
       <div className="border-t border-gold/15 py-6 text-center text-ivory/40 text-xs">
