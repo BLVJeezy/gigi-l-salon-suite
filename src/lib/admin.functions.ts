@@ -116,73 +116,87 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-export const sendTestEmail = createServerFn({ method: "POST" })
+// Sends the 4 booking template emails via the Lovable Notify queue infrastructure
+// (enqueued into pgmq, dispatched by /lovable/email/queue/process).
+export const sendTestEmails = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z.object({ token: z.string(), to: z.string().email() }).parse(input),
   )
   .handler(async ({ data }) => {
     await requireAdmin(data.token);
-    const { sendEmail } = await import("./email.server");
-    const res = await sendEmail({
-      to: data.to,
-      subject: "Test — Gigi L Coiffure email werkt ✓",
-      html: `<div style="font-family:Arial,sans-serif;padding:24px;background:#0F0F10;color:#F5F1E8">
-        <h2 style="color:#C9A961;font-family:Georgia,serif">Test geslaagd</h2>
-        <p>Als je dit ziet, verstuurt Resend correct vanuit je admin.</p>
-        <p style="color:#a8a39a;font-size:12px">Verzonden: ${new Date().toLocaleString("fr-BE")}</p>
-      </div>`,
-    });
-    if (!res.ok) throw new Error(res.error || "Verzenden mislukt");
-    return { ok: true };
-  });
+    const React = await import("react");
+    const { render } = await import("@react-email/components");
+    const { TEMPLATES } = await import("./email-templates/registry");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { signCancelToken } = await import("./email.server");
 
-export const sendExampleEmails = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    z.object({ token: z.string(), to: z.string().email() }).parse(input),
-  )
-  .handler(async ({ data }) => {
-    await requireAdmin(data.token);
-    const { sendEmail, signCancelToken } = await import("./email.server");
-    const { ownerNewBookingEmail, clientBookingReceivedEmail, clientBookingConfirmedEmail, clientBookingCancelledEmail } = await import("./email-templates.server");
+    const SENDER_DOMAIN = "notify.test-solyn.pw";
+    const FROM_DOMAIN = "notify.test-solyn.pw";
+    const SITE_NAME = "gigi-l";
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const dummy = {
-      id: crypto.randomUUID(),
+    const dummyId = crypto.randomUUID();
+    const origin = process.env.SITE_URL || "https://gigi-l.lovable.app";
+    const cancelToken = await signCancelToken(dummyId);
+    const baseBooking = {
+      id: dummyId,
       name: "Jason Balongo",
       phone: "+32 484 16 49 05",
       email: data.to,
       service: "Coupe Femme + Brushing",
       booking_date: tomorrow.toISOString().slice(0, 10),
-      booking_time: "14:00:00",
+      booking_time: "14:00",
       message: "Voorbeeld bericht — een korte opmerking.",
     };
 
-    const origin = process.env.SITE_URL || "https://gigi-l-salon-suite.lovable.app";
-    const cancelToken = await signCancelToken(dummy.id);
-    const cancelUrl = `${origin}/annuler/${cancelToken}`;
-
-    const templates = [
-      { name: "1. Nouvelle réservation (owner)", fn: () => ownerNewBookingEmail(dummy) },
-      { name: "2. Réservation reçue (client)", fn: () => clientBookingReceivedEmail(dummy) },
-      { name: "3. Réservation confirmée (client)", fn: () => clientBookingConfirmedEmail(dummy, cancelUrl) },
-      { name: "4. Réservation annulée (client)", fn: () => clientBookingCancelledEmail(dummy) },
+    const order = [
+      "owner-new-booking",
+      "client-booking-received",
+      "client-booking-confirmed",
+      "client-booking-cancelled",
     ];
 
-    const results: { name: string; ok: boolean; error?: string }[] = [];
-    for (const t of templates) {
-      try {
-        const mail = t.fn();
-        const res = await sendEmail({ to: data.to, subject: `[VOORBEELD] ${mail.subject}`, html: mail.html });
-        results.push({ name: t.name, ok: res.ok, error: res.error });
-      } catch (e) {
-        results.push({ name: t.name, ok: false, error: String(e) });
+    let sent = 0;
+    for (const name of order) {
+      const tpl = TEMPLATES[name];
+      if (!tpl) continue;
+      const props: Record<string, any> = { ...baseBooking };
+      if (name === "client-booking-confirmed") {
+        props.cancelUrl = `${origin}/annuler/${cancelToken}`;
       }
-    }
+      const element = React.createElement(tpl.component, props);
+      const html = await render(element);
+      const text = await render(element, { plainText: true });
+      const subject = typeof tpl.subject === "function" ? tpl.subject(props) : tpl.subject;
+      const messageId = crypto.randomUUID();
 
-    const failed = results.filter(r => !r.ok);
-    if (failed.length > 0) {
-      throw new Error(`Mislukt: ${failed.map(f => f.name).join(", ")}`);
+      await supabaseAdmin.from("email_send_log").insert({
+        message_id: messageId,
+        template_name: name,
+        recipient_email: data.to,
+        status: "pending",
+      });
+
+      const { error } = await supabaseAdmin.rpc("enqueue_email", {
+        queue_name: "transactional_emails",
+        payload: {
+          message_id: messageId,
+          to: data.to,
+          from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+          sender_domain: SENDER_DOMAIN,
+          subject: `[TEST] ${subject}`,
+          html,
+          text,
+          purpose: "transactional",
+          label: name,
+          idempotency_key: messageId,
+          unsubscribe_token: "test-no-unsubscribe",
+          queued_at: new Date().toISOString(),
+        },
+      });
+      if (error) throw new Error(`Enqueue ${name}: ${error.message}`);
+      sent++;
     }
-    return { ok: true, sent: results.length };
+    return { ok: true, sent };
   });

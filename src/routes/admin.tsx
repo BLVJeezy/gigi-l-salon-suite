@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  adminLogin, adminCheck, listBookings, updateBookingStatus, sendTestEmail, sendExampleEmails,
+  adminLogin, adminCheck, listBookings, updateBookingStatus, sendTestEmails,
 } from "@/lib/admin.functions";
 import {
   listServices, updateService, addService, deleteService, type ServiceItem,
@@ -127,40 +127,20 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
-  const testEmail = useServerFn(sendTestEmail);
-  const exampleEmails = useServerFn(sendExampleEmails);
-  const [testing, setTesting] = useState(false);
-  const [sendingExamples, setSendingExamples] = useState(false);
+  const testEmails = useServerFn(sendTestEmails);
+  const [sendingTests, setSendingTests] = useState(false);
 
-  async function doTestEmail() {
+  async function doTestEmails() {
     const token = getToken();
     if (!token) { onLogout(); return; }
-    const to = window.prompt("Verstuur testmail naar:", "jasonbalongo@gmail.com");
-    if (!to) return;
-    setTesting(true);
+    setSendingTests(true);
     try {
-      await testEmail({ data: { token, to } });
-      window.alert(`✓ Testmail verzonden naar ${to}`);
+      const res = await testEmails({ data: { token, to: "jasonbalongo@gmail.com" } });
+      window.alert(`✓ ${res.sent} testmails in queue gezet → jasonbalongo@gmail.com`);
     } catch (e) {
       window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
     } finally {
-      setTesting(false);
-    }
-  }
-
-  async function doExampleEmails() {
-    const token = getToken();
-    if (!token) { onLogout(); return; }
-    const to = window.prompt("Verstuur 4 voorbeeldmails naar:", "jasonbalongo@gmail.com");
-    if (!to) return;
-    setSendingExamples(true);
-    try {
-      const res = await exampleEmails({ data: { token, to } });
-      window.alert(`✓ ${res.sent} voorbeeldmails verzonden naar ${to}`);
-    } catch (e) {
-      window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
-    } finally {
-      setSendingExamples(false);
+      setSendingTests(false);
     }
   }
 
@@ -208,11 +188,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             )}
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button onClick={doExampleEmails} disabled={sendingExamples} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
-              {sendingExamples ? "…" : "4 voorbeeldmails"}
-            </button>
-            <button onClick={doTestEmail} disabled={testing} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
-              {testing ? "…" : "Test email"}
+            <button onClick={doTestEmails} disabled={sendingTests} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
+              {sendingTests ? "…" : "Test mails (Lovable Notify)"}
             </button>
             <button onClick={refresh} className="btn-gold-outline text-xs px-3 py-2">{t.admin.refresh}</button>
             <button onClick={doLogout} className="btn-gold-outline text-xs px-3 py-2">{t.admin.logout}</button>
