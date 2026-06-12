@@ -1,12 +1,19 @@
-// Booking form — 5-step wizard
-// Step 1: Kies categorie (Coiffure · Nails · Microshading)
-// Step 2: Kies dienst (gefilterd op categorie)
-// Step 3: Kies datum
-// Step 4: Kies uur
-// Step 5: Naam · Email · Telefoon
-import { useState, type FormEvent } from "react";
+// Booking form — dynamic multi-step wizard with a small back button.
+//
+// Flow:
+//   1. Category: Coiffure / Nails / Microshading
+//   2. Service (list depends on category)
+//   3. [Nails: Pose complète / Retouche only] Hands / Feet / Both
+//   4. [Nails: Pose complète / Retouche only] Photo? → optional upload
+//   5. Date
+//   6. Time
+//   7. Name · Email · Phone
+//
+// Extra answers (zone, photo URL) are folded into the booking `message` field.
+import { useRef, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { createBooking } from "@/lib/bookings.functions";
+import { uploadBookingPhoto } from "@/lib/upload.functions";
 import { useT } from "@/lib/i18n";
 
 const TIME_SLOTS = [
@@ -15,81 +22,29 @@ const TIME_SLOTS = [
   "16:00","16:30","17:00","17:30",
 ];
 
-// Welke service-index hoort bij welke hoofdcategorie.
-// Volgorde van services.items: 0 Tresses, 1 Coupes, 2 Locks, 3 Tissages,
-// 4 Chignons, 5 Colorations, 6 Microshading, 7 Ongles&maquillage, 8 Perruques
-const CATEGORY_SERVICE_INDICES: Record<string, number[]> = {
-  coiffure: [0, 1, 2, 3, 4, 5, 8],
-  nails: [7],
-  microshading: [6],
-};
-
 type CategoryKey = "coiffure" | "nails" | "microshading";
-type Step = 1 | 2 | 3 | 4 | 5;
-const TOTAL = 5;
 
-// ─── Step indicator ──────────────────────────────────────────────────────────
-function StepBar({ current }: { current: Step }) {
-  return (
-    <div className="flex items-center gap-1 mb-6">
-      {Array.from({ length: TOTAL }, (_, i) => i + 1).map((n) => (
-        <div key={n} className="flex items-center gap-1 flex-1">
-          <div
-            className={`w-6 h-6 flex-shrink-0 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
-              n < current
-                ? "bg-gold/60 text-ink"
-                : n === current
-                ? "bg-gold text-ink"
-                : "bg-white/10 text-ivory/30"
-            }`}
-          >
-            {n < current ? "✓" : n}
-          </div>
-          {n < TOTAL && (
-            <div className={`h-px flex-1 transition-colors ${n < current ? "bg-gold/40" : "bg-white/10"}`} />
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
+// Coiffure services come from the i18n services list (by index).
+// Volgorde: 0 Tresses, 1 Coupes, 2 Locks, 3 Tissages, 4 Chignons, 5 Colorations, 8 Perruques
+const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 8];
 
-// ─── Summary pill ─────────────────────────────────────────────────────────────
-function SummaryPill({
-  category, service, date, time, onEdit,
-}: {
-  category?: string; service?: string; date?: string; time?: string; onEdit: (s: Step) => void;
-}) {
-  const { t } = useT();
-  return (
-    <div className="bg-ink border border-gold/20 px-3 py-2.5 text-xs text-ivory/60 flex flex-wrap gap-x-3 gap-y-1 mb-4">
-      {category && (
-        <button type="button" onClick={() => onEdit(1)} className="text-ivory/50 hover:text-ivory hover:underline">{category}</button>
-      )}
-      {service && (
-        <button type="button" onClick={() => onEdit(2)} className="text-gold hover:underline">{service}</button>
-      )}
-      {date && (
-        <button type="button" onClick={() => onEdit(3)} className="hover:text-ivory hover:underline">{date}</button>
-      )}
-      {time && (
-        <button type="button" onClick={() => onEdit(4)} className="hover:text-ivory hover:underline">{time}</button>
-      )}
-      <span className="ml-auto text-ivory/30">{t.form.edit ?? "Wijzigen"}</span>
-    </div>
-  );
-}
+// Internal step ids — we navigate a dynamic list, not fixed numbers.
+type StepId = "category" | "service" | "zone" | "photo" | "date" | "time" | "details";
 
-// ─── Main component ───────────────────────────────────────────────────────────
 export function BookingForm() {
   const { t, lang } = useT();
   const submit = useServerFn(createBooking);
+  const upload = useServerFn(uploadBookingPhoto);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const [step, setStep] = useState<Step>(1);
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
 
   const [category, setCategory] = useState<CategoryKey | "">("");
   const [service, setService] = useState("");
+  const [zone, setZone] = useState("");          // "hands" | "feet" | "both"
+  const [photoUrl, setPhotoUrl] = useState("");   // uploaded URL
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
@@ -98,26 +53,88 @@ export function BookingForm() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  // Hoofdcategorieën — alleen titel, geen uitleg
   const categories: { key: CategoryKey; label: string }[] = [
     { key: "coiffure", label: t.form.categories.coiffure },
     { key: "nails", label: t.form.categories.nails },
     { key: "microshading", label: t.form.categories.microshading },
   ];
 
-  // Services gefilterd op gekozen categorie
-  const filteredServices = category
-    ? CATEGORY_SERVICE_INDICES[category].map((i) => t.services.items[i]?.t).filter(Boolean)
-    : [];
+  // Service options per category
+  const nailsServices = t.form.nails.services;     // array of strings
+  const microServices = t.form.microshading.services;
+  const coiffureServices = COIFFURE_SERVICE_INDICES.map((i) => t.services.items[i]?.t).filter(Boolean) as string[];
 
-  const categoryLabel = categories.find((c) => c.key === category)?.label;
+  const serviceOptions =
+    category === "nails" ? nailsServices :
+    category === "microshading" ? microServices :
+    category === "coiffure" ? coiffureServices : [];
+
+  // Does this nails service need the zone + photo questions?
+  // Pose complète (index 0) and Retouche (index 1) of nails.
+  const nailsNeedsZone =
+    category === "nails" && (service === nailsServices[0] || service === nailsServices[1]);
+
+  // Build the dynamic step order based on current answers.
+  const steps: StepId[] = ["category", "service"];
+  if (nailsNeedsZone) steps.push("zone", "photo");
+  steps.push("date", "time", "details");
+
+  const [stepIndex, setStepIndex] = useState(0);
+  const current = steps[Math.min(stepIndex, steps.length - 1)];
+  const total = steps.length;
+
+  function goNext() { setStepIndex((i) => Math.min(i + 1, steps.length - 1)); }
+  function goBack() { setStepIndex((i) => Math.max(i - 1, 0)); }
+
+  // When category/service changes the step list can shrink — clamp index.
+  function pickCategory(c: CategoryKey) {
+    setCategory(c); setService(""); setZone(""); setPhotoUrl("");
+    setStepIndex(1);
+  }
+  function pickService(s: string) {
+    setService(s); setZone(""); setPhotoUrl("");
+    setStepIndex(2);
+  }
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadErr("");
+    if (file.size > 6_000_000) { setUploadErr(t.form.photo.tooLarge); return; }
+    setUploading(true);
+    try {
+      const dataUrl: string = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(String(r.result));
+        r.onerror = () => rej(new Error("read failed"));
+        r.readAsDataURL(file);
+      });
+      const { url } = await upload({ data: { dataUrl, filename: file.name } });
+      setPhotoUrl(url);
+    } catch {
+      setUploadErr(t.form.photo.failed);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function buildMessage() {
+    const parts: string[] = [];
+    if (zone) parts.push(`${t.form.zone.label}: ${t.form.zone[zone as "hands" | "feet" | "both"]}`);
+    if (photoUrl) parts.push(`${t.form.photo.label}: ${photoUrl}`);
+    return parts.join(" · ");
+  }
 
   async function handleFinalSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
     try {
       await submit({
-        data: { name, phone, email, service, booking_date: date, booking_time: time, message: "", lang },
+        data: {
+          name, phone, email, service,
+          booking_date: date, booking_time: time,
+          message: buildMessage(), lang,
+        },
       });
       setStatus("ok");
     } catch (err) {
@@ -139,31 +156,49 @@ export function BookingForm() {
     );
   }
 
+  const categoryLabel = categories.find((c) => c.key === category)?.label;
+
   return (
     <div className="bg-carbon border border-gold/30 p-6 sm:p-7">
-      <h3 className="font-display text-ivory text-2xl mb-1">{t.form.title}</h3>
-      <StepBar current={step} />
+      {/* Header row: title + back button */}
+      <div className="flex items-center gap-3 mb-4">
+        {stepIndex > 0 && (
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label={t.form.back}
+            className="w-8 h-8 flex-shrink-0 flex items-center justify-center border border-gold/30 text-ivory hover:border-gold hover:bg-gold/10 transition-colors"
+          >
+            ←
+          </button>
+        )}
+        <h3 className="font-display text-ivory text-2xl">{t.form.title}</h3>
+      </div>
 
-      {/* ── STAP 1 — Kies categorie ── */}
-      {step === 1 && (
+      <ProgressBar index={stepIndex} total={total} />
+
+      {/* Summary pill (shows from step 2 on) */}
+      {stepIndex > 0 && (
+        <div className="bg-ink border border-gold/20 px-3 py-2.5 text-xs text-ivory/60 flex flex-wrap gap-x-3 gap-y-1 mb-4">
+          {categoryLabel && <span className="text-ivory/50">{categoryLabel}</span>}
+          {service && <span className="text-gold">{service}</span>}
+          {zone && <span>{t.form.zone[zone as "hands" | "feet" | "both"]}</span>}
+          {photoUrl && <span className="text-green-400">📷</span>}
+          {date && <span>{date}</span>}
+          {time && <span>{time}</span>}
+        </div>
+      )}
+
+      {/* ── CATEGORY ── */}
+      {current === "category" && (
         <div className="space-y-4">
           <Label>{t.form.categoryLabel} *</Label>
           <div className="flex flex-col gap-3">
             {categories.map((c) => (
-              <button
-                key={c.key}
-                type="button"
-                onClick={() => {
-                  setCategory(c.key);
-                  setService(""); // reset eventuele eerdere dienstkeuze
-                  setStep(2);
-                }}
+              <button key={c.key} type="button" onClick={() => pickCategory(c.key)}
                 className={`w-full text-center px-4 py-5 text-base font-display tracking-wide border transition-colors ${
-                  category === c.key
-                    ? "bg-gold text-ink border-gold"
-                    : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
-                }`}
-              >
+                  category === c.key ? "bg-gold text-ink border-gold" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
+                }`}>
                 {c.label}
               </button>
             ))}
@@ -171,109 +206,134 @@ export function BookingForm() {
         </div>
       )}
 
-      {/* ── STAP 2 — Kies dienst (gefilterd) ── */}
-      {step === 2 && (
+      {/* ── SERVICE ── */}
+      {current === "service" && (
         <div className="space-y-4">
-          <SummaryPill category={categoryLabel} onEdit={setStep} />
           <Label>{t.form.service} *</Label>
           <div className="flex flex-col gap-2">
-            {filteredServices.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => { setService(s as string); setStep(3); }}
-                className={`w-full text-left px-4 py-3 text-sm border transition-colors ${
-                  service === s
-                    ? "bg-gold text-ink border-gold font-medium"
-                    : "bg-ink border-gold/20 text-ivory/80 hover:border-gold/60 hover:text-ivory"
-                }`}
-              >
-                {s}
+            {serviceOptions.map((s, i) => {
+              // Nails "Réparation 1 doigt" (index 3) gets a hint line
+              const showRepairHint = category === "nails" && i === 3;
+              return (
+                <button key={s} type="button" onClick={() => pickService(s)}
+                  className={`w-full text-left px-4 py-3 text-sm border transition-colors ${
+                    service === s ? "bg-gold text-ink border-gold font-medium" : "bg-ink border-gold/20 text-ivory/80 hover:border-gold/60 hover:text-ivory"
+                  }`}>
+                  {s}
+                  {showRepairHint && (
+                    <span className={`block text-xs mt-0.5 ${service === s ? "text-ink/70" : "text-ivory/40"}`}>
+                      {t.form.nails.repairHint}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── ZONE (nails only) ── */}
+      {current === "zone" && (
+        <div className="space-y-4">
+          <Label>{t.form.zone.question} *</Label>
+          <div className="flex flex-col gap-3">
+            {(["hands", "feet", "both"] as const).map((z) => (
+              <button key={z} type="button"
+                onClick={() => { setZone(z); goNext(); }}
+                className={`w-full text-center px-4 py-4 text-base border transition-colors ${
+                  zone === z ? "bg-gold text-ink border-gold font-medium" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
+                }`}>
+                {t.form.zone[z]}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* ── STAP 3 — Kies datum ── */}
-      {step === 3 && (
+      {/* ── PHOTO (nails only) ── */}
+      {current === "photo" && (
         <div className="space-y-4">
-          <SummaryPill category={categoryLabel} service={service} onEdit={setStep} />
+          <Label>{t.form.photo.question}</Label>
+
+          {!photoUrl ? (
+            <>
+              <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
+              <button type="button" disabled={uploading} onClick={() => fileRef.current?.click()}
+                className="w-full px-4 py-6 border border-dashed border-gold/40 text-ivory/70 hover:border-gold hover:text-ivory transition-colors text-sm disabled:opacity-50">
+                {uploading ? t.form.photo.uploading : `📷 ${t.form.photo.upload}`}
+              </button>
+              {uploadErr && <p className="text-red-400 text-xs">{uploadErr}</p>}
+            </>
+          ) : (
+            <div className="space-y-2">
+              <div className="border border-gold/30 overflow-hidden">
+                <img src={photoUrl} alt="upload" className="w-full max-h-48 object-cover" />
+              </div>
+              <button type="button" onClick={() => { setPhotoUrl(""); }}
+                className="text-ivory/50 hover:text-gold text-xs underline">
+                {t.form.photo.remove}
+              </button>
+            </div>
+          )}
+
+          <div className="flex gap-2 pt-1">
+            <button type="button" onClick={goNext}
+              className="btn-gold btn-gold-hover flex-1">
+              {photoUrl ? (t.form.next ?? "Volgende →") : t.form.photo.skip}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── DATE ── */}
+      {current === "date" && (
+        <div className="space-y-4">
           <div>
             <Label>{t.form.date} *</Label>
-            <input
-              type="date"
-              required
-              min={today}
-              value={date}
-              autoFocus
-              onChange={(e) => setDate(e.target.value)}
-              className={inputCls}
-            />
+            <input type="date" required min={today} value={date} autoFocus
+              onChange={(e) => setDate(e.target.value)} className={inputCls} />
           </div>
-          <button
-            type="button"
-            disabled={!date}
-            onClick={() => setStep(4)}
-            className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed"
-          >
+          <button type="button" disabled={!date} onClick={goNext}
+            className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed">
             {t.form.next ?? "Volgende →"}
           </button>
         </div>
       )}
 
-      {/* ── STAP 4 — Kies uur ── */}
-      {step === 4 && (
+      {/* ── TIME ── */}
+      {current === "time" && (
         <div className="space-y-4">
-          <SummaryPill category={categoryLabel} service={service} date={date} onEdit={setStep} />
-          <div>
-            <Label>{t.form.time} *</Label>
-            <div className="grid grid-cols-4 gap-1.5">
-              {TIME_SLOTS.map((slot) => (
-                <button
-                  key={slot}
-                  type="button"
-                  onClick={() => { setTime(slot); setStep(5); }}
-                  className={`py-2.5 text-xs tracking-wider border transition-colors ${
-                    time === slot
-                      ? "bg-gold text-ink border-gold font-medium"
-                      : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
-                  }`}
-                >
-                  {slot}
-                </button>
-              ))}
-            </div>
+          <Label>{t.form.time} *</Label>
+          <div className="grid grid-cols-4 gap-1.5">
+            {TIME_SLOTS.map((slot) => (
+              <button key={slot} type="button" onClick={() => { setTime(slot); goNext(); }}
+                className={`py-2.5 text-xs tracking-wider border transition-colors ${
+                  time === slot ? "bg-gold text-ink border-gold font-medium" : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
+                }`}>
+                {slot}
+              </button>
+            ))}
           </div>
         </div>
       )}
 
-      {/* ── STAP 5 — Naam · Email · Telefoon ── */}
-      {step === 5 && (
+      {/* ── DETAILS ── */}
+      {current === "details" && (
         <form onSubmit={handleFinalSubmit} className="space-y-4">
-          <SummaryPill category={categoryLabel} service={service} date={date} time={time} onEdit={setStep} />
-
           <Field label={t.form.name} value={name} onChange={setName} required autoFocus />
           <Field label={t.form.email} value={email} onChange={setEmail} type="email" />
           <Field label={t.form.phone} value={phone} onChange={setPhone} type="tel" required />
 
-          <button
-            type="submit"
-            disabled={status === "sending" || !name || !phone}
-            className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed"
-          >
+          <button type="submit" disabled={status === "sending" || !name || !phone}
+            className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed">
             {status === "sending" ? t.form.sending : t.form.submit}
           </button>
 
           {status === "err" && <p className="text-red-400 text-xs">{t.form.error}</p>}
 
           <p className="text-center text-ivory/50 text-xs pt-1">
-            <a
-              href="https://gigilcoiffure.be/rdv/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gold underline underline-offset-2"
-            >
+            <a href="https://gigilcoiffure.be/rdv/" target="_blank" rel="noopener noreferrer"
+              className="hover:text-gold underline underline-offset-2">
               {t.form.onlineLink}
             </a>
           </p>
@@ -283,40 +343,39 @@ export function BookingForm() {
   );
 }
 
+// ─── Progress bar ──────────────────────────────────────────────────────────────
+function ProgressBar({ index, total }: { index: number; total: number }) {
+  return (
+    <div className="flex items-center gap-1 mb-5">
+      {Array.from({ length: total }, (_, i) => (
+        <div key={i}
+          className={`h-1 flex-1 rounded-full transition-colors ${
+            i < index ? "bg-gold/60" : i === index ? "bg-gold" : "bg-white/10"
+          }`} />
+      ))}
+    </div>
+  );
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const inputCls =
   "w-full bg-ink border border-gold/20 text-ivory px-3 py-2.5 text-sm focus:outline-none focus:border-gold transition-colors";
 
 function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="block text-ivory/70 text-xs tracking-wider uppercase mb-1.5">
-      {children}
-    </label>
-  );
+  return <label className="block text-ivory/70 text-xs tracking-wider uppercase mb-1.5">{children}</label>;
 }
 
 function Field({
   label, value, onChange, type = "text", required = false, autoFocus = false,
 }: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  type?: string;
-  required?: boolean;
-  autoFocus?: boolean;
+  label: string; value: string; onChange: (v: string) => void;
+  type?: string; required?: boolean; autoFocus?: boolean;
 }) {
   return (
     <div>
       <Label>{label}{required && " *"}</Label>
-      <input
-        type={type}
-        required={required}
-        value={value}
-        autoFocus={autoFocus}
-        aria-label={label}
-        onChange={(e) => onChange(e.target.value)}
-        className={inputCls}
-      />
+      <input type={type} required={required} value={value} autoFocus={autoFocus} aria-label={label}
+        onChange={(e) => onChange(e.target.value)} className={inputCls} />
     </div>
   );
 }
