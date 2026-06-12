@@ -143,6 +143,42 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          duration_min: number
+          id: string
+          name: string
+          price_cents: number | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          duration_min?: number
+          id?: string
+          name: string
+          price_cents?: number | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          duration_min?: number
+          id?: string
+          name?: string
+          price_cents?: number | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
