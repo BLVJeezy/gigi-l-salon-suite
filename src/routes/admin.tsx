@@ -5,6 +5,9 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, sendTestEmail,
 } from "@/lib/admin.functions";
+import {
+  listServices, updateService, addService, deleteService, type ServiceItem,
+} from "@/lib/services.functions";
 import { LangProvider, useT } from "@/lib/i18n";
 
 const TOKEN_KEY = "gigil_admin_token";
@@ -39,6 +42,37 @@ type Booking = {
   lang: string;
   status: "new" | "confirmed" | "cancelled";
 };
+
+// The booking `message` field may contain "Photo: <url>" appended by the form.
+// Split it into readable text + an optional photo URL for a clickable thumbnail.
+function parseMessage(message: string | null): { text: string; photoUrl: string | null } {
+  if (!message) return { text: "", photoUrl: null };
+  const parts = message.split(" · ");
+  let photoUrl: string | null = null;
+  const textParts: string[] = [];
+  for (const p of parts) {
+    const m = p.match(/^(Photo|Foto)\s*:\s*(https?:\/\/\S+)$/i);
+    if (m) photoUrl = m[2];
+    else textParts.push(p);
+  }
+  return { text: textParts.join(" · "), photoUrl };
+}
+
+function BookingMessage({ message, dark = false }: { message: string | null; dark?: boolean }) {
+  const { text, photoUrl } = parseMessage(message);
+  if (!text && !photoUrl) return <span className={dark ? "text-ink" : "text-smoke"}>—</span>;
+  return (
+    <div className="space-y-1.5">
+      {text && <div className={`text-xs whitespace-pre-wrap ${dark ? "text-ink" : "text-smoke"}`}>{text}</div>}
+      {photoUrl && (
+        <a href={photoUrl} target="_blank" rel="noopener noreferrer"
+          className="inline-block border border-gold/40 hover:border-gold transition-colors">
+          <img src={photoUrl} alt="Referentiefoto" className="h-20 w-20 object-cover" />
+        </a>
+      )}
+    </div>
+  );
+}
 
 function AdminPage() {
   const check = useServerFn(adminCheck);
@@ -113,7 +147,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   }
 
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [tab, setTab] = useState<"leads" | "day" | "week">("leads");
+  const [tab, setTab] = useState<"leads" | "day" | "week" | "diensten">("leads");
   const [loading, setLoading] = useState(true);
 
   const refresh = async () => {
@@ -163,12 +197,12 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <button onClick={doLogout} className="btn-gold-outline text-xs px-3 py-2">{t.admin.logout}</button>
           </div>
         </div>
-        <nav className="mx-auto max-w-7xl px-5 sm:px-8 flex gap-1">
-          {(["leads", "day", "week"] as const).map(k => (
+        <nav className="mx-auto max-w-7xl px-5 sm:px-8 flex gap-1 overflow-x-auto scrollbar-none">
+          {(["leads", "day", "week", "diensten"] as const).map(k => (
             <button
               key={k}
               onClick={() => setTab(k)}
-              className={`px-4 py-3 text-sm uppercase tracking-wider border-b-2 transition-colors ${
+              className={`flex-shrink-0 px-4 py-3 text-sm uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
                 tab === k ? "border-gold text-gold" : "border-transparent text-ivory/60 hover:text-ivory"
               }`}
             >
@@ -183,6 +217,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} />}
         {!loading && tab === "day" && <DayView bookings={bookings} />}
         {!loading && tab === "week" && <WeekView bookings={bookings} />}
+        {tab === "diensten" && <ServicesView onLogout={onLogout} />}
       </main>
     </div>
   );
@@ -235,7 +270,7 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
               {b.message && (
                 <div className="col-span-2">
                   <div className="text-[10px] uppercase tracking-wider text-smoke">Message</div>
-                  <div className="text-xs text-smoke whitespace-pre-wrap">{b.message}</div>
+                  <BookingMessage message={b.message} />
                 </div>
               )}
             </div>
@@ -273,7 +308,7 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                   <a href={`tel:${b.phone}`} className="text-ink hover:text-gold block">{b.phone}</a>
                   {b.email && <a href={`mailto:${b.email}`} className="text-xs text-smoke hover:text-gold">{b.email}</a>}
                 </Td>
-                <Td><div className="max-w-xs text-xs text-smoke whitespace-pre-wrap">{b.message ?? "—"}</div></Td>
+                <Td><div className="max-w-xs"><BookingMessage message={b.message} /></div></Td>
                 <Td><StatusBadge status={b.status} /></Td>
                 <Td>
                   {b.status !== "confirmed" && (
@@ -541,7 +576,7 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
               {b.message && (
                 <div className="mt-3 pt-3 border-t border-border">
                   <div className="text-[10px] uppercase tracking-wider text-smoke mb-1">Message</div>
-                  <div className="text-sm text-ink whitespace-pre-wrap">{b.message}</div>
+                  <BookingMessage message={b.message} dark />
                 </div>
               )}
               <div className="mt-2 text-[10px] text-smoke uppercase tracking-wider">
@@ -556,6 +591,224 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
             Fermer
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SERVICES / DIENSTEN VIEW ──────────────────────────────────────────────
+// Owner edits duration (min) + price (€) per service. Mobile-friendly cards.
+const SVC_CAT_LABELS: Record<string, string> = {
+  coiffure: "Coiffure",
+  nails: "Nails",
+  microshading: "Microshading",
+};
+
+function formatPrice(cents: number | null): string {
+  if (cents === null || cents === undefined) return "";
+  return (cents / 100).toFixed(2).replace(/\.00$/, "");
+}
+function formatDuration(min: number): string {
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m === 0 ? `${h} u` : `${h} u ${m} min`;
+}
+
+function ServicesView({ onLogout }: { onLogout: () => void }) {
+  const list = useServerFn(listServices);
+  const update = useServerFn(updateService);
+  const add = useServerFn(addService);
+  const del = useServerFn(deleteService);
+
+  const [items, setItems] = useState<ServiceItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [savingId, setSavingId] = useState<string | null>(null);
+
+  const load = async () => {
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    setLoading(true);
+    try { setItems((await list({ data: { token } })).services); }
+    catch { onLogout(); }
+    finally { setLoading(false); }
+  };
+  useEffect(() => { void load(); /* eslint-disable-next-line */ }, []);
+
+  async function saveField(id: string, patch: { duration_min?: number; price_cents?: number | null }) {
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    setSavingId(id);
+    try {
+      await update({ data: { token, id, ...patch } });
+      setItems(prev => prev.map(s => s.id === id ? { ...s, ...patch } : s));
+    } finally { setSavingId(null); }
+  }
+
+  async function removeItem(id: string) {
+    if (!window.confirm("Dienst verwijderen?")) return;
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    await del({ data: { token, id } });
+    setItems(prev => prev.filter(s => s.id !== id));
+  }
+
+  if (loading) return <p className="text-smoke">…</p>;
+
+  const grouped: Record<string, ServiceItem[]> = { coiffure: [], nails: [], microshading: [] };
+  for (const s of items) (grouped[s.category] ??= []).push(s);
+
+  return (
+    <div className="space-y-8 max-w-2xl">
+      <p className="text-smoke text-sm">
+        Stel per dienst de duur (in minuten) en de prijs (in euro) in. Laat de prijs leeg voor "op aanvraag".
+      </p>
+
+      {(["coiffure", "nails", "microshading"] as const).map(cat => (
+        <section key={cat}>
+          <h2 className="font-display text-xl text-ink mb-3">{SVC_CAT_LABELS[cat]}</h2>
+          <div className="space-y-2">
+            {grouped[cat].map(s => (
+              <ServiceRow
+                key={s.id}
+                item={s}
+                saving={savingId === s.id}
+                onSave={saveField}
+                onRemove={removeItem}
+              />
+            ))}
+          </div>
+          <AddServiceForm category={cat} onAdded={load} onLogout={onLogout} add={add} />
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function ServiceRow({
+  item, saving, onSave, onRemove,
+}: {
+  item: ServiceItem;
+  saving: boolean;
+  onSave: (id: string, patch: { duration_min?: number; price_cents?: number | null }) => void;
+  onRemove: (id: string) => void;
+}) {
+  const [dur, setDur] = useState(String(item.duration_min));
+  const [price, setPrice] = useState(formatPrice(item.price_cents));
+
+  const durChanged = Number(dur) !== item.duration_min;
+  const priceChanged = (price === "" ? null : Math.round(Number(price) * 100)) !== item.price_cents;
+  const dirty = durChanged || priceChanged;
+
+  function save() {
+    const patch: { duration_min?: number; price_cents?: number | null } = {};
+    if (durChanged && dur !== "" && !isNaN(Number(dur))) patch.duration_min = Number(dur);
+    if (priceChanged) patch.price_cents = price === "" ? null : Math.round(Number(price) * 100);
+    if (Object.keys(patch).length) onSave(item.id, patch);
+  }
+
+  return (
+    <div className="bg-white border border-border rounded-lg p-3.5">
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <p className="font-medium text-ink text-sm">{item.name}</p>
+        <button onClick={() => onRemove(item.id)} aria-label="Verwijderen"
+          className="text-smoke hover:text-red-600 text-lg leading-none flex-shrink-0">×</button>
+      </div>
+      <div className="flex items-end gap-3">
+        {/* Duration */}
+        <label className="flex-1">
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Duur (min)</span>
+          <input type="number" inputMode="numeric" min={0} step={5} value={dur}
+            onChange={e => setDur(e.target.value)}
+            className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
+        </label>
+        {/* Price */}
+        <label className="flex-1">
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Prijs (€)</span>
+          <input type="number" inputMode="decimal" min={0} step="0.5" value={price} placeholder="op aanvraag"
+            onChange={e => setPrice(e.target.value)}
+            className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
+        </label>
+        {/* Save */}
+        <button onClick={save} disabled={!dirty || saving}
+          className={`px-3 py-2 text-xs uppercase tracking-wider rounded transition-colors flex-shrink-0 ${
+            dirty ? "bg-gold text-ink hover:bg-gold/90" : "bg-sand text-smoke cursor-default"
+          } disabled:opacity-50`}>
+          {saving ? "…" : dirty ? "Opslaan" : "✓"}
+        </button>
+      </div>
+      <p className="text-[11px] text-smoke mt-2">
+        {formatDuration(item.duration_min)}
+        {item.price_cents !== null ? ` · € ${formatPrice(item.price_cents)}` : " · op aanvraag"}
+      </p>
+    </div>
+  );
+}
+
+function AddServiceForm({
+  category, onAdded, onLogout, add,
+}: {
+  category: "coiffure" | "nails" | "microshading";
+  onAdded: () => void;
+  onLogout: () => void;
+  add: ReturnType<typeof useServerFn<typeof addService>>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [dur, setDur] = useState("60");
+  const [price, setPrice] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit() {
+    if (!name.trim()) return;
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    setBusy(true);
+    try {
+      await add({ data: {
+        token, category, name: name.trim(),
+        duration_min: Number(dur) || 60,
+        price_cents: price === "" ? null : Math.round(Number(price) * 100),
+      }});
+      setName(""); setDur("60"); setPrice(""); setOpen(false);
+      onAdded();
+    } finally { setBusy(false); }
+  }
+
+  if (!open) {
+    return (
+      <button onClick={() => setOpen(true)}
+        className="mt-2 text-xs text-gold hover:underline tracking-wider uppercase">
+        + Dienst toevoegen
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-2 bg-sand/50 border border-border rounded-lg p-3.5 space-y-3">
+      <input value={name} onChange={e => setName(e.target.value)} placeholder="Naam van de dienst" autoFocus
+        className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
+      <div className="flex gap-3">
+        <label className="flex-1">
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Duur (min)</span>
+          <input type="number" inputMode="numeric" min={0} step={5} value={dur} onChange={e => setDur(e.target.value)}
+            className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
+        </label>
+        <label className="flex-1">
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Prijs (€)</span>
+          <input type="number" inputMode="decimal" min={0} step="0.5" value={price} placeholder="op aanvraag" onChange={e => setPrice(e.target.value)}
+            className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
+        </label>
+      </div>
+      <div className="flex gap-2">
+        <button onClick={submit} disabled={busy || !name.trim()}
+          className="btn-gold btn-gold-hover flex-1 py-2 text-sm disabled:opacity-50">
+          {busy ? "…" : "Toevoegen"}
+        </button>
+        <button onClick={() => setOpen(false)}
+          className="px-4 py-2 text-sm text-smoke border border-border rounded hover:border-gold">
+          Annuleren
+        </button>
       </div>
     </div>
   );
