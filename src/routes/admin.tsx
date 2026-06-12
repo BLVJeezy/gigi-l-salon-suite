@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  adminLogin, adminCheck, listBookings, updateBookingStatus, sendTestEmail,
+  adminLogin, adminCheck, listBookings, updateBookingStatus, sendTestEmail, sendExampleEmails,
 } from "@/lib/admin.functions";
 import {
   listServices, updateService, addService, deleteService, type ServiceItem,
