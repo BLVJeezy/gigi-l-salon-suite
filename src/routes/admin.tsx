@@ -128,7 +128,9 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
   const testEmail = useServerFn(sendTestEmail);
+  const exampleEmails = useServerFn(sendExampleEmails);
   const [testing, setTesting] = useState(false);
+  const [sendingExamples, setSendingExamples] = useState(false);
 
   async function doTestEmail() {
     const token = getToken();
@@ -143,6 +145,22 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
       window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
     } finally {
       setTesting(false);
+    }
+  }
+
+  async function doExampleEmails() {
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    const to = window.prompt("Verstuur 4 voorbeeldmails naar:", "jasonbalongo@gmail.com");
+    if (!to) return;
+    setSendingExamples(true);
+    try {
+      const res = await exampleEmails({ data: { token, to } });
+      window.alert(`✓ ${res.sent} voorbeeldmails verzonden naar ${to}`);
+    } catch (e) {
+      window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
+    } finally {
+      setSendingExamples(false);
     }
   }
 
@@ -190,6 +208,9 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             )}
           </div>
           <div className="flex gap-2 flex-wrap">
+            <button onClick={doExampleEmails} disabled={sendingExamples} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
+              {sendingExamples ? "…" : "4 voorbeeldmails"}
+            </button>
             <button onClick={doTestEmail} disabled={testing} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
               {testing ? "…" : "Test email"}
             </button>
