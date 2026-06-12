@@ -188,11 +188,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             )}
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button onClick={doExampleEmails} disabled={sendingExamples} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
-              {sendingExamples ? "…" : "4 voorbeeldmails"}
-            </button>
-            <button onClick={doTestEmail} disabled={testing} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
-              {testing ? "…" : "Test email"}
+            <button onClick={doTestEmails} disabled={sendingTests} className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
+              {sendingTests ? "…" : "Test mails (Lovable Notify)"}
             </button>
             <button onClick={refresh} className="btn-gold-outline text-xs px-3 py-2">{t.admin.refresh}</button>
             <button onClick={doLogout} className="btn-gold-outline text-xs px-3 py-2">{t.admin.logout}</button>
