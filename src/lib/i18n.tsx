@@ -19,6 +19,13 @@ export const translations = {
       subtitle:
         "Coiffure africaine et européenne pour tous les types de cheveux. Spécialistes des cheveux bouclés, frisés et crépus au Koninksemsteenweg 144, Tongres.",
       ctaBook: "Prendre rendez-vous",
+      badges: {
+        reviews: "Avis Google",
+        clients: "Clientes satisfaites",
+        clientsCount: "500+",
+        certifiedTitle: "Salon certifié",
+        certifiedSub: "Coiffure & beauté",
+      },
     },
     form: {
       title: "Demande de rendez-vous",
@@ -107,7 +114,7 @@ export const translations = {
       ctaSub: "Réservez votre rendez-vous et vivez l'expérience GiGi L.",
       ctaBtn: "Prendre rendez-vous",
       hoursTitle: "Horaires d'ouverture",
-      hoursLines: ["Jeu – Sam : 09h00 – 18h00", "Dim – Mer : sur rendez-vous"],
+      hoursLines: ["Lun : 09h00 – 18h00", "Jeu – Sam : 09h00 – 18h00", "Mar – Mer, Dim : sur rendez-vous"],
       linksTitle: "Liens",
       rights: "Tous droits réservés.",
     },
@@ -168,6 +175,13 @@ export const translations = {
       subtitle:
         "Afrikaans en Europees kappen voor alle haartypes. Specialisten in krullend, kroes- en afrohaar in de Koninksemsteenweg 144, Tongeren.",
       ctaBook: "Maak een afspraak",
+      badges: {
+        reviews: "Google-reviews",
+        clients: "Tevreden klanten",
+        clientsCount: "500+",
+        certifiedTitle: "Gecertificeerd salon",
+        certifiedSub: "Coiffure & beauty",
+      },
     },
     form: {
       title: "Afspraakaanvraag",
@@ -256,7 +270,7 @@ export const translations = {
       ctaSub: "Boek uw afspraak en beleef de GiGi L-ervaring.",
       ctaBtn: "Maak een afspraak",
       hoursTitle: "Openingsuren",
-      hoursLines: ["Don – Zat: 09u00 – 18u00", "Zon – Woe: op afspraak"],
+      hoursLines: ["Maa: 09u00 – 18u00", "Don – Zat: 09u00 – 18u00", "Din – Woe, Zon: op afspraak"],
       linksTitle: "Links",
       rights: "Alle rechten voorbehouden.",
     },
@@ -317,6 +331,13 @@ export const translations = {
       subtitle:
         "African and European hair styling for every hair type. Specialists in curly, coily and afro hair at Koninksemsteenweg 144, Tongeren.",
       ctaBook: "Book an appointment",
+      badges: {
+        reviews: "Google reviews",
+        clients: "Happy clients",
+        clientsCount: "500+",
+        certifiedTitle: "Certified salon",
+        certifiedSub: "Hair & beauty",
+      },
     },
     form: {
       title: "Appointment request",
@@ -405,7 +426,7 @@ export const translations = {
       ctaSub: "Book your appointment and live the GiGi L experience.",
       ctaBtn: "Book an appointment",
       hoursTitle: "Opening hours",
-      hoursLines: ["Thu – Sat: 09:00 – 18:00", "Sun – Wed: by appointment"],
+      hoursLines: ["Mon: 09:00 – 18:00", "Thu – Sat: 09:00 – 18:00", "Tue – Wed, Sun: by appointment"],
       linksTitle: "Links",
       rights: "All rights reserved.",
     },

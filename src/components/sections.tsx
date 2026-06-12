@@ -27,6 +27,9 @@ export function Hero() {
               +32 484 16 49 05
             </a>
           </div>
+
+          {/* Trust badges */}
+          <TrustBadges />
         </div>
 
         {/* Mobile: form + phone inline under hero text */}
@@ -43,6 +46,50 @@ export function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+// Subtle trust signals — Google rating, client count, certified salon.
+// Kept understated to match the luxury feel: thin gold dividers, small caps.
+function TrustBadges() {
+  const { t } = useT();
+  return (
+    <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-x-8">
+      {/* Google rating */}
+      <div className="flex items-center gap-2.5">
+        <div className="flex text-gold text-sm" aria-hidden>
+          {"★★★★★".split("").map((s, i) => (
+            <span key={i} className={i === 4 ? "opacity-50" : ""}>{s}</span>
+          ))}
+        </div>
+        <div className="leading-tight">
+          <div className="text-ivory text-sm font-medium">4,6/5</div>
+          <div className="text-ivory/45 text-[11px] tracking-wide">{t.hero.badges.reviews}</div>
+        </div>
+      </div>
+
+      <span className="hidden sm:block w-px h-8 bg-gold/20" aria-hidden />
+
+      {/* Clients */}
+      <div className="flex items-center gap-2.5">
+        <span className="text-gold text-xl leading-none font-display" aria-hidden>✓</span>
+        <div className="leading-tight">
+          <div className="text-ivory text-sm font-medium">{t.hero.badges.clientsCount}</div>
+          <div className="text-ivory/45 text-[11px] tracking-wide">{t.hero.badges.clients}</div>
+        </div>
+      </div>
+
+      <span className="hidden sm:block w-px h-8 bg-gold/20" aria-hidden />
+
+      {/* Certified */}
+      <div className="flex items-center gap-2.5">
+        <span className="text-gold text-lg leading-none" aria-hidden>♛</span>
+        <div className="leading-tight">
+          <div className="text-ivory text-sm font-medium">{t.hero.badges.certifiedTitle}</div>
+          <div className="text-ivory/45 text-[11px] tracking-wide">{t.hero.badges.certifiedSub}</div>
+        </div>
+      </div>
+    </div>
   );
 }
 
