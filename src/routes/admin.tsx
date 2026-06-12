@@ -127,40 +127,20 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
-  const testEmail = useServerFn(sendTestEmail);
-  const exampleEmails = useServerFn(sendExampleEmails);
-  const [testing, setTesting] = useState(false);
-  const [sendingExamples, setSendingExamples] = useState(false);
+  const testEmails = useServerFn(sendTestEmails);
+  const [sendingTests, setSendingTests] = useState(false);
 
-  async function doTestEmail() {
+  async function doTestEmails() {
     const token = getToken();
     if (!token) { onLogout(); return; }
-    const to = window.prompt("Verstuur testmail naar:", "jasonbalongo@gmail.com");
-    if (!to) return;
-    setTesting(true);
+    setSendingTests(true);
     try {
-      await testEmail({ data: { token, to } });
-      window.alert(`✓ Testmail verzonden naar ${to}`);
+      const res = await testEmails({ data: { token, to: "jasonbalongo@gmail.com" } });
+      window.alert(`✓ ${res.sent} testmails in queue gezet → jasonbalongo@gmail.com`);
     } catch (e) {
       window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
     } finally {
-      setTesting(false);
-    }
-  }
-
-  async function doExampleEmails() {
-    const token = getToken();
-    if (!token) { onLogout(); return; }
-    const to = window.prompt("Verstuur 4 voorbeeldmails naar:", "jasonbalongo@gmail.com");
-    if (!to) return;
-    setSendingExamples(true);
-    try {
-      const res = await exampleEmails({ data: { token, to } });
-      window.alert(`✓ ${res.sent} voorbeeldmails verzonden naar ${to}`);
-    } catch (e) {
-      window.alert("✗ Mislukt: " + (e instanceof Error ? e.message : "onbekende fout"));
-    } finally {
-      setSendingExamples(false);
+      setSendingTests(false);
     }
   }
 
