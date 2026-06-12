@@ -23,7 +23,7 @@ export const Route = createFileRoute("/admin")({
     ],
   }),
   component: () => (
-    <LangProvider>
+    <LangProvider forceLang="fr">
       <AdminPage />
     </LangProvider>
   ),
@@ -59,6 +59,7 @@ function parseMessage(message: string | null): { text: string; photoUrl: string 
 }
 
 function BookingMessage({ message, dark = false }: { message: string | null; dark?: boolean }) {
+  const { t } = useT();
   const { text, photoUrl } = parseMessage(message);
   if (!text && !photoUrl) return <span className={dark ? "text-ink" : "text-smoke"}>—</span>;
   return (
@@ -67,7 +68,7 @@ function BookingMessage({ message, dark = false }: { message: string | null; dar
       {photoUrl && (
         <a href={photoUrl} target="_blank" rel="noopener noreferrer"
           className="inline-block border border-gold/40 hover:border-gold transition-colors">
-          <img src={photoUrl} alt="Referentiefoto" className="h-20 w-20 object-cover" />
+          <img src={photoUrl} alt={t.admin.photoAlt} className="h-20 w-20 object-cover" />
         </a>
       )}
     </div>
@@ -224,7 +225,7 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
               <div className="min-w-0">
                 <div className="font-medium text-ink truncate">{b.name}</div>
-                <div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString()}</div>
+                <div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString("fr-BE")}</div>
               </div>
               <StatusBadge status={b.status} />
             </div>
@@ -271,13 +272,13 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
         <table className="w-full text-sm">
           <thead className="bg-sand text-ink text-xs uppercase tracking-wider">
             <tr>
-              <Th>Client</Th><Th>Service</Th><Th>Date / Heure</Th><Th>Contact</Th><Th>Message</Th><Th>Status</Th><Th></Th>
+              <Th>{t.admin.cols.client}</Th><Th>{t.admin.cols.service}</Th><Th>{t.admin.cols.dateTime}</Th><Th>{t.admin.cols.contact}</Th><Th>{t.admin.cols.message}</Th><Th>{t.admin.cols.status}</Th><Th></Th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {bookings.map(b => (
               <tr key={b.id} className="align-top">
-                <Td><div className="font-medium text-ink">{b.name}</div><div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString()}</div></Td>
+                <Td><div className="font-medium text-ink">{b.name}</div><div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString("fr-BE")}</div></Td>
                 <Td>{b.service}</Td>
                 <Td>
                   <div>{b.booking_date}</div>
@@ -437,7 +438,7 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
             >
               <div className={`px-4 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 ${isToday ? "bg-gold/15" : "bg-sand"}`}>
                 <div className="text-center w-12 shrink-0">
-                  <div className="text-[10px] uppercase tracking-wider text-smoke">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-smoke">{d.toLocaleDateString("fr-BE", { weekday: "short" })}</div>
                   <div className="font-display text-2xl leading-none">{d.getDate()}</div>
                 </div>
                 <div className="min-w-0">
@@ -472,7 +473,7 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
               className={`bg-card min-h-[260px] min-w-[140px] text-left hover:bg-sand/50 transition-colors ${isToday ? "ring-2 ring-gold ring-inset" : ""}`}
             >
               <div className={`px-3 py-2 text-center ${isToday ? "bg-gold/15" : "bg-sand"}`}>
-                <div className="text-xs uppercase tracking-wider text-smoke">{d.toLocaleDateString(undefined, { weekday: "short" })}</div>
+                <div className="text-xs uppercase tracking-wider text-smoke">{d.toLocaleDateString("fr-BE", { weekday: "short" })}</div>
                 <div className="font-display text-lg">{d.getDate()}/{d.getMonth() + 1}</div>
                 <div className="text-xs text-gold">{list.length}</div>
               </div>
@@ -510,7 +511,7 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
   }, [onClose]);
 
   const d = new Date(iso + "T00:00:00");
-  const title = d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const title = d.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-ink/60" onClick={onClose}>
@@ -559,7 +560,7 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
                 </div>
               )}
               <div className="mt-2 text-[10px] text-smoke uppercase tracking-wider">
-                Reçu le {new Date(b.created_at).toLocaleString()}
+                Reçu le {new Date(b.created_at).toLocaleString("fr-BE")}
               </div>
             </div>
           ))}
@@ -587,14 +588,15 @@ function formatPrice(cents: number | null): string {
   if (cents === null || cents === undefined) return "";
   return (cents / 100).toFixed(2).replace(/\.00$/, "");
 }
-function formatDuration(min: number): string {
-  if (min < 60) return `${min} min`;
+function formatDuration(min: number, hUnit = "h", minUnit = "min"): string {
+  if (min < 60) return `${min} ${minUnit}`;
   const h = Math.floor(min / 60);
   const m = min % 60;
-  return m === 0 ? `${h} u` : `${h} u ${m} min`;
+  return m === 0 ? `${h} ${hUnit}` : `${h} ${hUnit} ${m} ${minUnit}`;
 }
 
 function ServicesView({ onLogout }: { onLogout: () => void }) {
+  const { t } = useT();
   const list = useServerFn(listServices);
   const update = useServerFn(updateService);
   const add = useServerFn(addService);
@@ -630,7 +632,7 @@ function ServicesView({ onLogout }: { onLogout: () => void }) {
   }
 
   async function removeItem(id: string) {
-    if (!window.confirm("Dienst verwijderen?")) return;
+    if (!window.confirm(t.admin.services.removeConfirm)) return;
     const token = getToken();
     if (!token) { onLogout(); return; }
     await del({ data: { token, id } });
@@ -645,7 +647,7 @@ function ServicesView({ onLogout }: { onLogout: () => void }) {
   return (
     <div className="space-y-8 max-w-2xl">
       <p className="text-smoke text-sm">
-        Stel per dienst de duur (in minuten) en de prijs (in euro) in. Laat de prijs leeg voor "op aanvraag".
+        {t.admin.services.intro}
       </p>
 
       {(["coiffure", "nails", "microshading"] as const).map(cat => (
@@ -677,6 +679,7 @@ function ServiceRow({
   onSave: (id: string, patch: { duration_min?: number; price_cents?: number | null }) => void;
   onRemove: (id: string) => void;
 }) {
+  const { t } = useT();
   const [dur, setDur] = useState(String(item.duration_min));
   const [price, setPrice] = useState(formatPrice(item.price_cents));
 
@@ -695,21 +698,21 @@ function ServiceRow({
     <div className="bg-white border border-border rounded-lg p-3.5">
       <div className="flex items-start justify-between gap-2 mb-3">
         <p className="font-medium text-ink text-sm">{item.name}</p>
-        <button onClick={() => onRemove(item.id)} aria-label="Verwijderen"
+        <button onClick={() => onRemove(item.id)} aria-label={t.admin.services.removeConfirm}
           className="text-smoke hover:text-red-600 text-lg leading-none flex-shrink-0">×</button>
       </div>
       <div className="flex items-end gap-3">
         {/* Duration */}
         <label className="flex-1">
-          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Duur (min)</span>
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">{t.admin.services.duration}</span>
           <input type="number" inputMode="numeric" min={0} step={5} value={dur}
             onChange={e => setDur(e.target.value)}
             className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
         </label>
         {/* Price */}
         <label className="flex-1">
-          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Prijs (€)</span>
-          <input type="number" inputMode="decimal" min={0} step="0.5" value={price} placeholder="op aanvraag"
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">{t.admin.services.price}</span>
+          <input type="number" inputMode="decimal" min={0} step="0.5" value={price} placeholder={t.admin.services.onRequest}
             onChange={e => setPrice(e.target.value)}
             className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
         </label>
@@ -718,12 +721,12 @@ function ServiceRow({
           className={`px-3 py-2 text-xs uppercase tracking-wider rounded transition-colors flex-shrink-0 ${
             dirty ? "bg-gold text-ink hover:bg-gold/90" : "bg-sand text-smoke cursor-default"
           } disabled:opacity-50`}>
-          {saving ? "…" : dirty ? "Opslaan" : "✓"}
+          {saving ? "…" : dirty ? t.admin.services.save : "✓"}
         </button>
       </div>
       <p className="text-[11px] text-smoke mt-2">
-        {formatDuration(item.duration_min)}
-        {item.price_cents !== null ? ` · € ${formatPrice(item.price_cents)}` : " · op aanvraag"}
+        {formatDuration(item.duration_min, t.admin.services.hUnit, t.admin.services.minUnit)}
+        {item.price_cents !== null ? ` · € ${formatPrice(item.price_cents)}` : ` · ${t.admin.services.onRequest}`}
       </p>
     </div>
   );
@@ -737,6 +740,7 @@ function AddServiceForm({
   onLogout: () => void;
   add: ReturnType<typeof useServerFn<typeof addService>>;
 }) {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [dur, setDur] = useState("60");
@@ -763,35 +767,35 @@ function AddServiceForm({
     return (
       <button onClick={() => setOpen(true)}
         className="mt-2 text-xs text-gold hover:underline tracking-wider uppercase">
-        + Dienst toevoegen
+        + {t.admin.services.add}
       </button>
     );
   }
 
   return (
     <div className="mt-2 bg-sand/50 border border-border rounded-lg p-3.5 space-y-3">
-      <input value={name} onChange={e => setName(e.target.value)} placeholder="Naam van de dienst" autoFocus
+      <input value={name} onChange={e => setName(e.target.value)} placeholder={t.admin.services.addName} autoFocus
         className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
       <div className="flex gap-3">
         <label className="flex-1">
-          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Duur (min)</span>
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">{t.admin.services.duration}</span>
           <input type="number" inputMode="numeric" min={0} step={5} value={dur} onChange={e => setDur(e.target.value)}
             className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
         </label>
         <label className="flex-1">
-          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">Prijs (€)</span>
-          <input type="number" inputMode="decimal" min={0} step="0.5" value={price} placeholder="op aanvraag" onChange={e => setPrice(e.target.value)}
+          <span className="block text-[10px] uppercase tracking-wider text-smoke mb-1">{t.admin.services.price}</span>
+          <input type="number" inputMode="decimal" min={0} step="0.5" value={price} placeholder={t.admin.services.onRequest} onChange={e => setPrice(e.target.value)}
             className="w-full border border-border rounded px-2.5 py-2 text-sm focus:outline-none focus:border-gold" />
         </label>
       </div>
       <div className="flex gap-2">
         <button onClick={submit} disabled={busy || !name.trim()}
           className="btn-gold btn-gold-hover flex-1 py-2 text-sm disabled:opacity-50">
-          {busy ? "…" : "Toevoegen"}
+          {busy ? "…" : t.admin.services.confirm}
         </button>
         <button onClick={() => setOpen(false)}
           className="px-4 py-2 text-sm text-smoke border border-border rounded hover:border-gold">
-          Annuleren
+          {t.admin.services.cancel}
         </button>
       </div>
     </div>

@@ -157,7 +157,7 @@ export const translations = {
     admin: {
       title: "GiGi L — Tableau de bord",
       newBadge: "nouveau",
-      tabs: { leads: "Aanvragen", day: "Dag", week: "Week", planning: "Planning", gallery: "Galerij", diensten: "Diensten" },
+      tabs: { leads: "Demandes", day: "Jour", week: "Semaine", planning: "Planning", gallery: "Galerie", diensten: "Services" },
       logout: "Déconnexion",
       refresh: "Actualiser",
       today: "Aujourd'hui",
@@ -165,6 +165,23 @@ export const translations = {
       actions: { confirm: "Confirmer", cancel: "Annuler" },
       login: { title: "Espace administrateur", password: "Mot de passe", submit: "Se connecter", error: "Mot de passe incorrect" },
       empty: "Aucune demande pour le moment.",
+      photoAlt: "Photo de référence",
+      receivedOn: "Reçu le",
+      cols: { client: "Client", service: "Service", dateTime: "Date / Heure", contact: "Contact", message: "Message", status: "Statut" },
+      services: {
+        intro: "Définissez la durée (en minutes) et le prix (en euros) pour chaque service. Laissez le prix vide pour « sur demande ».",
+        duration: "Durée (min)",
+        price: "Prix (€)",
+        onRequest: "sur demande",
+        save: "Enregistrer",
+        add: "Ajouter un service",
+        addName: "Nom du service",
+        confirm: "Ajouter",
+        cancel: "Annuler",
+        removeConfirm: "Supprimer le service ?",
+        hUnit: "h",
+        minUnit: "min",
+      },
     },
   },
   nl: {
@@ -321,6 +338,23 @@ export const translations = {
       actions: { confirm: "Bevestigen", cancel: "Annuleren" },
       login: { title: "Beheerderszone", password: "Wachtwoord", submit: "Aanmelden", error: "Wachtwoord onjuist" },
       empty: "Nog geen aanvragen.",
+      photoAlt: "Referentiefoto",
+      receivedOn: "Ontvangen op",
+      cols: { client: "Klant", service: "Dienst", dateTime: "Datum / Uur", contact: "Contact", message: "Bericht", status: "Status" },
+      services: {
+        intro: "Stel per dienst de duur (in minuten) en de prijs (in euro) in. Laat de prijs leeg voor \"op aanvraag\".",
+        duration: "Duur (min)",
+        price: "Prijs (€)",
+        onRequest: "op aanvraag",
+        save: "Opslaan",
+        add: "Dienst toevoegen",
+        addName: "Naam van de dienst",
+        confirm: "Toevoegen",
+        cancel: "Annuleren",
+        removeConfirm: "Dienst verwijderen?",
+        hUnit: "u",
+        minUnit: "min",
+      },
     },
   },
   en: {
@@ -441,6 +475,23 @@ export const translations = {
       actions: { confirm: "Confirm", cancel: "Cancel" },
       login: { title: "Admin area", password: "Password", submit: "Sign in", error: "Wrong password" },
       empty: "No requests yet.",
+      photoAlt: "Reference photo",
+      receivedOn: "Received on",
+      cols: { client: "Client", service: "Service", dateTime: "Date / Time", contact: "Contact", message: "Message", status: "Status" },
+      services: {
+        intro: "Set the duration (in minutes) and price (in euros) for each service. Leave the price empty for \"on request\".",
+        duration: "Duration (min)",
+        price: "Price (€)",
+        onRequest: "on request",
+        save: "Save",
+        add: "Add a service",
+        addName: "Service name",
+        confirm: "Add",
+        cancel: "Cancel",
+        removeConfirm: "Delete service?",
+        hUnit: "h",
+        minUnit: "min",
+      },
     },
     bookingPage: {
       eyebrow: "Book now",
@@ -487,25 +538,27 @@ const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: Dict }>({
   t: translations.fr,
 });
 
-export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("fr");
+export function LangProvider({ children, forceLang }: { children: ReactNode; forceLang?: Lang }) {
+  const [lang, setLangState] = useState<Lang>(forceLang ?? "fr");
 
   useEffect(() => {
+    if (forceLang) return; // pinned language (e.g. admin) — ignore stored/browser pref
     const stored = (typeof window !== "undefined" && localStorage.getItem("gigil_lang")) as Lang | null;
     if (stored && LANGS.includes(stored)) setLangState(stored);
     else {
       const nav = typeof navigator !== "undefined" ? navigator.language.slice(0, 2).toLowerCase() : "fr";
       if (nav === "nl" || nav === "en") setLangState(nav);
     }
-  }, []);
+  }, [forceLang]);
 
   const setLang = (l: Lang) => {
+    if (forceLang) return; // can't switch a pinned provider
     setLangState(l);
     if (typeof window !== "undefined") localStorage.setItem("gigil_lang", l);
     document.documentElement.lang = l;
   };
 
-  return <Ctx.Provider value={{ lang, setLang, t: translations[lang] }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ lang: forceLang ?? lang, setLang, t: translations[forceLang ?? lang] }}>{children}</Ctx.Provider>;
 }
 
 export const useT = () => useContext(Ctx);
