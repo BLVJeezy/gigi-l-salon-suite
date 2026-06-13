@@ -167,7 +167,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           <div className="flex items-center gap-3">
             <h1 className="font-display text-xl sm:text-2xl">{t.admin.title}</h1>
             {newCount > 0 && (
-              <span className="bg-gold text-ink text-xs font-medium px-2 py-0.5 uppercase tracking-wider">
+              <span className="bg-gold text-ivory text-xs font-medium px-2 py-0.5 uppercase tracking-wider">
                 {newCount} {t.admin.newBadge}
               </span>
             )}
@@ -719,7 +719,7 @@ function ServiceRow({
         {/* Save */}
         <button onClick={save} disabled={!dirty || saving}
           className={`px-3 py-2 text-xs uppercase tracking-wider rounded transition-colors flex-shrink-0 ${
-            dirty ? "bg-gold text-ink hover:bg-gold/90" : "bg-sand text-smoke cursor-default"
+            dirty ? "bg-gold text-ivory hover:bg-gold/90" : "bg-sand text-smoke cursor-default"
           } disabled:opacity-50`}>
           {saving ? "…" : dirty ? t.admin.services.save : "✓"}
         </button>

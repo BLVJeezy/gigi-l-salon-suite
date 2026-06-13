@@ -75,6 +75,12 @@ export const translations = {
     services: {
       eyebrow: "Nos services",
       title: "Un savoir-faire complet, pour chaque type de cheveu",
+      learnMore: "Meer weten",
+      cats: [
+        { key: "coiffure", t: "Coiffure", d: "Tresses, tissage, locks, coupes et coloration pour tous types de cheveux.", img: "/gallery/burgundy-feedin-braids.jpeg" },
+        { key: "nails", t: "Nails", d: "Pose complète, gel, vernis semi-permanent et pédicure.", img: "/gallery/cat-nails.jpeg" },
+        { key: "microshading", t: "Microshading", d: "Sourcils redessinés avec un effet poudré naturel et durable.", img: "/gallery/cat-microshading.jpeg" },
+      ],
       items: [
         { t: "Tresses africaines", d: "Box braids, cornrows, twists — un tressage soigné qui protège et sublime vos cheveux." },
         { t: "Coupes européennes", d: "Coupes femmes, hommes et enfants, adaptées à votre style et à votre nature de cheveu." },
@@ -248,6 +254,12 @@ export const translations = {
     services: {
       eyebrow: "Onze diensten",
       title: "Compleet vakmanschap, voor elk haartype",
+      learnMore: "Meer weten",
+      cats: [
+        { key: "coiffure", t: "Coiffure", d: "Vlechten, weaves, locks, knipbeurten en kleuren voor elk haartype.", img: "/gallery/burgundy-feedin-braids.jpeg" },
+        { key: "nails", t: "Nails", d: "Volledige set, gel, semi-permanente lak en pedicure.", img: "/gallery/cat-nails.jpeg" },
+        { key: "microshading", t: "Microshading", d: "Wenkbrauwen opnieuw getekend met een natuurlijk, langdurig poedereffect.", img: "/gallery/cat-microshading.jpeg" },
+      ],
       items: [
         { t: "Afrikaanse vlechten", d: "Box braids, cornrows, twists — zorgvuldig vlechtwerk dat uw haar beschermt en mooier maakt." },
         { t: "Europese knipbeurten", d: "Knipbeurten voor dames, heren en kinderen, afgestemd op uw stijl en haartype." },
@@ -421,6 +433,12 @@ export const translations = {
     services: {
       eyebrow: "Our services",
       title: "Complete craftsmanship, for every hair type",
+      learnMore: "Meer weten",
+      cats: [
+        { key: "coiffure", t: "Coiffure", d: "Braids, weaves, locks, cuts and colour for every hair type.", img: "/gallery/burgundy-feedin-braids.jpeg" },
+        { key: "nails", t: "Nails", d: "Full set, gel, semi-permanent polish and pedicure.", img: "/gallery/cat-nails.jpeg" },
+        { key: "microshading", t: "Microshading", d: "Brows redefined with a natural, long-lasting powder effect.", img: "/gallery/cat-microshading.jpeg" },
+      ],
       items: [
         { t: "African braids", d: "Box braids, cornrows, twists — meticulous braiding that protects and elevates your hair." },
         { t: "European cuts", d: "Cuts for women, men and children, tailored to your style and hair type." },

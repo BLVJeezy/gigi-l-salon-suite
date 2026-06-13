@@ -67,7 +67,7 @@ function GalleryPage() {
 
       {/* ── Hero ── */}
       <section className="bg-ink text-ivory py-20 lg:py-28 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, #C2BBB0 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, #8A6552 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-10 items-end">
           <div>
             <p className="eyebrow">{t.gallery.eyebrow}</p>
@@ -99,7 +99,7 @@ function GalleryPage() {
                 onClick={() => setActive(c.key)}
                 className={`flex-shrink-0 px-4 py-2 text-xs tracking-widest uppercase transition-colors border ${
                   active === c.key
-                    ? "bg-gold text-ink border-gold font-medium"
+                    ? "bg-gold text-ivory border-gold font-medium"
                     : "bg-transparent text-smoke border-smoke/25 hover:border-gold/60 hover:text-ink"
                 }`}
               >
@@ -216,7 +216,7 @@ function GalleryPage() {
           <p className="mt-4 text-ivory/60 max-w-lg mx-auto text-sm sm:text-base">{t.galleryPage.ctaSub}</p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/reservations" className="btn-gold btn-gold-hover">{t.nav.book}</Link>
-            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors">+32 484 16 49 05</a>
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">+32 484 16 49 05</a>
           </div>
         </div>
       </section>

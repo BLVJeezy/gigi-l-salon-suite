@@ -197,7 +197,7 @@ export function BookingForm() {
             {categories.map((c) => (
               <button key={c.key} type="button" onClick={() => pickCategory(c.key)}
                 className={`w-full text-center px-4 py-5 text-base font-display tracking-wide border transition-colors ${
-                  category === c.key ? "bg-gold text-ink border-gold" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
+                  category === c.key ? "bg-gold text-ivory border-gold" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
                 }`}>
                 {c.label}
               </button>
@@ -217,7 +217,7 @@ export function BookingForm() {
               return (
                 <button key={s} type="button" onClick={() => pickService(s)}
                   className={`w-full text-left px-4 py-3 text-sm border transition-colors ${
-                    service === s ? "bg-gold text-ink border-gold font-medium" : "bg-ink border-gold/20 text-ivory/80 hover:border-gold/60 hover:text-ivory"
+                    service === s ? "bg-gold text-ivory border-gold font-medium" : "bg-ink border-gold/20 text-ivory/80 hover:border-gold/60 hover:text-ivory"
                   }`}>
                   {s}
                   {showRepairHint && (
@@ -241,7 +241,7 @@ export function BookingForm() {
               <button key={z} type="button"
                 onClick={() => { setZone(z); goNext(); }}
                 className={`w-full text-center px-4 py-4 text-base border transition-colors ${
-                  zone === z ? "bg-gold text-ink border-gold font-medium" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
+                  zone === z ? "bg-gold text-ivory border-gold font-medium" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
                 }`}>
                 {t.form.zone[z]}
               </button>
@@ -308,7 +308,7 @@ export function BookingForm() {
             {TIME_SLOTS.map((slot) => (
               <button key={slot} type="button" onClick={() => { setTime(slot); goNext(); }}
                 className={`py-2.5 text-xs tracking-wider border transition-colors ${
-                  time === slot ? "bg-gold text-ink border-gold font-medium" : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
+                  time === slot ? "bg-gold text-ivory border-gold font-medium" : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
                 }`}>
                 {slot}
               </button>

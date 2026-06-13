@@ -93,7 +93,7 @@ function ServicesPage() {
 
       {/* ── Hero ── */}
       <section className="bg-ink text-ivory py-20 lg:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 70% 50%, #C2BBB0 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 70% 50%, #8A6552 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-end">
           <div>
             <p className="eyebrow">{t.services.eyebrow}</p>
@@ -191,7 +191,7 @@ function ServicesPage() {
           <p className="mt-4 text-smoke max-w-lg mx-auto text-sm sm:text-base">{t.servicesPage.ctaSub}</p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/reservations" className="btn-gold btn-gold-hover">{t.nav.book}</Link>
-            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors">+32 484 16 49 05</a>
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">+32 484 16 49 05</a>
           </div>
         </div>
       </section>

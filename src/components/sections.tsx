@@ -1,5 +1,6 @@
 // All landing-page sections in one file for easy maintenance.
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
 
@@ -7,7 +8,7 @@ export function Hero() {
   const { t } = useT();
   return (
     <section id="top" className="relative bg-ink text-ivory pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #C2BBB0 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="fade-in-up">
           <p className="eyebrow">{t.hero.eyebrow}</p>
@@ -23,7 +24,7 @@ export function Hero() {
             <a href="#contact" className="btn-gold btn-gold-hover hidden lg:inline-flex">
               {t.hero.ctaBook}
             </a>
-            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors hidden lg:inline-flex">
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors hidden lg:inline-flex">
               +32 484 16 49 05
             </a>
           </div>
@@ -35,7 +36,7 @@ export function Hero() {
         {/* Mobile: form + phone inline under hero text */}
         <div className="lg:hidden fade-in-up space-y-3">
           <BookingForm />
-          <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ink transition-colors w-full text-center">
+          <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors w-full text-center">
             +32 484 16 49 05
           </a>
         </div>
@@ -103,12 +104,41 @@ export function Services() {
           <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl text-ink">{t.services.title}</h2>
           <div className="mt-5 gold-rule" />
         </div>
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
-          {t.services.items.map((s, i) => (
-            <div key={i} className="bg-ivory p-7 lg:p-9 hover:bg-sand transition-colors">
-              <div className="text-gold text-xs tracking-[0.2em] mb-3">0{i + 1}</div>
-              <h3 className="font-display text-xl text-ink mb-3">{s.t}</h3>
-              <p className="text-smoke text-sm leading-relaxed">{s.d}</p>
+
+        {/* Category cards: photo → title → mini description → button.
+            Mobile: 2-col grid (3rd wraps). Desktop: 3-col. */}
+        <div className="mt-12 lg:mt-14 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+          {t.services.cats.map((c) => (
+            <div key={c.key} className="group flex flex-col bg-white border border-border overflow-hidden">
+              {/* Photo */}
+              <div className="relative aspect-[4/5] sm:aspect-[3/4] bg-carbon overflow-hidden">
+                <img
+                  src={c.img}
+                  alt={c.t}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  onError={(e) => {
+                    const el = e.currentTarget;
+                    el.style.display = "none";
+                    const ph = el.nextElementSibling as HTMLElement | null;
+                    if (ph) ph.style.display = "flex";
+                  }}
+                />
+                <div className="w-full h-full flex-col items-center justify-center bg-gradient-to-br from-carbon to-ink" style={{ display: "none" }}>
+                  <span className="font-display text-gold/25 text-4xl select-none">GL</span>
+                </div>
+              </div>
+              {/* Text */}
+              <div className="flex flex-col flex-1 p-4 sm:p-5">
+                <h3 className="font-display text-lg sm:text-xl text-ink">{c.t}</h3>
+                <p className="mt-1.5 text-smoke text-xs sm:text-sm leading-relaxed flex-1">{c.d}</p>
+                <Link
+                  to="/services"
+                  className="mt-4 inline-flex items-center justify-center gap-2 border border-gold text-gold text-xs tracking-widest uppercase py-2.5 px-3 hover:bg-gold hover:text-ivory transition-colors"
+                >
+                  {t.services.learnMore} <span aria-hidden>→</span>
+                </Link>
+              </div>
             </div>
           ))}
         </div>

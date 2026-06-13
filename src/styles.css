@@ -52,8 +52,8 @@
   --carbon: #1A1814;
   --ivory: #FAF7F2;
   --sand: #EFE9DF;
-  --gold: #C2BBB0;
-  --gold-deep: #968D7F;
+  --gold: #8A6552;
+  --gold-deep: #5C3E2E;
   --smoke: #6B6459;
 
   /* Semantic mapping (light surfaces are ivory) */
@@ -103,7 +103,7 @@
     font-weight: 400;
     letter-spacing: -0.01em;
   }
-  ::selection { background: var(--gold); color: var(--ink); }
+  ::selection { background: var(--gold); color: var(--ivory); }
 }
 
 /* ---- Custom utilities ---- */
@@ -130,7 +130,7 @@
   justify-content: center;
   padding: 0.85rem 1.5rem;
   background: var(--gold);
-  color: var(--ink);
+  color: var(--ivory);
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
