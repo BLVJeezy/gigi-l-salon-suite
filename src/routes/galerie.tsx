@@ -113,29 +113,25 @@ function GalleryPage() {
         </div>
       </div>
 
-      {/* ── Masonry-style grid ── */}
+      {/* ── Masonry grid (CSS columns) ── */}
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-10 lg:py-14">
         {filtered.length === 0 ? (
           <p className="text-center text-smoke py-20 text-sm">{t.galleryPage.empty}</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 auto-rows-[200px] sm:auto-rows-[220px] lg:auto-rows-[240px] gap-2 sm:gap-3">
+          <div className="columns-2 sm:columns-3 lg:columns-4 gap-2 sm:gap-3 [column-fill:_balance]">
             {filtered.map((photo, i) => (
               <div
                 key={`${active}-${i}`}
                 onClick={() => setLightbox(photo)}
-                className={`group relative overflow-hidden bg-carbon border border-gold/15 cursor-pointer
-                  ${photo.span === 2 ? "col-span-2" : ""}
-                  ${photo.span === 3 ? "row-span-2" : ""}
-                `}
+                className="group relative mb-2 sm:mb-3 break-inside-avoid overflow-hidden bg-carbon border border-gold/15 cursor-pointer"
               >
                 {photo.src ? (
                   <img
                     src={photo.src}
                     alt={altFor(photo)}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-auto block object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                     onError={(e) => {
-                      // File not uploaded yet — fall back to the branded placeholder.
                       const el = e.currentTarget;
                       el.style.display = "none";
                       const ph = el.nextElementSibling as HTMLElement | null;
@@ -143,19 +139,19 @@ function GalleryPage() {
                     }}
                   />
                 ) : null}
-                {/* Placeholder — shown when no src or when the image fails to load */}
+                {/* Placeholder */}
                 <div
-                  className="w-full h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-carbon to-ink"
+                  className="aspect-[3/4] w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-carbon to-ink"
                   style={{ display: photo.src ? "none" : "flex" }}
                 >
                   <span className="font-display text-gold/20 text-4xl sm:text-5xl select-none">GL</span>
-                    <span className="text-gold/20 text-[9px] sm:text-[10px] tracking-widest uppercase px-4 text-center leading-relaxed">
-                      {altFor(photo)}
-                    </span>
-                  </div>
+                  <span className="text-gold/20 text-[9px] sm:text-[10px] tracking-widest uppercase px-4 text-center leading-relaxed">
+                    {altFor(photo)}
+                  </span>
+                </div>
 
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                   <p className="text-ivory text-xs font-medium leading-snug">{altFor(photo)}</p>
                   <p className="text-gold/70 text-[10px] tracking-widest uppercase mt-1">
                     {categories.find(c => c.key === photo.cat)?.label}
@@ -171,6 +167,7 @@ function GalleryPage() {
           </div>
         )}
       </section>
+
 
       {/* ── Lightbox ── */}
       {lightbox && (
