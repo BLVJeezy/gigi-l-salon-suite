@@ -76,7 +76,7 @@ function GalleryPage() {
 
       {/* ── Hero ── */}
       <section className="bg-ink text-ivory py-20 lg:py-28 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, #B7B2A8 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, #C2BBB0 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-10 items-end">
           <div>
             <p className="eyebrow">{t.gallery.eyebrow}</p>

@@ -7,7 +7,7 @@ export function Hero() {
   const { t } = useT();
   return (
     <section id="top" className="relative bg-ink text-ivory pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #B7B2A8 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #C2BBB0 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="fade-in-up">
           <p className="eyebrow">{t.hero.eyebrow}</p>

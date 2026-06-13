@@ -93,7 +93,7 @@ function ServicesPage() {
 
       {/* ── Hero ── */}
       <section className="bg-ink text-ivory py-20 lg:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 70% 50%, #B7B2A8 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 70% 50%, #C2BBB0 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-end">
           <div>
             <p className="eyebrow">{t.services.eyebrow}</p>
