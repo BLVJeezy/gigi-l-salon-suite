@@ -30,24 +30,14 @@ export const Route = createFileRoute("/galerie")({
 type Photo = { cat: string; alt_fr: string; alt_nl: string; alt_en: string; src?: string; span?: 1 | 2 | 3 };
 
 const PHOTOS: Photo[] = [
-  { cat: "tresses", alt_fr: "Box braids longues",              alt_nl: "Lange box braids",             alt_en: "Long box braids",             span: 2 },
-  { cat: "tresses", alt_fr: "Cornrows motif géométrique",      alt_nl: "Cornrows geometrisch",          alt_en: "Geometric cornrows" },
-  { cat: "tresses", alt_fr: "Knotless braids mi-longues",      alt_nl: "Knotless braids halflang",      alt_en: "Mid-length knotless braids" },
-  { cat: "tresses", alt_fr: "Fulani braids avec perles",       alt_nl: "Fulani braids met kralen",      alt_en: "Fulani braids with beads",    span: 3 },
-  { cat: "tresses", alt_fr: "Box braids couleur",              alt_nl: "Gekleurde box braids",          alt_en: "Coloured box braids" },
-  { cat: "tissage", alt_fr: "Tissage naturel volume",          alt_nl: "Weave natuurlijk volume",       alt_en: "Natural volume weave",        span: 2 },
-  { cat: "tissage", alt_fr: "Tissage lisse longueur",          alt_nl: "Stijle weave lange lengte",     alt_en: "Sleek long weave" },
-  { cat: "tissage", alt_fr: "Tissage bouclé",                  alt_nl: "Krullende weave",               alt_en: "Curly weave" },
-  { cat: "locks",   alt_fr: "Locks starter",                   alt_nl: "Locks aanleggen",               alt_en: "Starter locs",                span: 3 },
-  { cat: "locks",   alt_fr: "Crochet braids",                  alt_nl: "Crochet braids",                alt_en: "Crochet braids" },
-  { cat: "locks",   alt_fr: "Retwist et entretien locks",      alt_nl: "Retwist locksonderhoud",        alt_en: "Loc retwist maintenance" },
-  { cat: "micro",   alt_fr: "Microshading effet poudré",       alt_nl: "Microshading poedereffect",     alt_en: "Microshading powder effect",  span: 2 },
-  { cat: "micro",   alt_fr: "Sourcils redessinés précis",      alt_nl: "Hergetekende wenkbrauwen",      alt_en: "Precision brow reshape" },
-  { cat: "coupes",  alt_fr: "Coupe femme cheveux naturels",    alt_nl: "Damesknippen natuurlijk haar",  alt_en: "Women's natural hair cut" },
-  { cat: "coupes",  alt_fr: "Coupe et coloration",             alt_nl: "Knippen en kleuren",            alt_en: "Cut and colour",              span: 2 },
-  { cat: "chignons",alt_fr: "Chignon de mariée",               alt_nl: "Bruidskapsels",                 alt_en: "Bridal updo",                 span: 3 },
-  { cat: "chignons",alt_fr: "Chignon cérémonie",               alt_nl: "Feestkapsel",                   alt_en: "Ceremony updo" },
-  { cat: "chignons",alt_fr: "Tresse chignon élaboré",          alt_nl: "Elaborate vlecht-chignon",      alt_en: "Elaborate braided updo" },
+  { cat: "tresses", src: "/gallery/burgundy-feedin-braids.jpeg", alt_fr: "Tresses collées bordeaux", alt_nl: "Bordeaux feed-in braids", alt_en: "Burgundy feed-in braids", span: 3 },
+  { cat: "tresses", src: "/gallery/cornrows-homme.jpeg", alt_fr: "Cornrows homme", alt_nl: "Cornrows heren", alt_en: "Men's cornrows" },
+  { cat: "tresses", src: "/gallery/feedin-braids-cowrie.jpeg", alt_fr: "Tresses collées avec coquillages", alt_nl: "Feed-in braids met kauri", alt_en: "Feed-in braids with cowrie shells", span: 2 },
+  { cat: "tresses", src: "/gallery/knotless-blond.jpeg", alt_fr: "Knotless braids blond bouclé", alt_nl: "Knotless braids blond met krul", alt_en: "Blonde knotless braids with curls" },
+  { cat: "tresses", src: "/gallery/braids-bordeaux-glasses.jpeg", alt_fr: "Tresses bordeaux", alt_nl: "Bordeaux braids", alt_en: "Burgundy braids", span: 3 },
+  { cat: "tissage", src: "/gallery/tissage-lisse-brun.jpeg", alt_fr: "Tissage lisse brun", alt_nl: "Stijle bruine weave", alt_en: "Sleek brown weave", span: 2 },
+  { cat: "tissage", src: "/gallery/curly-naturel.jpeg", alt_fr: "Cheveux bouclés naturels", alt_nl: "Natuurlijk krullend haar", alt_en: "Natural curly hair" },
+  { cat: "locks", src: "/gallery/twists-curly-ends.jpeg", alt_fr: "Twists avec pointes bouclées", alt_nl: "Twists met krullende uiteinden", alt_en: "Twists with curly ends" },
 ];
 
 function GalleryPage() {
@@ -143,16 +133,25 @@ function GalleryPage() {
                     alt={altFor(photo)}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
+                    onError={(e) => {
+                      // File not uploaded yet — fall back to the branded placeholder.
+                      const el = e.currentTarget;
+                      el.style.display = "none";
+                      const ph = el.nextElementSibling as HTMLElement | null;
+                      if (ph) ph.style.display = "flex";
+                    }}
                   />
-                ) : (
-                  /* Placeholder — swap with <img> when photos arrive */
-                  <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-carbon to-ink">
-                    <span className="font-display text-gold/20 text-4xl sm:text-5xl select-none">GL</span>
+                ) : null}
+                {/* Placeholder — shown when no src or when the image fails to load */}
+                <div
+                  className="w-full h-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-carbon to-ink"
+                  style={{ display: photo.src ? "none" : "flex" }}
+                >
+                  <span className="font-display text-gold/20 text-4xl sm:text-5xl select-none">GL</span>
                     <span className="text-gold/20 text-[9px] sm:text-[10px] tracking-widest uppercase px-4 text-center leading-relaxed">
                       {altFor(photo)}
                     </span>
                   </div>
-                )}
 
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
