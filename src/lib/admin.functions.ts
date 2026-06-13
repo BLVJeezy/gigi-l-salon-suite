@@ -94,20 +94,20 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Error(error.message);
 
-    // Email client on status change (best-effort).
+    // Email client on status change via Lovable queue (best-effort).
     try {
       if (booking?.email && (data.status === "confirmed" || data.status === "cancelled")) {
-        const { sendEmail, signCancelToken } = await import("./email.server");
-        const { clientBookingConfirmedEmail, clientBookingCancelledEmail } = await import("./email-templates.server");
+        const { enqueueTemplateEmail } = await import("./lovable-email.server");
         if (data.status === "confirmed") {
+          const { signCancelToken } = await import("./email.server");
           const token = await signCancelToken(booking.id);
           const origin = process.env.SITE_URL || "https://gigi-l-salon-suite.lovable.app";
           const cancelUrl = `${origin}/annuler/${token}`;
-          const t = clientBookingConfirmedEmail(booking, cancelUrl);
-          await sendEmail({ to: booking.email, subject: t.subject, html: t.html });
+          const res = await enqueueTemplateEmail("client-booking-confirmed", booking.email, { ...booking, cancelUrl });
+          console.log("[status] confirmed email", res);
         } else {
-          const t = clientBookingCancelledEmail(booking);
-          await sendEmail({ to: booking.email, subject: t.subject, html: t.html });
+          const res = await enqueueTemplateEmail("client-booking-cancelled", booking.email, booking);
+          console.log("[status] cancelled email", res);
         }
       }
     } catch (e) {

@@ -39,23 +39,20 @@ export const createBooking = createServerFn({ method: "POST" })
       throw new Error("Could not save booking");
     }
 
-    // Fire-and-forget emails — don't fail the booking if email errors.
+    // Fire-and-forget emails via Lovable's queue (no Resend key needed).
     try {
-      const { sendEmail } = await import("./email.server");
-      const { ownerNewBookingEmail, clientBookingReceivedEmail } = await import("./email-templates.server");
+      const { enqueueTemplateEmail } = await import("./lovable-email.server");
       const owner = process.env.OWNER_EMAIL || "jasonbalongo@gmail.com";
-      const tasks: Promise<unknown>[] = [];
-      const ot = ownerNewBookingEmail(inserted);
-      tasks.push(sendEmail({ to: owner, subject: ot.subject, html: ot.html, replyTo: inserted.email ?? undefined }));
+
+      // Owner notification — always.
+      const ownerRes = await enqueueTemplateEmail("owner-new-booking", owner, inserted);
+      console.log("[booking] owner email", ownerRes);
+
+      // Client acknowledgement — only if they left an email.
       if (inserted.email) {
-        const ct = clientBookingReceivedEmail(inserted);
-        tasks.push(sendEmail({ to: inserted.email, subject: ct.subject, html: ct.html }));
+        const clientRes = await enqueueTemplateEmail("client-booking-received", inserted.email, inserted);
+        console.log("[booking] client email", clientRes);
       }
-      const results = await Promise.allSettled(tasks);
-      results.forEach((r, i) => {
-        if (r.status === "rejected") console.error(`[booking email ${i}] failed`, r.reason);
-        else console.log(`[booking email ${i}]`, r.value);
-      });
     } catch (e) {
       console.error("createBooking email error", e);
     }

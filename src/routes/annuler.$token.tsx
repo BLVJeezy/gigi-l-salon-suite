@@ -27,7 +27,7 @@ export const getBookingByCancelToken = createServerFn({ method: "POST" })
 export const cancelBookingByToken = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => tokenSchema.parse(input))
   .handler(async ({ data }) => {
-    const { verifyCancelToken, sendEmail } = await import("@/lib/email.server");
+    const { verifyCancelToken } = await import("@/lib/email.server");
     const bookingId = await verifyCancelToken(data.token);
     if (!bookingId) throw new Error("Token invalide");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -40,18 +40,16 @@ export const cancelBookingByToken = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
 
     try {
+      const { enqueueTemplateEmail } = await import("@/lib/lovable-email.server");
       if (booking?.email) {
-        const { clientBookingCancelledEmail } = await import("@/lib/email-templates.server");
-        const t = clientBookingCancelledEmail(booking);
-        await sendEmail({ to: booking.email, subject: t.subject, html: t.html });
+        const res = await enqueueTemplateEmail("client-booking-cancelled", booking.email, booking);
+        console.log("[annuler] client email", res);
       }
       const owner = process.env.OWNER_EMAIL || "jasonbalongo@gmail.com";
       if (owner) {
-        await sendEmail({
-          to: owner,
-          subject: `Réservation annulée par le client — ${booking.name}`,
-          html: `<p>${booking.name} a annulé sa réservation du ${booking.booking_date} à ${String(booking.booking_time).slice(0,5)} (${booking.service}).</p>`,
-        });
+        // Reuse the cancelled template for the owner too (clear, consistent styling).
+        const res = await enqueueTemplateEmail("client-booking-cancelled", owner, booking);
+        console.log("[annuler] owner email", res);
       }
     } catch (e) {
       console.error("cancelBookingByToken email error", e);

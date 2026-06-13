@@ -1,6 +1,6 @@
-// Server-only email sender via Resend gateway.
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
-
+// NOTE: Email sending now goes through Lovable's queue (see lovable-email.server.ts).
+// This Resend path is deprecated and kept only as a no-op so any stray import
+// doesn't crash. RESEND_API_KEY is no longer required.
 export type SendEmailInput = {
   to: string | string[];
   subject: string;
@@ -8,38 +8,9 @@ export type SendEmailInput = {
   replyTo?: string;
 };
 
-export async function sendEmail({ to, subject, html, replyTo }: SendEmailInput) {
-  const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
-  const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
-    console.error("[email] Missing LOVABLE_API_KEY or RESEND_API_KEY");
-    return { ok: false, error: "Email not configured" };
-  }
-
-  const from = process.env.FROM_EMAIL || "Gigi L Coiffure <onboarding@resend.dev>";
-
-  const res = await fetch(`${GATEWAY_URL}/emails`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "X-Connection-Api-Key": RESEND_API_KEY,
-    },
-    body: JSON.stringify({
-      from,
-      to: Array.isArray(to) ? to : [to],
-      subject,
-      html,
-      ...(replyTo ? { reply_to: replyTo } : {}),
-    }),
-  });
-
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    console.error("[email] Resend error", res.status, body);
-    return { ok: false, error: `Resend ${res.status}` };
-  }
-  return { ok: true };
+export async function sendEmail(_input: SendEmailInput) {
+  console.warn("[email] sendEmail() is deprecated — use enqueueTemplateEmail() (Lovable queue)");
+  return { ok: false, error: "Deprecated: use Lovable queue" };
 }
 
 // HMAC-signed cancel tokens (no DB table needed).
