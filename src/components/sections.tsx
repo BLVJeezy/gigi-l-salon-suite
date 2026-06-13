@@ -142,31 +142,49 @@ export function Why() {
 
 export function Gallery() {
   const { t } = useT();
-  // NOTE: replace the placeholder divs with real <img src="..." /> tags when photos are ready.
-  const items = Array.from({ length: 6 });
+  const items = [
+    { src: "/gallery/braids-bordeaux-glasses.jpeg", alt: "Burgundy braids" },
+    { src: "/gallery/tissage-lisse-brun.jpeg", alt: "Sleek brown weave" },
+    { src: "/gallery/knotless-blond.jpeg", alt: "Blonde knotless braids" },
+    { src: "/gallery/cornrows-homme.jpeg", alt: "Men's cornrows" },
+    { src: "/gallery/curly-naturel.jpeg", alt: "Natural curly hair" },
+    { src: "/gallery/feedin-braids-cowrie.jpeg", alt: "Feed-in braids with cowrie" },
+  ];
   return (
     <section id="gallery" className="bg-ivory py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="max-w-2xl">
-          <p className="eyebrow">{t.gallery.eyebrow}</p>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl text-ink">{t.gallery.title}</h2>
-          <div className="mt-5 gold-rule" />
+        <div className="flex items-end justify-between gap-6 flex-wrap">
+          <div className="max-w-2xl">
+            <p className="eyebrow">{t.gallery.eyebrow}</p>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl text-ink">{t.gallery.title}</h2>
+            <div className="mt-5 gold-rule" />
+          </div>
+          <a href="/galerie" className="text-xs tracking-[0.2em] uppercase text-ink hover:text-gold border-b border-gold/40 hover:border-gold pb-1 transition-colors">
+            {t.gallery.eyebrow} →
+          </a>
         </div>
         <div className="mt-14 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {items.map((_, i) => (
-            // REPLACE THIS DIV WITH <img src="/path-to-photo.jpg" alt="..." className="aspect-square w-full object-cover border border-gold/40" />
-            <div
+          {items.map((it, i) => (
+            <a
               key={i}
-              className="aspect-square bg-carbon border border-gold/40 flex items-center justify-center text-gold/40 font-display text-3xl"
+              href="/galerie"
+              className="group relative block aspect-square overflow-hidden bg-carbon border border-gold/30"
             >
-              GL
-            </div>
+              <img
+                src={it.src}
+                alt={it.alt}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/30 transition-colors" />
+            </a>
           ))}
         </div>
       </div>
     </section>
   );
 }
+
 
 export function Faq() {
   const { t } = useT();
