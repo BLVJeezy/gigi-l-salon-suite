@@ -6,7 +6,7 @@
 
 /* ============================================================
    GiGi L Coiffure — design tokens
-   Luxury salon palette: near-black, ivory, gold accent.
+   Luxury salon palette: near-black, ivory, warm platinum-grey accent.
    ============================================================ */
 
 @theme inline {
@@ -52,8 +52,8 @@
   --carbon: #1A1814;
   --ivory: #FAF7F2;
   --sand: #EFE9DF;
-  --gold: #C9A24B;
-  --gold-deep: #9A7A2E;
+  --gold: #B7B2A8;
+  --gold-deep: #8C877D;
   --smoke: #6B6459;
 
   /* Semantic mapping (light surfaces are ivory) */
