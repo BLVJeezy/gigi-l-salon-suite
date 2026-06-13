@@ -43,17 +43,19 @@ export const createBooking = createServerFn({ method: "POST" })
     try {
       const { sendEmail } = await import("./email.server");
       const { ownerNewBookingEmail, clientBookingReceivedEmail } = await import("./email-templates.server");
-      const owner = process.env.OWNER_EMAIL;
+      const owner = process.env.OWNER_EMAIL || "jasonbalongo@gmail.com";
       const tasks: Promise<unknown>[] = [];
-      if (owner) {
-        const t = ownerNewBookingEmail(inserted);
-        tasks.push(sendEmail({ to: owner, subject: t.subject, html: t.html, replyTo: inserted.email ?? undefined }));
-      }
+      const ot = ownerNewBookingEmail(inserted);
+      tasks.push(sendEmail({ to: owner, subject: ot.subject, html: ot.html, replyTo: inserted.email ?? undefined }));
       if (inserted.email) {
-        const t = clientBookingReceivedEmail(inserted);
-        tasks.push(sendEmail({ to: inserted.email, subject: t.subject, html: t.html }));
+        const ct = clientBookingReceivedEmail(inserted);
+        tasks.push(sendEmail({ to: inserted.email, subject: ct.subject, html: ct.html }));
       }
-      await Promise.allSettled(tasks);
+      const results = await Promise.allSettled(tasks);
+      results.forEach((r, i) => {
+        if (r.status === "rejected") console.error(`[booking email ${i}] failed`, r.reason);
+        else console.log(`[booking email ${i}]`, r.value);
+      });
     } catch (e) {
       console.error("createBooking email error", e);
     }

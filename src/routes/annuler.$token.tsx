@@ -45,7 +45,7 @@ export const cancelBookingByToken = createServerFn({ method: "POST" })
         const t = clientBookingCancelledEmail(booking);
         await sendEmail({ to: booking.email, subject: t.subject, html: t.html });
       }
-      const owner = process.env.OWNER_EMAIL;
+      const owner = process.env.OWNER_EMAIL || "jasonbalongo@gmail.com";
       if (owner) {
         await sendEmail({
           to: owner,
