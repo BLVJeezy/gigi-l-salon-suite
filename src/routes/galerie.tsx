@@ -36,6 +36,7 @@ const PHOTOS: Photo[] = [
   { cat: "tresses", src: "/gallery/knotless-blond.jpeg", alt_fr: "Knotless braids blond bouclé", alt_nl: "Knotless braids blond met krul", alt_en: "Blonde knotless braids with curls" },
   { cat: "tresses", src: "/gallery/braids-bordeaux-glasses.jpeg", alt_fr: "Tresses bordeaux", alt_nl: "Bordeaux braids", alt_en: "Burgundy braids", span: 3 },
   { cat: "tissage", src: "/gallery/tissage-lisse-brun.jpeg", alt_fr: "Tissage lisse brun", alt_nl: "Stijle bruine weave", alt_en: "Sleek brown weave", span: 2 },
+  { cat: "tissage", src: "/gallery/tissage-bordeaux-wavy.jpeg", alt_fr: "Tissage bordeaux ondulé", alt_nl: "Bordeaux golvende weave", alt_en: "Burgundy wavy weave", span: 3 },
   { cat: "tissage", src: "/gallery/curly-naturel.jpeg", alt_fr: "Cheveux bouclés naturels", alt_nl: "Natuurlijk krullend haar", alt_en: "Natural curly hair" },
   { cat: "locks", src: "/gallery/twists-curly-ends.jpeg", alt_fr: "Twists avec pointes bouclées", alt_nl: "Twists met krullende uiteinden", alt_en: "Twists with curly ends" },
 ];
