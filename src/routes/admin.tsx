@@ -43,6 +43,34 @@ type Booking = {
   status: "new" | "confirmed" | "cancelled";
 };
 
+// ── Category classification + colours ───────────────────────────────────────
+// Bookings only store the service name, so we classify it back into a category.
+type Cat = "coiffure" | "nails" | "microshading";
+
+const NAILS_SERVICES = new Set([
+  "Pose complète", "Dépose de gel", "Réparation 1 doigt",
+  "Pédicure sans tips", "Vernis semi-permanent",
+  "Volledige set", "Bijwerking", "Gel verwijderen", "Reparatie 1 nagel",
+  "Pedicure zonder tips", "Semi-permanente lak",
+  "Full set", "Gel removal", "Repair 1 nail", "Pedicure without tips", "Semi-permanent polish",
+]);
+
+function categoryOf(service: string): Cat {
+  const s = (service || "").trim().toLowerCase();
+  if (s.includes("microshading")) return "microshading";
+  if (NAILS_SERVICES.has(service.trim()) || s.includes("nail") || s.includes("ongle") || s.includes("nagel") || s.includes("pédicure") || s.includes("pedicure") || s.includes("vernis") || s.includes("gel")) return "nails";
+  return "coiffure";
+}
+
+// Tone per category. Coiffure = clean white, Nails = light pink, Microshading = chocolate.
+const CAT_STYLE: Record<Cat, { card: string; header: string; chip: string; dot: string; cell: string }> = {
+  coiffure:     { card: "bg-white border-border",            header: "bg-sand/40",         chip: "bg-white border border-border text-ink",      dot: "bg-smoke/40",   cell: "bg-white border-border" },
+  nails:        { card: "bg-pink-50 border-pink-200",        header: "bg-pink-100/70",     chip: "bg-pink-100 border border-pink-300 text-pink-800", dot: "bg-pink-400", cell: "bg-pink-50 border-pink-200" },
+  microshading: { card: "bg-[#F1E7E0] border-[#C8A892]",     header: "bg-[#E4D2C5]",       chip: "bg-[#E4D2C5] border border-[#C8A892] text-[#5C3E2E]", dot: "bg-[#8A6552]", cell: "bg-[#F1E7E0] border-[#C8A892]" },
+};
+
+const CAT_LABEL: Record<Cat, string> = { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" };
+
 // The booking `message` field may contain "Photo: <url>" appended by the form.
 // Split it into readable text + an optional photo URL for a clickable thumbnail.
 function parseMessage(message: string | null): { text: string; photoUrl: string | null } {
@@ -215,13 +243,54 @@ function StatusBadge({ status }: { status: Booking["status"] }) {
 
 function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (id: string, s: "confirmed" | "cancelled") => void }) {
   const { t } = useT();
+  const [filter, setFilter] = useState<"all" | Cat>("all");
   if (bookings.length === 0) return <p className="text-smoke">{t.admin.empty}</p>;
+
+  const counts = {
+    all: bookings.length,
+    coiffure: bookings.filter(b => categoryOf(b.service) === "coiffure").length,
+    nails: bookings.filter(b => categoryOf(b.service) === "nails").length,
+    microshading: bookings.filter(b => categoryOf(b.service) === "microshading").length,
+  };
+  const visible = filter === "all" ? bookings : bookings.filter(b => categoryOf(b.service) === filter);
+
+  // Filter pills — each tinted in its own category colour.
+  const pill = (key: "all" | Cat, label: string, active: boolean) => {
+    const tone =
+      key === "all" ? (active ? "bg-ink text-ivory border-ink" : "bg-white text-ink border-border") :
+      key === "coiffure" ? (active ? "bg-ink text-ivory border-ink" : "bg-white text-ink border-border") :
+      key === "nails" ? (active ? "bg-pink-400 text-white border-pink-400" : "bg-pink-50 text-pink-800 border-pink-300") :
+      (active ? "bg-[#8A6552] text-white border-[#8A6552]" : "bg-[#F1E7E0] text-[#5C3E2E] border-[#C8A892]");
+    return (
+      <button key={key} onClick={() => setFilter(key)}
+        className={`flex-shrink-0 px-3.5 py-2 text-xs uppercase tracking-wider border rounded-full transition-colors ${tone}`}>
+        {label} <span className="opacity-60">({counts[key]})</span>
+      </button>
+    );
+  };
+
+  // Clean status highlight: confirmed = green ring, cancelled = dimmed + red ring.
+  const statusRing = (s: Booking["status"]) =>
+    s === "confirmed" ? "ring-2 ring-green-500/60" :
+    s === "cancelled" ? "ring-1 ring-red-300 opacity-60" : "";
+
   return (
     <>
+      {/* Category filter */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-none mb-5">
+        {pill("all", "Tout", filter === "all")}
+        {pill("coiffure", "Coiffure", filter === "coiffure")}
+        {pill("nails", "Nails", filter === "nails")}
+        {pill("microshading", "Microshading", filter === "microshading")}
+      </div>
+
       {/* Mobile + tablet: card list */}
       <div className="lg:hidden space-y-3">
-        {bookings.map(b => (
-          <div key={b.id} className="bg-card border border-border p-4">
+        {visible.map(b => {
+          const cat = categoryOf(b.service);
+          const st = CAT_STYLE[cat];
+          return (
+          <div key={b.id} className={`border p-4 rounded-lg ${st.card} ${statusRing(b.status)}`}>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
               <div className="min-w-0">
                 <div className="font-medium text-ink truncate">{b.name}</div>
@@ -232,7 +301,10 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
             <div className="mt-3 grid grid-cols-2 gap-y-2 gap-x-3 text-sm">
               <div className="col-span-2">
                 <div className="text-[10px] uppercase tracking-wider text-smoke">Service</div>
-                <div className="text-ink">{b.service}</div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded ${st.chip}`}>{CAT_LABEL[cat]}</span>
+                  <span className="text-ink">{b.service}</span>
+                </div>
               </div>
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-smoke">Date</div>
@@ -255,16 +327,17 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
               )}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <a href={`tel:${b.phone}`} className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 border border-gold text-gold-deep">📞 Call</a>
+              <a href={`tel:${b.phone}`} className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 border border-gold text-gold-deep rounded bg-white/60">📞 Call</a>
               {b.status !== "confirmed" && (
-                <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-green-600 text-white hover:bg-green-700">{t.admin.actions.confirm}</button>
+                <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
               )}
               {b.status !== "cancelled" && (
-                <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-red-600 text-white hover:bg-red-700">{t.admin.actions.cancel}</button>
+                <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-red-600 text-white hover:bg-red-700 rounded">{t.admin.actions.cancel}</button>
               )}
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Desktop: table */}
@@ -276,10 +349,17 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {bookings.map(b => (
-              <tr key={b.id} className="align-top">
+            {visible.map(b => {
+              const cat = categoryOf(b.service);
+              const st = CAT_STYLE[cat];
+              return (
+              <tr key={b.id} className={`align-top border-l-4 ${st.cell} ${b.status === "cancelled" ? "opacity-60" : ""}`}
+                  style={{ borderLeftColor: cat === "nails" ? "#F472B6" : cat === "microshading" ? "#8A6552" : "#D9D2C7" }}>
                 <Td><div className="font-medium text-ink">{b.name}</div><div className="text-xs text-smoke">{new Date(b.created_at).toLocaleString("fr-BE")}</div></Td>
-                <Td>{b.service}</Td>
+                <Td>
+                  <span className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded mr-2 ${st.chip}`}>{CAT_LABEL[cat]}</span>
+                  {b.service}
+                </Td>
                 <Td>
                   <div>{b.booking_date}</div>
                   <div className="text-gold font-medium">{b.booking_time.slice(0,5)}</div>
@@ -292,14 +372,15 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                 <Td><StatusBadge status={b.status} /></Td>
                 <Td>
                   {b.status !== "confirmed" && (
-                    <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 bg-green-600 text-white hover:bg-green-700">{t.admin.actions.confirm}</button>
+                    <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
                   )}
                   {b.status !== "cancelled" && (
-                    <button onClick={() => setStatus(b.id, "cancelled")} className="text-xs px-2 py-1 bg-red-600 text-white hover:bg-red-700">{t.admin.actions.cancel}</button>
+                    <button onClick={() => setStatus(b.id, "cancelled")} className="text-xs px-2 py-1 bg-red-600 text-white hover:bg-red-700 rounded">{t.admin.actions.cancel}</button>
                   )}
                 </Td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -338,12 +419,20 @@ function DayView({ bookings }: { bookings: Booking[] }) {
             <div key={h} className="grid grid-cols-[80px_1fr] border-t border-border first:border-t-0 min-h-[64px]">
               <div className="px-4 py-3 text-smoke text-xs">{String(h).padStart(2,"0")}:00</div>
               <div className="px-3 py-2 flex flex-wrap gap-2">
-                {slot.map(b => (
-                  <div key={b.id} className={`px-3 py-2 text-xs border ${b.status === "confirmed" ? "bg-green-100 border-green-300" : "bg-gold/15 border-gold"}`}>
-                    <div className="font-medium">{b.booking_time.slice(0,5)} — {b.name}</div>
+                {slot.map(b => {
+                  const cat = categoryOf(b.service);
+                  const st = CAT_STYLE[cat];
+                  return (
+                  <div key={b.id} className={`px-3 py-2 text-xs border rounded ${st.cell} ${b.status === "confirmed" ? "ring-2 ring-green-500/60" : ""}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`w-2 h-2 rounded-full ${st.dot}`} />
+                      <span className="font-medium">{b.booking_time.slice(0,5)} — {b.name}</span>
+                    </div>
                     <div className="text-smoke">{b.service}</div>
+                    {b.status === "confirmed" && <div className="text-green-700 text-[10px] uppercase tracking-wider mt-0.5">✓ Confirmé</div>}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );
@@ -478,13 +567,20 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
                 <div className="text-xs text-gold">{list.length}</div>
               </div>
               <div className="p-2 space-y-1.5">
-                {list.sort((a,b) => a.booking_time.localeCompare(b.booking_time)).map(b => (
-                  <div key={b.id} className={`px-2 py-1.5 text-xs border ${b.status === "confirmed" ? "bg-green-100 border-green-300" : "bg-gold/15 border-gold"}`}>
-                    <div className="font-medium">{b.booking_time.slice(0,5)}</div>
+                {list.sort((a,b) => a.booking_time.localeCompare(b.booking_time)).map(b => {
+                  const cat = categoryOf(b.service);
+                  const st = CAT_STYLE[cat];
+                  return (
+                  <div key={b.id} className={`px-2 py-1.5 text-xs border rounded ${st.cell} ${b.status === "confirmed" ? "ring-2 ring-green-500/60" : ""} ${b.status === "cancelled" ? "opacity-50 line-through" : ""}`}>
+                    <div className="flex items-center gap-1">
+                      <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
+                      <span className="font-medium">{b.booking_time.slice(0,5)}</span>
+                    </div>
                     <div className="truncate">{b.name}</div>
                     <div className="text-smoke truncate">{b.service}</div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </button>
           );
