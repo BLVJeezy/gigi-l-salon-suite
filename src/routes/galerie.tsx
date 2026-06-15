@@ -42,6 +42,8 @@ const PHOTOS: Photo[] = [
   { cat: "nails", src: "/gallery/nails-red-almond.jpeg", alt_fr: "Vernis rouge, forme amande", alt_nl: "Rode lak, amandelvorm", alt_en: "Red polish, almond shape", span: 2 },
   { cat: "nails", src: "/gallery/nails-glitter-nude.jpeg", alt_fr: "Nude pailleté", alt_nl: "Nude met glitter", alt_en: "Glitter nude", span: 3 },
   { cat: "nails", src: "/gallery/nails-cat-eye-grey.jpeg", alt_fr: "Vernis cat-eye gris", alt_nl: "Cat-eye lak grijs", alt_en: "Grey cat-eye polish" },
+  { cat: "nails", src: "/gallery/nails-gold-chrome.jpeg", alt_fr: "Chrome doré, forme amande", alt_nl: "Goud chrome, amandelvorm", alt_en: "Gold chrome, almond shape", span: 2 },
+  { cat: "nails", src: "/gallery/nails-green-french.png", alt_fr: "French vert avec strass", alt_nl: "Groene french met steentjes", alt_en: "Green French tips with gems" },
 ];
 
 function GalleryPage() {
