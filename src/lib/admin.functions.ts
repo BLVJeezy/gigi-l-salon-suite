@@ -130,8 +130,8 @@ export const sendTestEmails = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { signCancelToken } = await import("./email.server");
 
-    const SENDER_DOMAIN = "notify.solyn-global.com";
-    const FROM_DOMAIN = "notify.solyn-global.com";
+    const SENDER_DOMAIN = "notify.test-solyn.pw";
+    const FROM_DOMAIN = "notify.test-solyn.pw";
     const SITE_NAME = "gigi-l";
 
     const tomorrow = new Date();

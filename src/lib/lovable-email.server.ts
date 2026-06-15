@@ -4,8 +4,8 @@
 //
 // To change the sender, edit SENDER_DOMAIN / FROM_DOMAIN here (one place).
 // SENDER_DOMAIN must be the subdomain delegated to Lovable's nameservers.
-const SENDER_DOMAIN = "notify.solyn-global.com";
-const FROM_DOMAIN = "notify.solyn-global.com";
+const SENDER_DOMAIN = "notify.test-solyn.pw";
+const FROM_DOMAIN = "notify.test-solyn.pw";
 const SITE_NAME = "gigi-l";
 
 export type EnqueueResult = { ok: boolean; messageId?: string; error?: string };
