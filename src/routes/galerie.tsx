@@ -39,6 +39,9 @@ const PHOTOS: Photo[] = [
   { cat: "tissage", src: "/gallery/tissage-bordeaux-wavy.jpeg", alt_fr: "Tissage bordeaux ondulé", alt_nl: "Bordeaux golvende weave", alt_en: "Burgundy wavy weave", span: 3 },
   { cat: "tissage", src: "/gallery/curly-naturel.jpeg", alt_fr: "Cheveux bouclés naturels", alt_nl: "Natuurlijk krullend haar", alt_en: "Natural curly hair" },
   { cat: "locks", src: "/gallery/twists-curly-ends.jpeg", alt_fr: "Twists avec pointes bouclées", alt_nl: "Twists met krullende uiteinden", alt_en: "Twists with curly ends" },
+  { cat: "nails", src: "/gallery/nails-red-almond.jpeg", alt_fr: "Vernis rouge, forme amande", alt_nl: "Rode lak, amandelvorm", alt_en: "Red polish, almond shape", span: 2 },
+  { cat: "nails", src: "/gallery/nails-glitter-nude.jpeg", alt_fr: "Nude pailleté", alt_nl: "Nude met glitter", alt_en: "Glitter nude", span: 3 },
+  { cat: "nails", src: "/gallery/nails-cat-eye-grey.jpeg", alt_fr: "Vernis cat-eye gris", alt_nl: "Cat-eye lak grijs", alt_en: "Grey cat-eye polish" },
 ];
 
 function GalleryPage() {
@@ -52,6 +55,7 @@ function GalleryPage() {
     { key: "tissage",  label: t.galleryPage.filterTissage },
     { key: "locks",    label: t.galleryPage.filterLocks },
     { key: "micro",    label: t.galleryPage.filterMicroshading },
+    { key: "nails",    label: t.galleryPage.filterNails },
     { key: "coupes",   label: t.galleryPage.filterCoupes },
     { key: "chignons", label: t.galleryPage.filterChignons },
   ];
