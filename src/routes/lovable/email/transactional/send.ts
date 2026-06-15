@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { render } from '@react-email/components'
+import { renderAsync } from '@react-email/components'
 import { createClient } from '@supabase/supabase-js'
 import { createFileRoute } from '@tanstack/react-router'
 import { TEMPLATES } from '@/lib/email-templates/registry'
@@ -8,10 +8,10 @@ import { TEMPLATES } from '@/lib/email-templates/registry'
 const SITE_NAME = "gigi-l"
 // SENDER_DOMAIN is the verified sender subdomain FQDN (e.g., "notify.example.com").
 // It MUST match the subdomain delegated to Lovable's nameservers. NEVER use the root domain.
-const SENDER_DOMAIN = "notify.solyn-global.com"
+const SENDER_DOMAIN = "notify.test-solyn.pw"
 // FROM_DOMAIN is the domain shown in the From: header (e.g., "example.com").
 // Can be the root domain when display_from_root is enabled — this is cosmetic only.
-const FROM_DOMAIN = "notify.solyn-global.com"
+const FROM_DOMAIN = "notify.test-solyn.pw"
 
 function redactEmail(email: string | null | undefined): string {
   if (!email) return '***'
@@ -253,8 +253,8 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
 
         // 4. Render React Email template to HTML and plain text
         const element = React.createElement(template.component, templateData)
-        const html = await render(element)
-        const plainText = await render(element, { plainText: true })
+        const html = await renderAsync(element)
+        const plainText = await renderAsync(element, { plainText: true })
 
         // Resolve subject — supports static string or dynamic function
         const resolvedSubject =
