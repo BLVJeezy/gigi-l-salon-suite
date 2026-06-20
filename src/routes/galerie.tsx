@@ -1,6 +1,6 @@
 // /galerie — fotogalerij met categoriefiltter
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { LangProvider, useT } from "@/lib/i18n";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/sections";
