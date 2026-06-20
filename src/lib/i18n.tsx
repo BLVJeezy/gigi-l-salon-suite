@@ -14,10 +14,10 @@ export const translations = {
   fr: {
     nav: { services: "Services", why: "Pourquoi nous", gallery: "Galerie", faq: "FAQ", contact: "Contact", book: "Prendre RDV", servicesPage: "Nos services", galleryPage: "Galerie", bookingPage: "Réserver" },
     hero: {
-      eyebrow: "Salon afro & tresses africaines — Tongres, Limbourg",
+      eyebrow: "Coiffeur & salon afro — Tongres, Limbourg",
       title: "Spécialiste tresses africaines & cheveux texturés à Tongres",
       subtitle:
-        "Box braids, cornrows, tissage, locks et microshading à Tongres. Le seul salon du Limbourg entièrement dédié aux cheveux afro, bouclés et crépus. Koninksemsteenweg 144, Tongres — accessible depuis Bilzen, Hasselt et Sint-Truiden.",
+        "Coiffeuse spécialisée à Tongres : box braids, cornrows, tissage, brushing, coloration, locks et microshading. Le seul salon du Limbourg entièrement dédié aux cheveux afro, bouclés et crépus. Koninksemsteenweg 144, Tongres — accessible depuis Bilzen, Hasselt et Sint-Truiden.",
       ctaBook: "Prendre rendez-vous",
       badges: {
         reviews: "Avis Google",
@@ -73,8 +73,8 @@ export const translations = {
       },
     },
     services: {
-      eyebrow: "Nos services à Tongres",
-      title: "Tresses africaines, tissage & microshading à Tongres — Limburg",
+      eyebrow: "Coiffeur & kapsalon à Tongres",
+      title: "Kapper à Tongres : tresses, brushing, coloration, microshading & ongles",
       learnMore: "Meer weten",
       cats: [
         { key: "coiffure", t: "Coiffure afro & européenne", d: "Box braids, cornrows, tissage, locks et coupes pour cheveux afro, bouclés et raides à Tongres.", img: "/gallery/burgundy-feedin-braids.jpeg" },
@@ -95,7 +95,7 @@ export const translations = {
     },
     why: {
       eyebrow: "Pourquoi GiGi L",
-      title: "Le seul salon afro spécialisé entre Tongres, Bilzen et Hasselt",
+      title: "Le seul coiffeur afro spécialisé entre Tongres, Bilzen et Hasselt",
       items: [
         { t: "Expertise cheveux afro & texturés", d: "Bouclés, frisés, crépus : des techniques maîtrisées pour chaque type de cheveu afro et texturé — sans approximation." },
         { t: "Le salon qui vous comprend vraiment", d: "Conseils honnêtes, écoute et résultats qui vous ressemblent. Pas de coiffure standardisée à Tongres." },
@@ -109,7 +109,7 @@ export const translations = {
       title: "Questions fréquentes",
       items: [
         { q: "Faut-il prendre rendez-vous ?", a: "Oui, nous travaillons sur rendez-vous pour offrir à chaque cliente tout le temps qu'elle mérite. Utilisez le formulaire ci-dessus ou appelez le +32 484 16 49 05." },
-        { q: "Coiffez-vous tous les types de cheveux ?", a: "Absolument. Le salon est spécialisé dans les cheveux bouclés, frisés et crépus, et propose également toutes les coupes européennes classiques." },
+        { q: "Coiffez-vous tous les types de cheveux ?", a: "Absolument. Notre salon de coiffure à Tongres est spécialisé dans les cheveux bouclés, frisés et crépus — tresses, brushing, coloration, tissage. Nous proposons également toutes les coupes européennes classiques." },
         { q: "Combien de temps dure un tressage ?", a: "Selon le style (box braids, cornrows, twists), comptez entre 2 et 6 heures. Une estimation précise vous sera donnée à la prise de rendez-vous." },
         { q: "Vendez-vous des mèches et perruques ?", a: "Oui, nous vendons des mèches et perruques de qualité, avec pose professionnelle au salon." },
         { q: "Où se trouve le salon ?", a: "Koninksemsteenweg 144, 3700 Tongres — facilement accessible en voiture, avec parking à proximité." },
@@ -138,7 +138,7 @@ export const translations = {
       contactTitle: "Contact direct",
     },
     servicesPage: {
-      heroSub: "Tresses africaines, tissage, locks, microshading, ongles et maquillage — tout sous un même toit à Tongres.",
+      heroSub: "Coiffeuse à Tongres : tresses africaines, brushing, coloration, tissage, locks, microshading, ongles et maquillage — tout sous un même toit.",
       bookCta: "Réserver ce service",
       ctaTitle: "Un service vous intéresse ?",
       ctaSub: "Prenez rendez-vous en ligne ou appelez-nous directement au salon.",
@@ -147,7 +147,7 @@ export const translations = {
     },
     galleryPage: {
       title: "Nos réalisations",
-      subtitle: "Chaque coiffure est unique. Voici quelques exemples de notre travail au salon à Tongres.",
+      subtitle: "Chaque coiffure est unique. Voici quelques exemples de notre travail de coiffeuse à Tongres : tresses, brushings, colorations et plus encore.",
       photoCount: "réalisations",
       filterAll: "Tout voir",
       filterTresses: "Tresses",
@@ -194,10 +194,10 @@ export const translations = {
   nl: {
     nav: { services: "Diensten", why: "Waarom wij", gallery: "Galerij", faq: "FAQ", contact: "Contact", book: "Reserveer", servicesPage: "Onze diensten", galleryPage: "Galerij", bookingPage: "Reserveren" },
     hero: {
-      eyebrow: "Afro kapsalon & vlechten — Tongeren, Limburg",
+      eyebrow: "Kapper & kapsalon afro — Tongeren, Limburg",
       title: "Specialist Afrikaanse vlechten & getextureerd haar in Tongeren",
       subtitle:
-        "Box braids, cornrows, weaves, locks en microshading in Tongeren. Het enige salon in Limburg volledig gespecialiseerd in afro-, kroes- en krullend haar. Koninksemsteenweg 144 — bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden.",
+        "Kapper in Tongeren voor afro haar: box braids, cornrows, vlechten, brushing, haren kleuren, weaves, locks en microshading. Het enige kapsalon in Limburg volledig gespecialiseerd in kroes-, krullend en afrohaar. Koninksemsteenweg 144 — bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden.",
       ctaBook: "Maak een afspraak",
       badges: {
         reviews: "Google-reviews",
@@ -253,8 +253,8 @@ export const translations = {
       },
     },
     services: {
-      eyebrow: "Onze diensten in Tongeren",
-      title: "Afrikaanse vlechten, weaves & microshading in Tongeren — Limburg",
+      eyebrow: "Kapper & kapsalon in Tongeren",
+      title: "Kapster in Tongeren: vlechten, brushing, haren kleuren, weaves & microshading",
       learnMore: "Meer weten",
       cats: [
         { key: "coiffure", t: "Afro coiffure & vlechten", d: "Box braids, cornrows, weaves, locks en knipbeurten voor afro-, kroes- en krullend haar in Tongeren.", img: "/gallery/burgundy-feedin-braids.jpeg" },
@@ -275,11 +275,11 @@ export const translations = {
     },
     why: {
       eyebrow: "Waarom GiGi L",
-      title: "Het enige afro-kapsalon tussen Tongeren, Bilzen en Hasselt",
+      title: "Het enige afro-kapsalon & kapster gespecialiseerd tussen Tongeren, Bilzen en Hasselt",
       items: [
         { t: "Expertise in afro & getextureerd haar", d: "Krullend, kroes, afro of steil: beheerste technieken specifiek voor getextureerd haar — geen gokwerk." },
         { t: "Een salon dat u écht begrijpt", d: "Eerlijk advies, goed luisteren en resultaten die bij u passen. Geen standaardkapsels in Tongeren." },
-        { t: "Complete beauty onder één dak in Tongeren", d: "Afrikaanse vlechten, microshading, nagels, pruiken: alles op Koninksemsteenweg 144." },
+        { t: "Kapper, kapster & meer onder één dak in Tongeren", d: "Vlechten, brushing, haren kleuren, microshading, nagels, pruiken: alles in ons kapsalon op Koninksemsteenweg 144." },
         { t: "4,6/5 op Google — vertrouwen uit heel Limburg", d: "Klanten uit Tongeren, Bilzen, Hasselt en Sint-Truiden komen elke week terug." },
       ],
     },
@@ -289,7 +289,7 @@ export const translations = {
       title: "Veelgestelde vragen",
       items: [
         { q: "Moet ik een afspraak maken?", a: "Ja, we werken op afspraak zodat elke klant de tijd krijgt die hij verdient. Gebruik het formulier hierboven of bel +32 484 16 49 05." },
-        { q: "Werkt u met elk haartype?", a: "Absoluut. Het salon is gespecialiseerd in krullend, kroes- en afrohaar, en biedt ook alle klassieke Europese knipbeurten." },
+        { q: "Werkt u met elk haartype?", a: "Absoluut. Ons kapsalon in Tongeren is gespecialiseerd in krullend, kroes- en afrohaar — van vlechten en brushing tot haren kleuren en weaves. We bieden ook alle klassieke Europese knipbeurten aan." },
         { q: "Hoe lang duurt vlechten?", a: "Afhankelijk van de stijl (box braids, cornrows, twists), reken op 2 tot 6 uur. U krijgt een exacte schatting bij de boeking." },
         { q: "Verkoopt u extensions en pruiken?", a: "Ja, we verkopen kwaliteitsextensions en pruiken, met professionele plaatsing in het salon." },
         { q: "Waar bevindt het salon zich?", a: "Koninksemsteenweg 144, 3700 Tongeren — vlot bereikbaar met de wagen, parking in de buurt." },
@@ -318,7 +318,7 @@ export const translations = {
       contactTitle: "Direct contact",
     },
     servicesPage: {
-      heroSub: "Afrikaanse vlechten, weaves, locks, microshading, nagels en make-up — alles onder één dak in Tongeren.",
+      heroSub: "Kapster in Tongeren: Afrikaanse vlechten, brushing, haren kleuren, weaves, locks, microshading, nagels en make-up — alles onder één dak in ons kapsalon.",
       bookCta: "Reserveer deze dienst",
       ctaTitle: "Interesse in een dienst?",
       ctaSub: "Maak online een afspraak of bel ons direct in het salon.",
@@ -327,7 +327,7 @@ export const translations = {
     },
     galleryPage: {
       title: "Ons werk",
-      subtitle: "Elke coiffure is uniek. Hier zijn een paar voorbeelden van ons werk in het salon in Tongeren.",
+      subtitle: "Elke coiffure is uniek. Hier zijn voorbeelden van ons werk als kapper in Tongeren: vlechten, brushings, kleuringen en meer.",
       photoCount: "realisaties",
       filterAll: "Alles",
       filterTresses: "Vlechten",
@@ -374,10 +374,10 @@ export const translations = {
   en: {
     nav: { services: "Services", why: "Why us", gallery: "Gallery", faq: "FAQ", contact: "Contact", book: "Book now", servicesPage: "Our services", galleryPage: "Gallery", bookingPage: "Book" },
     hero: {
-      eyebrow: "Afro hair salon & braids — Tongeren, Limburg",
+      eyebrow: "Hair salon & afro braids — Tongeren, Limburg",
       title: "African braids & textured hair specialist in Tongeren",
       subtitle:
-        "Box braids, cornrows, weaves, locs and microshading in Tongeren. The only salon in Limburg fully specialised in afro, coily and curly hair. Koninksemsteenweg 144 — easy to reach from Bilzen, Hasselt and Sint-Truiden.",
+        "Hair salon in Tongeren for afro hair: box braids, cornrows, blow-dry, hair colouring, weaves, locs and microshading. The only salon in Limburg fully specialised in afro, coily and curly hair. Koninksemsteenweg 144 — easy to reach from Bilzen, Hasselt and Sint-Truiden.",
       ctaBook: "Book an appointment",
       badges: {
         reviews: "Google reviews",
@@ -434,7 +434,7 @@ export const translations = {
     },
     services: {
       eyebrow: "Our services in Tongeren",
-      title: "African braids, weaves & microshading in Tongeren — Limburg",
+      title: "Hair salon Tongeren: braids, blow-dry, hair colouring, weaves & microshading",
       learnMore: "Meer weten",
       cats: [
         { key: "coiffure", t: "Afro hair & braids", d: "Box braids, cornrows, weaves, locs and cuts for afro, coily and curly hair in Tongeren.", img: "/gallery/burgundy-feedin-braids.jpeg" },
@@ -455,7 +455,7 @@ export const translations = {
     },
     why: {
       eyebrow: "Why GiGi L",
-      title: "The only afro hair salon between Tongeren, Bilzen and Hasselt",
+      title: "The only afro hairdresser & hair salon between Tongeren, Bilzen and Hasselt",
       items: [
         { t: "Afro & textured hair experts", d: "Curly, coily, afro or straight: mastered techniques built for textured hair — no guesswork." },
         { t: "A salon that truly gets you", d: "Honest advice, careful listening and results that look like you. No one-size-fits-all in Tongeren." },
@@ -469,7 +469,7 @@ export const translations = {
       title: "Frequently asked questions",
       items: [
         { q: "Do I need an appointment?", a: "Yes, we work by appointment so every client gets the time they deserve. Use the form above or call +32 484 16 49 05." },
-        { q: "Do you style every hair type?", a: "Absolutely. The salon specialises in curly, coily and afro hair, and also offers all classic European cuts." },
+        { q: "Do you style every hair type?", a: "Absolutely. Our hair salon in Tongeren specialises in curly, coily and afro hair — braids, blow-dry, hair colouring, weaves. We also offer all classic European cuts." },
         { q: "How long does braiding take?", a: "Depending on the style (box braids, cornrows, twists), allow 2 to 6 hours. You'll get a precise estimate when booking." },
         { q: "Do you sell extensions and wigs?", a: "Yes, we sell quality extensions and wigs, with professional fitting at the salon." },
         { q: "Where is the salon?", a: "Koninksemsteenweg 144, 3700 Tongeren — easy to reach by car, with parking nearby." },
@@ -527,7 +527,7 @@ export const translations = {
       contactTitle: "Direct contact",
     },
     servicesPage: {
-      heroSub: "African braids, weaves, locks, microshading, nails and make-up — all under one roof in Tongeren.",
+      heroSub: "Hair salon in Tongeren: African braids, blow-dry, hair colouring, weaves, locks, microshading, nails and make-up — everything under one roof at our salon.",
       bookCta: "Book this service",
       ctaTitle: "Interested in a service?",
       ctaSub: "Book online or call us directly at the salon.",
