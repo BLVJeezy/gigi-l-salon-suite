@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GiGi L Coiffure — Salon de coiffure africaine & européenne à Tongres" },
-      { name: "description", content: "Salon de coiffure à Tongres spécialisé cheveux bouclés, frisés et crépus : tresses africaines, tissage, rastas, microshading, perruques & mèches." },
+      { name: "description", content: "Salon afro & tresses africaines à Tongres (Limbourg). Spécialiste box braids, cornrows, tissage, locks, microshading et ongles. Le seul salon de Limburg dédié aux cheveux afro et texturés. Accessible depuis Bilzen, Hasselt et Sint-Truiden. Koninksemsteenweg 144, Tongres." },
       { property: "og:title", content: "GiGi L Coiffure — Salon de coiffure à Tongres" },
       { property: "og:description", content: "Spécialiste des cheveux bouclés, frisés et crépus. Tresses, tissage, microshading, perruques & mèches à Tongeren." },
       { property: "og:type", content: "website" },
