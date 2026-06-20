@@ -46,6 +46,96 @@ const PHOTOS: Photo[] = [
   { cat: "nails", src: "/gallery/nails-green-french.png", alt_fr: "French vert avec strass", alt_nl: "Groene french met steentjes", alt_en: "Green French tips with gems" },
 ];
 
+// ─── Mobile filter dropdown component ──────────────────────────────────────────
+function MobileFilterDropdown({
+  categories,
+  active,
+  onChange,
+  photos,
+}: {
+  categories: { key: string; label: string }[];
+  active: string;
+  onChange: (key: string) => void;
+  photos: Photo[];
+}) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const activeCat = categories.find((c) => c.key === active);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  function countFor(key: string) {
+    return key === "all" ? photos.length : photos.filter((p) => p.cat === key).length;
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center justify-between w-full px-5 py-3 bg-ivory border border-gold/40 text-ink text-sm tracking-widest uppercase font-medium"
+      >
+        <span className="flex items-center gap-2">
+          {activeCat?.label}
+          <span className="inline-flex items-center justify-center bg-gold/10 text-gold text-[10px] font-semibold px-1.5 py-0.5 min-w-[1.25rem]">
+            {countFor(active)}
+          </span>
+        </span>
+        <svg
+          className={`w-4 h-4 text-gold transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute left-0 right-0 mt-2 bg-ivory border border-gold/30 shadow-lg z-50 max-h-[60vh] overflow-y-auto scrollbar-none">
+          {categories.map((c) => {
+            const isActive = c.key === active;
+            return (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => {
+                  onChange(c.key);
+                  setOpen(false);
+                }}
+                className={`flex items-center justify-between w-full px-5 py-3 text-sm tracking-widest uppercase transition-colors border-b border-border last:border-b-0 ${
+                  isActive
+                    ? "bg-gold text-ivory font-medium"
+                    : "text-smoke hover:bg-sand/50 hover:text-ink"
+                }`}
+              >
+                <span>{c.label}</span>
+                <span
+                  className={`text-[10px] font-medium px-1.5 py-0.5 min-w-[1.25rem] ${
+                    isActive ? "bg-ivory/20 text-ivory" : "bg-gold/10 text-gold"
+                  }`}
+                >
+                  {countFor(c.key)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function GalleryPage() {
   const { t, lang } = useT();
   const [active, setActive] = useState("all");
