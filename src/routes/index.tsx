@@ -15,10 +15,10 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hreflang: "fr", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hreflang: "nl", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hreflang: "en", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hreflang: "x-default", href: "https://gigilcoiffure.be/" },
+      { rel: "alternate", hrefLang: "fr", href: "https://gigilcoiffure.be/" },
+      { rel: "alternate", hrefLang: "nl", href: "https://gigilcoiffure.be/" },
+      { rel: "alternate", hrefLang: "en", href: "https://gigilcoiffure.be/" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://gigilcoiffure.be/" },
     ],
     scripts: [
       {
