@@ -38,9 +38,6 @@ export function Header() {
 
         <div className="flex items-center gap-3 sm:gap-5">
           <LangSwitcher current={lang} onChange={setLang} />
-          <Link to="/reservations" className="hidden sm:inline-flex btn-gold btn-gold-hover">
-            {t.nav.book}
-          </Link>
           {/* Square hamburger */}
           <button
             aria-label="Menu"
@@ -73,13 +70,6 @@ export function Header() {
               {l.label}
             </Link>
           ))}
-          <Link
-            to="/reservations"
-            onClick={() => setOpen(false)}
-            className="btn-gold btn-gold-hover w-full mt-2 text-center block"
-          >
-            {t.nav.book}
-          </Link>
         </div>
       )}
     </header>
@@ -105,3 +95,4 @@ function LangSwitcher({ current, onChange }: { current: Lang; onChange: (l: Lang
     </div>
   );
 }
+
