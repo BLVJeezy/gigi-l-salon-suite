@@ -97,7 +97,17 @@ function GalleryPage() {
       {/* ── Sticky filter bar ── */}
       <div className="sticky top-16 z-40 bg-ivory/95 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="flex items-center gap-2 overflow-x-auto py-3 scrollbar-none">
+          {/* Mobile: pill dropdown */}
+          <div className="sm:hidden py-3">
+            <MobileFilterDropdown
+              categories={categories}
+              active={active}
+              onChange={(key) => { setActive(key); }}
+              photos={PHOTOS}
+            />
+          </div>
+          {/* Desktop: horizontal scroll pills */}
+          <div className="hidden sm:flex items-center gap-2 overflow-x-auto py-3 scrollbar-none">
             {categories.map(c => (
               <button
                 key={c.key}
