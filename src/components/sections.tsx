@@ -105,9 +105,9 @@ export function Services() {
           <div className="mt-5 gold-rule" />
         </div>
 
-        {/* Category cards: photo → title → mini description → button.
-            Mobile: 2-col grid (3rd wraps). Desktop: 3-col. */}
-        <div className="mt-12 lg:mt-14 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+        {/* Category cards: 2×2 grid.
+            Rij 1: Afro coiffure & Kapsalon  |  Rij 2: Microshading & Nails */}
+        <div className="mt-12 lg:mt-14 grid grid-cols-2 gap-3 sm:gap-5">
           {t.services.cats.map((c) => (
             <div key={c.key} className="group flex flex-col bg-white border border-border overflow-hidden">
               {/* Photo */}
