@@ -79,7 +79,7 @@ export const translations = {
       cats: [
         { key: "coiffure", t: "Coiffure afro & européenne", d: "Box braids, cornrows, tissage, locks et coupes pour cheveux afro, bouclés et raides à Tongres.", img: "/gallery/burgundy-feedin-braids.jpeg" },
         { key: "nails", t: "Nails", d: "Pose complète, gel, vernis semi-permanent et pédicure.", img: "/gallery/cat-nails.jpeg" },
-        { key: "microshading", t: "Microshading sourcils", d: "Sourcils redessinés à Tongres — effet poudré naturel et durable, rendez-vous le jour même possible.", img: "/gallery/curly-naturel.jpeg" },
+        { key: "microshading", t: "Microshading sourcils", d: "Sourcils redessinés à Tongres — effet poudré naturel et durable, rendez-vous le jour même possible.", img: "/gallery/cat-microshading.png" },
       ],
       items: [
         { t: "Tresses africaines", d: "Box braids, cornrows, twists — un tressage soigné qui protège et sublime vos cheveux." },
@@ -259,7 +259,7 @@ export const translations = {
       cats: [
         { key: "coiffure", t: "Afro coiffure & vlechten", d: "Box braids, cornrows, weaves, locks en knipbeurten voor afro-, kroes- en krullend haar in Tongeren.", img: "/gallery/burgundy-feedin-braids.jpeg" },
         { key: "nails", t: "Nails", d: "Volledige set, gel, semi-permanente lak en pedicure.", img: "/gallery/cat-nails.jpeg" },
-        { key: "microshading", t: "Microshading wenkbrauwen", d: "Wenkbrauwen opnieuw getekend in Tongeren — natuurlijk poedereffect, ook op dezelfde dag mogelijk.", img: "/gallery/curly-naturel.jpeg" },
+        { key: "microshading", t: "Microshading wenkbrauwen", d: "Wenkbrauwen opnieuw getekend in Tongeren — natuurlijk poedereffect, ook op dezelfde dag mogelijk.", img: "/gallery/cat-microshading.png" },
       ],
       items: [
         { t: "Afrikaanse vlechten", d: "Box braids, cornrows, twists — zorgvuldig vlechtwerk dat uw haar beschermt en mooier maakt." },
@@ -439,7 +439,7 @@ export const translations = {
       cats: [
         { key: "coiffure", t: "Afro hair & braids", d: "Box braids, cornrows, weaves, locs and cuts for afro, coily and curly hair in Tongeren.", img: "/gallery/burgundy-feedin-braids.jpeg" },
         { key: "nails", t: "Nails", d: "Full set, gel, semi-permanent polish and pedicure.", img: "/gallery/cat-nails.jpeg" },
-        { key: "microshading", t: "Microshading brows", d: "Brows redefined in Tongeren — natural powder effect, same-day appointments available.", img: "/gallery/curly-naturel.jpeg" },
+        { key: "microshading", t: "Microshading brows", d: "Brows redefined in Tongeren — natural powder effect, same-day appointments available.", img: "/gallery/cat-microshading.png" },
       ],
       items: [
         { t: "African braids", d: "Box braids, cornrows, twists — meticulous braiding that protects and elevates your hair." },
