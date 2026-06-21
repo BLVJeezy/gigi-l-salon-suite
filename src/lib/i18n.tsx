@@ -73,12 +73,12 @@ export const translations = {
       },
     },
     services: {
-      eyebrow: "Coiffeur & kapsalon à Tongres",
-      title: "Kapper à Tongres : tresses, brushing, coloration, microshading & ongles",
-      learnMore: "Meer weten",
+      eyebrow: "Coiffeur & salon de coiffure à Tongres",
+      title: "Coiffeur à Tongres : tresses, brushing, coloration, microshading & ongles",
+      learnMore: "En savoir plus",
       cats: [
-        { key: "coiffure", t: "Coiffure afro & vlechten", d: "Box braids, cornrows, tissage, locks — spécialiste cheveux afro, bouclés et crépus à Tongres.", img: "/gallery/burgundy-feedin-braids.jpeg" },
-        { key: "kapsalon", t: "Kapsalon", d: "Brushing, coloration, balayage, coupe femme & homme — tout ce que fait un bon coiffeur à Tongres.", img: "/gallery/tissage-lisse-brun.jpeg" },
+        { key: "coiffure", t: "Coiffure afro & tressage", d: "Box braids, cornrows, tissage, locks — spécialiste cheveux afro, bouclés et crépus à Tongres.", img: "/gallery/burgundy-feedin-braids.jpeg" },
+        { key: "kapsalon", t: "Salon de coiffure", d: "Brushing, coloration, balayage, coupe femme & homme — tout ce que fait un bon coiffeur à Tongres.", img: "/gallery/tissage-lisse-brun.jpeg" },
         { key: "microshading", t: "Microshading sourcils", d: "Sourcils redessinés à Tongres — effet poudré naturel et durable, rendez-vous le jour même possible.", img: "/gallery/cat-microshading.png" },
         { key: "nails", t: "Nails", d: "Pose complète, gel, vernis semi-permanent et pédicure.", img: "/gallery/cat-nails.jpeg" },
       ],
@@ -278,7 +278,7 @@ export const translations = {
     },
     why: {
       eyebrow: "Waarom GiGi L",
-      title: "Het enige afro-kapsalon & kapster gespecialiseerd tussen Tongeren, Bilzen en Hasselt",
+      title: "Het enige gespecialiseerde afro-kapsalon tussen Tongeren, Bilzen en Hasselt",
       items: [
         { t: "Expertise in afro & getextureerd haar", d: "Krullend, kroes, afro of steil: beheerste technieken specifiek voor getextureerd haar — geen gokwerk." },
         { t: "Een salon dat u écht begrijpt", d: "Eerlijk advies, goed luisteren en resultaten die bij u passen. Geen standaardkapsels in Tongeren." },
@@ -292,7 +292,7 @@ export const translations = {
       eyebrow: "FAQ",
       title: "Veelgestelde vragen",
       items: [
-        { q: "Moet ik een afspraak maken?", a: "Ja, we werken op afspraak zodat elke klant de tijd krijgt die hij verdient. Gebruik het formulier hierboven of bel +32 484 16 49 05." },
+        { q: "Moet ik een afspraak maken?", a: "Ja, we werken op afspraak zodat elke klant de tijd krijgt die zij verdient. Gebruik het formulier hierboven of bel +32 484 16 49 05." },
         { q: "Werkt u met elk haartype?", a: "Absoluut. Ons kapsalon in Tongeren is gespecialiseerd in krullend, kroes- en afrohaar — van vlechten en brushing tot haren kleuren en weaves. We bieden ook alle klassieke Europese knipbeurten aan." },
         { q: "Hoe lang duurt vlechten?", a: "Afhankelijk van de stijl (box braids, cornrows, twists), reken op 2 tot 6 uur. U krijgt een exacte schatting bij de boeking." },
         { q: "Verkoopt u extensions en pruiken?", a: "Ja, we verkopen kwaliteitsextensions en pruiken, met professionele plaatsing in het salon." },
@@ -304,7 +304,7 @@ export const translations = {
       ctaSub: "Boek uw afspraak en beleef de GiGi L-ervaring.",
       ctaBtn: "Maak een afspraak",
       hoursTitle: "Openingsuren",
-      hoursLines: ["Maa, Don – Zat: 09u00 – 20u00", "Din – Woe, Zon: op afspraak"],
+      hoursLines: ["Ma, Do – Za: 09:00 – 20:00", "Di – Wo, Zo: op afspraak"],
       linksTitle: "Links",
       rights: "Alle rechten voorbehouden.",
     },
@@ -331,7 +331,7 @@ export const translations = {
     },
     galleryPage: {
       title: "Ons werk",
-      subtitle: "Elke coiffure is uniek. Hier zijn voorbeelden van ons werk als kapper in Tongeren: vlechten, brushings, kleuringen en meer.",
+      subtitle: "Elke coiffure is uniek. Hier zijn voorbeelden van ons werk als kapper in Tongeren: vlechten, brushing, kleuringen en meer.",
       photoCount: "realisaties",
       filterAll: "Alles",
       filterTresses: "Vlechten",
@@ -439,7 +439,7 @@ export const translations = {
     services: {
       eyebrow: "Our services in Tongeren",
       title: "Hair salon Tongeren: braids, blow-dry, hair colouring, weaves & microshading",
-      learnMore: "Meer weten",
+      learnMore: "Learn more",
       cats: [
         { key: "coiffure", t: "Afro hair & braids", d: "Box braids, cornrows, weaves, locs — specialist in afro, coily and curly hair in Tongeren.", img: "/gallery/burgundy-feedin-braids.jpeg" },
         { key: "kapsalon", t: "Hair salon", d: "Blow-dry, hair colouring, balayage, women's & men's cuts — everything a great hairdresser in Tongeren does.", img: "/gallery/tissage-lisse-brun.jpeg" },
