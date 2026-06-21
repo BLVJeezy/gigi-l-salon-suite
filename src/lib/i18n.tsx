@@ -77,7 +77,7 @@ export const translations = {
       title: "Coiffeur à Tongres : tresses, brushing, coloration, microshading & ongles",
       learnMore: "En savoir plus",
       cats: [
-        { key: "coiffure", t: "Coiffure afro & tressage", d: "Box braids, cornrows, tissage, locks — spécialiste cheveux afro, bouclés et crépus à Tongres.", img: "/gallery/burgundy-feedin-braids.jpeg" },
+        { key: "coiffure", t: "Coiffure afro & tressage", d: "Box braids, cornrows, tissage, locks — spécialiste cheveux afro, bouclés et crépus à Tongres.", img: "/gallery/cornrows-homme.jpeg" },
         { key: "kapsalon", t: "Salon de coiffure", d: "Brushing, coloration, balayage, coupe femme & homme — tout ce que fait un bon coiffeur à Tongres.", img: "/gallery/tissage-lisse-brun.jpeg" },
         { key: "microshading", t: "Microshading sourcils", d: "Sourcils redessinés à Tongres — effet poudré naturel et durable, rendez-vous le jour même possible.", img: "/gallery/cat-microshading.png" },
         { key: "nails", t: "Nails", d: "Pose complète, gel, vernis semi-permanent et pédicure.", img: "/gallery/cat-nails.jpeg" },
@@ -259,7 +259,7 @@ export const translations = {
       title: "Kapster in Tongeren: vlechten, brushing, haren kleuren, weaves & microshading",
       learnMore: "Meer weten",
       cats: [
-        { key: "coiffure", t: "Afro coiffure & vlechten", d: "Box braids, cornrows, weaves, locks — specialist afro-, kroes- en krullend haar in Tongeren.", img: "/gallery/burgundy-feedin-braids.jpeg" },
+        { key: "coiffure", t: "Afro coiffure & vlechten", d: "Box braids, cornrows, weaves, locks — specialist afro-, kroes- en krullend haar in Tongeren.", img: "/gallery/cornrows-homme.jpeg" },
         { key: "kapsalon", t: "Kapsalon", d: "Brushing, haren kleuren, balayage, knipbeurt dames & heren — alles wat een goede kapster in Tongeren doet.", img: "/gallery/tissage-lisse-brun.jpeg" },
         { key: "microshading", t: "Microshading wenkbrauwen", d: "Wenkbrauwen opnieuw getekend in Tongeren — natuurlijk poedereffect, ook op dezelfde dag mogelijk.", img: "/gallery/cat-microshading.png" },
         { key: "nails", t: "Nails", d: "Volledige set, gel, semi-permanente lak en pedicure.", img: "/gallery/cat-nails.jpeg" },
@@ -441,7 +441,7 @@ export const translations = {
       title: "Hair salon Tongeren: braids, blow-dry, hair colouring, weaves & microshading",
       learnMore: "Learn more",
       cats: [
-        { key: "coiffure", t: "Afro hair & braids", d: "Box braids, cornrows, weaves, locs — specialist in afro, coily and curly hair in Tongeren.", img: "/gallery/burgundy-feedin-braids.jpeg" },
+        { key: "coiffure", t: "Afro hair & braids", d: "Box braids, cornrows, weaves, locs — specialist in afro, coily and curly hair in Tongeren.", img: "/gallery/cornrows-homme.jpeg" },
         { key: "kapsalon", t: "Hair salon", d: "Blow-dry, hair colouring, balayage, women's & men's cuts — everything a great hairdresser in Tongeren does.", img: "/gallery/tissage-lisse-brun.jpeg" },
         { key: "microshading", t: "Microshading brows", d: "Brows redefined in Tongeren — natural powder effect, same-day appointments available.", img: "/gallery/cat-microshading.png" },
         { key: "nails", t: "Nails", d: "Full set, gel, semi-permanent polish and pedicure.", img: "/gallery/cat-nails.jpeg" },
