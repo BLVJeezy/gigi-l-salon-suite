@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LangProvider } from "@/lib/i18n";
 import { Header } from "@/components/Header";
-import { Hero, Services, Why, Gallery, Faq, Footer } from "@/components/sections";
+import { Hero, Services, Why, Gallery, Reviews, Faq, Footer } from "@/components/sections";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -79,6 +79,7 @@ function IndexPage() {
         <Services />
         <Why />
         <Gallery />
+        <Reviews />
         <Faq />
       </main>
       <Footer />

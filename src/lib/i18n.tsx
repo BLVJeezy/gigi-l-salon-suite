@@ -104,6 +104,7 @@ export const translations = {
       ],
     },
     gallery: { eyebrow: "Galerie", title: "Nos réalisations" },
+    reviews: { eyebrow: "Google Reviews", title: "Ce que disent nos clientes" },
     faq: {
       eyebrow: "FAQ",
       title: "Questions fréquentes",
@@ -284,6 +285,7 @@ export const translations = {
       ],
     },
     gallery: { eyebrow: "Galerij", title: "Ons werk" },
+    reviews: { eyebrow: "Google Reviews", title: "Wat onze klanten zeggen" },
     faq: {
       eyebrow: "FAQ",
       title: "Veelgestelde vragen",
@@ -464,6 +466,7 @@ export const translations = {
       ],
     },
     gallery: { eyebrow: "Gallery", title: "Our work" },
+    reviews: { eyebrow: "Google Reviews", title: "What our clients say" },
     faq: {
       eyebrow: "FAQ",
       title: "Frequently asked questions",

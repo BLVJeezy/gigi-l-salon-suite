@@ -216,6 +216,128 @@ export function Gallery() {
 }
 
 
+export function Reviews() {
+  const { t } = useT();
+
+  const REVIEWS = [
+    { name: "Lahla Moussa",        stars: 5, text: "Salon de qualité, la coiffeuse est au top, ambiance garantie, coiffure exactement ce que j'ai demandé. Je reviendrai ! 🔥🔥" },
+    { name: "Sara Neven",          stars: 5, text: "Mijn dochter haar haren zijn altijd super mooi in orde! Super bekwame Afrikaanse kapster." },
+    { name: "K. B.",               stars: 5, text: "Coiffeuse vraiment très accueillante, sympathique, ponctuelle et professionnelle. Son salon est beau, propre, je recommande." },
+    { name: "drissia larabi",      stars: 5, text: "C'était magnifique. Elle est très gentille. Je suis satisfaite de son travail. Un très très super broching !" },
+    { name: "Jean François B.",    stars: 5, text: "Accueil au top et le résultat de la coupe de cheveux est excellent, je recommande vivement." },
+    { name: "Marylene Rahir",      stars: 5, text: "Super travail et super coiffeuse. Sympa et professionnelle." },
+    { name: "Wendy",               stars: 5, text: "Coiffeuse sympathique, accueil le client très bien, prend le temps de conseiller. Mon coiffeur préféré !" },
+    { name: "christine leclercq",  stars: 5, text: "Commerçante artiste comique avec beaucoup de professionnalisme. UNIQUE." },
+    { name: "Nathalie Alberico",   stars: 5, text: "Coiffeuse professionnelle et super sympathique. On rigole beaucoup." },
+    { name: "Manuella Isabella",   stars: 5, text: "Coiffeuse super sympa, travail de qualité je la recommande. Tjrs au top." },
+    { name: "Andre Lux",           stars: 5, text: "Cadre exceptionnel, patronne divine et d'une gentillesse sans pareils." },
+    { name: "Patricia Piedboeuf",  stars: 5, text: "Ambiance joyeuse et travail tjrs parfait." },
+    { name: "Jean Francois Carrasco", stars: 5, text: "Très bien accueillit, bien rigoler, je suis content de ma coupe aussi." },
+    { name: "LINA MOUSSA BACKA",   stars: 5, text: "Best Salon du monde for me 🙏🏾💎" },
+    { name: "Rachel Evrard",       stars: 5, text: "Super patronne." },
+    { name: "Régis SOSSOU BIADJA", stars: 5, text: "C'est juste top!!!" },
+    { name: "Claudine Ida",        stars: 5, text: "Génial." },
+    { name: "patricia piedboeuf",  stars: 5, text: "Un accueil plus que sympathique, on s'y sent comme à la maison. Merci à Armande pour son originalité." },
+    { name: "Novitz Janos",        stars: 5, text: "Très bo travail." },
+    { name: "Anick Rabe",          stars: 5, text: "Convivial. La patronne est très gentille et propose un super accueil." },
+  ];
+
+  // Split into two columns — stagger so they feel different
+  const col1 = REVIEWS.filter((_, i) => i % 2 === 0);
+  const col2 = REVIEWS.filter((_, i) => i % 2 === 1);
+
+  return (
+    <section className="bg-sand py-20 lg:py-28 overflow-hidden">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="max-w-2xl mb-14">
+          <p className="eyebrow">{t.reviews?.eyebrow ?? "Google Reviews"}</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl text-ink">
+            {t.reviews?.title ?? "Ce que disent nos clientes"}
+          </h2>
+          <div className="mt-5 gold-rule" />
+          <p className="mt-4 text-smoke text-sm">★ 4,6/5 · 28 avis Google vérifiés</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 sm:gap-5" style={{ height: "520px" }}>
+          <ReviewColumn reviews={col1} direction="up" />
+          <ReviewColumn reviews={col2} direction="down" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+type ReviewItem = { name: string; stars: number; text: string };
+
+function ReviewColumn({ reviews, direction }: { reviews: ReviewItem[]; direction: "up" | "down" }) {
+  const [paused, setPaused] = useState(false);
+
+  // Triple the list so we always have content above and below for seamless looping
+  const items = [...reviews, ...reviews, ...reviews];
+
+  // CSS animation: scrolls at 35s per copy, direction determines translateY sign
+  const animName = direction === "up" ? "scrollUp" : "scrollDown";
+  const itemH = 160; // px — approximate card height
+  const totalH = reviews.length * itemH;
+
+  return (
+    <div
+      className="relative overflow-hidden"
+      style={{ height: "520px" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+    >
+      {/* Top fade */}
+      <div className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, var(--sand) 0%, transparent 100%)" }} />
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to top, var(--sand) 0%, transparent 100%)" }} />
+
+      <style>{`
+        @keyframes scrollUp {
+          0%   { transform: translateY(0); }
+          100% { transform: translateY(-${totalH}px); }
+        }
+        @keyframes scrollDown {
+          0%   { transform: translateY(-${totalH}px); }
+          100% { transform: translateY(0); }
+        }
+      `}</style>
+
+      <div
+        style={{
+          animation: `${animName} ${reviews.length * 5}s linear infinite`,
+          animationPlayState: paused ? "paused" : "running",
+          willChange: "transform",
+        }}
+      >
+        {items.map((r, i) => {
+          // Middle card of each visible trio gets full opacity; top & bottom fade via CSS mask above
+          return (
+            <div
+              key={i}
+              className="mb-3 bg-white border border-border p-4 rounded-lg"
+              style={{ minHeight: `${itemH - 12}px` }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 rounded-full bg-gold/20 flex items-center justify-center text-gold text-xs font-medium shrink-0">
+                  {r.name[0].toUpperCase()}
+                </div>
+                <span className="text-xs font-medium text-ink truncate">{r.name}</span>
+              </div>
+              <div className="text-gold text-xs mb-2">{"★".repeat(r.stars)}</div>
+              <p className="text-smoke text-xs leading-relaxed line-clamp-4">{r.text}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function Faq() {
   const { t } = useT();
   const [open, setOpen] = useState<number | null>(0);
