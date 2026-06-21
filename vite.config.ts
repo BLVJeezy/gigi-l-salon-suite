@@ -7,9 +7,9 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  // Build the SSR server for Vercel (default target is Cloudflare).
-  // Vercel auto-detection / NITRO_PRESET still wins if set in CI.
-  nitro: { preset: "vercel" },
+  // NOTE: Do NOT set nitro.preset here — it breaks Lovable's preview build.
+  // On Vercel, set the environment variable NITRO_PRESET=vercel instead.
+  // Lovable's own preview will then continue to use its default (Cloudflare) target.
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
