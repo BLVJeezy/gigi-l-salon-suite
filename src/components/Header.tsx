@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useT, LANGS, type Lang } from "@/lib/i18n";
+import headerBg from "@/assets/header-bg.jpg.asset.json";
 
 export function Header() {
   const { t, lang, setLang } = useT();
@@ -14,7 +15,24 @@ export function Header() {
   ];
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-ink/90 backdrop-blur-md border-b border-gold/15">
+    <header className="fixed top-0 inset-x-0 z-50 border-b border-gold/20 isolate">
+      {/* Editorial background — dramatic B&W "GiGi L" hand portrait */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-ink bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: `url(${headerBg.url})`,
+          backgroundPosition: "center 35%",
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(14,13,11,0.92) 0%, rgba(14,13,11,0.70) 45%, rgba(14,13,11,0.55) 70%, rgba(14,13,11,0.92) 100%)",
+        }}
+      />
       <div className="mx-auto max-w-7xl px-5 sm:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="font-display text-ivory text-xl tracking-wide">
