@@ -94,11 +94,13 @@ export function Hero() {
         </div>
 
         {/* Mobile form + phone — shifted down, floats inside hero */}
-        {/* Mobile form — pinned to bottom of hero, just above the dots */}
-        <div className="lg:hidden absolute bottom-8 left-0 right-0 px-4 space-y-2 z-10">
-          <BookingForm compact />
+        {/* Mobile form — fills the lower portion of the hero exactly */}
+        <div className="lg:hidden absolute left-0 right-0 px-3 z-10 flex flex-col gap-1.5" style={{ bottom: "28px", top: "52%" }}>
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <BookingForm compact />
+          </div>
           <a href="tel:+32484164905"
-            className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors">
+            className="flex items-center justify-center gap-2 w-full py-2.5 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors shrink-0">
             <span>📞</span> +32 484 16 49 05
           </a>
         </div>
