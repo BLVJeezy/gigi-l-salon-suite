@@ -67,10 +67,10 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
-      {/* Slide dots */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-20 lg:hidden">
+      {/* Slide dots — fixed bar at very bottom of section */}
+      <div className="absolute bottom-0 left-0 right-0 h-7 flex items-center justify-center gap-2 z-20 lg:hidden">
         {SLIDES.map((_, i) => (
-          <button key={i} onClick={() => { setPrev(cur); setCur(i); setTimeout(() => setPrev(null), 700); }}
+          <button key={i} onClick={() => { setPrev(cur); setCur(i); setTimeout(() => setPrev(null), 900); }}
             className={`w-1.5 h-1.5 rounded-full transition-colors ${i === cur ? "bg-gold" : "bg-ivory/30"}`} />
         ))}
       </div>
@@ -95,7 +95,7 @@ export function Hero() {
 
         {/* Mobile form + phone — shifted down, floats inside hero */}
         {/* Mobile form — pinned to bottom of hero, just above the dots */}
-        <div className="lg:hidden absolute bottom-10 left-0 right-0 px-4 space-y-2 z-10">
+        <div className="lg:hidden absolute bottom-8 left-0 right-0 px-4 space-y-2 z-10">
           <BookingForm compact />
           <a href="tel:+32484164905"
             className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors">
