@@ -4,20 +4,28 @@ import { Link } from "@tanstack/react-router";
 import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
 import heroBg from "@/assets/hero-nails.png.asset.json";
+import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
 
 export function Hero() {
   const { t } = useT();
   return (
     <section id="top" className="relative bg-ink text-ivory pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
-      {/* Background image — visible but readable behind content */}
+      {/* Background image — mobile (portrait) */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center lg:hidden"
+        style={{ backgroundImage: `url(${heroBgMobile.url})` }}
+        aria-hidden
+      />
+      {/* Background image — desktop (landscape) */}
+      <div
+        className="absolute inset-0 bg-cover bg-center hidden lg:block"
         style={{ backgroundImage: `url(${heroBg.url})` }}
         aria-hidden
       />
       {/* Dark gradient overlay — keeps content legible while showing the photo */}
-      <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/75 to-ink/40 lg:from-ink/90 lg:via-ink/60 lg:to-ink/20" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/70 to-ink/90 lg:bg-gradient-to-r lg:from-ink/90 lg:via-ink/60 lg:to-ink/20" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="fade-in-up">
