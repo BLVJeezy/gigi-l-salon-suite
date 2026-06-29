@@ -27,7 +27,7 @@ export function Hero() {
         setTimeout(() => setPrev(null), 700);
         return next;
       });
-    }, 3000);
+    }, 5000);
     return () => clearInterval(id);
   }, []);
 
@@ -37,10 +37,10 @@ export function Hero() {
 
       {/* Slide backgrounds */}
       <style>{`
-        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
-        .hero-slide-in  { animation: slideInRight 0.7s cubic-bezier(0.4,0,0.2,1) forwards; }
-        .hero-slide-out { animation: slideOutLeft 0.7s cubic-bezier(0.4,0,0.2,1) forwards; }
+        @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .hero-slide-in  { animation: fadeIn  0.9s ease-in-out forwards; }
+        .hero-slide-out { animation: fadeOut 0.9s ease-in-out forwards; }
       `}</style>
 
       {/* Outgoing slide */}
@@ -94,7 +94,7 @@ export function Hero() {
         </div>
 
         {/* Mobile form + phone — shifted down, floats inside hero */}
-        <div className="lg:hidden fade-in-up mt-8 space-y-2 px-1">
+        <div className="lg:hidden fade-in-up mt-14 space-y-2 px-1">
           <BookingForm compact />
           <a href="tel:+32484164905"
             className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors">
