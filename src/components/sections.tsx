@@ -33,7 +33,7 @@ export function Hero() {
 
   return (
     <>
-    <section id="top" className="relative bg-ink text-ivory pt-24 pb-16 lg:pt-36 lg:pb-28 overflow-hidden">
+    <section id="top" className="relative bg-ink text-ivory pt-24 pb-4 lg:pt-36 lg:pb-28 overflow-hidden">
 
       {/* Slide backgrounds */}
       <style>{`
