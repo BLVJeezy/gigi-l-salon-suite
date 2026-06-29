@@ -9,7 +9,7 @@ import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
 export function Hero() {
   const { t } = useT();
   return (
-    <section id="top" className="relative bg-ink text-ivory pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
+    <section id="top" className="relative bg-ink text-ivory pt-24 pb-0 lg:pt-36 lg:pb-28 overflow-hidden">
       {/* Background image — mobile */}
       <div
         className="absolute inset-0 bg-cover bg-center lg:hidden"
@@ -22,24 +22,24 @@ export function Hero() {
         style={{ backgroundImage: `url(${heroBg.url})` }}
         aria-hidden
       />
-      {/* Overlay: dark only at top (behind text) — fades out so nagels are free */}
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/60 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
+      {/* Overlay: dark only at top behind text, fades to transparent so nails are free */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/55 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="fade-in-up">
           <p className="eyebrow">{t.hero.eyebrow}</p>
-          <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-ivory">
+          <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-ivory">
             {t.hero.title}
           </h1>
-          <div className="mt-6 gold-rule" />
+          <div className="mt-4 gold-rule" />
 
-          {/* Subtitle — hidden on mobile so nagels are free, visible on desktop */}
+          {/* Subtitle — desktop only inside hero */}
           <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">
             {t.hero.subtitle}
           </p>
 
-          <div className="mt-8 flex gap-3">
+          <div className="mt-6 flex gap-3">
             <a href="#contact" className="btn-gold btn-gold-hover hidden lg:inline-flex">
               {t.hero.ctaBook}
             </a>
@@ -48,21 +48,19 @@ export function Hero() {
             </a>
           </div>
 
-          {/* Trust badges */}
-          <TrustBadges />
+          {/* Trust badges — pulled up tighter on mobile */}
+          <div className="mt-4 lg:mt-8">
+            <TrustBadges />
+          </div>
         </div>
 
-        {/* Mobile: form + subtitle + phone below */}
-        <div className="lg:hidden fade-in-up space-y-3">
+        {/* Mobile: form + phone — no subtitle here */}
+        <div className="lg:hidden fade-in-up space-y-3 pb-0">
           <BookingForm />
           <a href="tel:+32484164905"
             className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
             <span className="text-xl">📞</span> +32 484 16 49 05
           </a>
-          {/* Subtitle comes after phone on mobile */}
-          <p className="text-ivory/60 text-xs leading-relaxed pt-2">
-            {t.hero.subtitle}
-          </p>
         </div>
 
         {/* Desktop: form right column */}
@@ -71,6 +69,13 @@ export function Hero() {
         </div>
       </div>
     </section>
+
+    {/* Subtitle — outside the hero on mobile, below the fold */}
+    <div className="lg:hidden bg-ink px-5 py-6">
+      <p className="text-ivory/60 text-xs leading-relaxed">
+        {t.hero.subtitle}
+      </p>
+    </div>
   );
 }
 
