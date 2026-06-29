@@ -9,83 +9,65 @@ import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
 export function Hero() {
   const { t } = useT();
   return (
-    <section id="top" className="relative bg-ink text-ivory overflow-hidden">
-      {/* ── MOBILE LAYOUT ── stacked: header → photo → form → info */}
-      <div className="lg:hidden">
-        {/* Header block — dark bg, eyebrow + H1 + gold rule */}
-        <div className="relative pt-28 pb-6 px-5 bg-ink z-10">
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-          <div className="relative">
-            <p className="eyebrow">{t.hero.eyebrow}</p>
-            <h1 className="mt-5 font-display text-4xl leading-[1.05] text-ivory">
-              {t.hero.title}
-            </h1>
-            <div className="mt-6 gold-rule" />
-          </div>
-        </div>
+    <section id="top" className="relative bg-ink text-ivory pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
+      {/* Background image — mobile */}
+      <div
+        className="absolute inset-0 bg-cover bg-center lg:hidden"
+        style={{ backgroundImage: `url(${heroBgMobile.url})` }}
+        aria-hidden
+      />
+      {/* Background image — desktop */}
+      <div
+        className="absolute inset-0 bg-cover bg-center hidden lg:block"
+        style={{ backgroundImage: `url(${heroBg.url})` }}
+        aria-hidden
+      />
+      {/* Overlay: dark only at top (behind text) — fades out so nagels are free */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/60 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
-        {/* Hero photo — full width, no overlay, nagels fully visible */}
-        <div className="relative w-full" style={{ aspectRatio: "4/5" }}>
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${heroBgMobile.url})` }}
-          />
-          {/* Only subtle fade at bottom to blend into form */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-ink/80 to-transparent" />
-        </div>
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="fade-in-up">
+          <p className="eyebrow">{t.hero.eyebrow}</p>
+          <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-ivory">
+            {t.hero.title}
+          </h1>
+          <div className="mt-6 gold-rule" />
 
-        {/* Form */}
-        <div className="relative bg-ink px-5 pb-4 -mt-4 z-10">
-          <BookingForm />
-        </div>
-
-        {/* Subtitle + phone — below the form */}
-        <div className="bg-ink px-5 pb-10 space-y-4">
-          <p className="text-ivory/70 text-sm leading-relaxed">
+          {/* Subtitle — hidden on mobile so nagels are free, visible on desktop */}
+          <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">
             {t.hero.subtitle}
           </p>
+
+          <div className="mt-8 flex gap-3">
+            <a href="#contact" className="btn-gold btn-gold-hover hidden lg:inline-flex">
+              {t.hero.ctaBook}
+            </a>
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors hidden lg:inline-flex">
+              +32 484 16 49 05
+            </a>
+          </div>
+
+          {/* Trust badges */}
+          <TrustBadges />
+        </div>
+
+        {/* Mobile: form + subtitle + phone below */}
+        <div className="lg:hidden fade-in-up space-y-3">
+          <BookingForm />
           <a href="tel:+32484164905"
             className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
             <span className="text-xl">📞</span> +32 484 16 49 05
           </a>
-          <TrustBadges />
+          {/* Subtitle comes after phone on mobile */}
+          <p className="text-ivory/60 text-xs leading-relaxed pt-2">
+            {t.hero.subtitle}
+          </p>
         </div>
-      </div>
 
-      {/* ── DESKTOP LAYOUT — unchanged side-by-side ── */}
-      <div className="hidden lg:block relative pt-36 pb-28">
-        {/* Background image desktop */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroBg.url})` }}
-          aria-hidden
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/80 via-ink/45 to-ink/10" aria-hidden />
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-
-        <div className="relative mx-auto max-w-7xl px-8 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="fade-in-up">
-            <p className="eyebrow">{t.hero.eyebrow}</p>
-            <h1 className="mt-5 font-display text-5xl lg:text-6xl leading-[1.05] text-ivory">
-              {t.hero.title}
-            </h1>
-            <div className="mt-6 gold-rule" />
-            <p className="mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">
-              {t.hero.subtitle}
-            </p>
-            <div className="mt-8 flex gap-3">
-              <a href="#contact" className="btn-gold btn-gold-hover">
-                {t.hero.ctaBook}
-              </a>
-              <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">
-                +32 484 16 49 05
-              </a>
-            </div>
-            <TrustBadges />
-          </div>
-          <div id="contact" className="fade-in-up">
-            <BookingForm />
-          </div>
+        {/* Desktop: form right column */}
+        <div id="contact" className="fade-in-up hidden lg:block">
+          <BookingForm />
         </div>
       </div>
     </section>
