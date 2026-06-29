@@ -143,33 +143,33 @@ export function Hero() {
 function TrustBadges() {
   const { t } = useT();
   return (
-    <div className="flex items-center gap-3 sm:gap-6 flex-nowrap overflow-x-auto scrollbar-none">
+    <div className="bg-carbon/80 backdrop-blur-sm border border-gold/30 px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between sm:justify-start gap-2 sm:gap-6 flex-nowrap">
       {/* Google rating */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        <div className="flex text-gold text-xs leading-none">
+      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        <div className="flex text-gold text-[10px] sm:text-xs leading-none">
           {"★★★★★".split("").map((s, i) => (
             <span key={i} className={i === 4 ? "opacity-50" : ""}>{s}</span>
           ))}
         </div>
-        <span className="text-ivory text-xs font-medium">4,6</span>
-        <span className="text-ivory/40 text-xs">Google</span>
+        <span className="text-ivory text-[11px] sm:text-xs font-medium">4,6</span>
+        <span className="text-ivory/40 text-[10px] sm:text-xs hidden xs:inline sm:inline">Google</span>
       </div>
 
       <span className="w-px h-4 bg-gold/25 shrink-0" aria-hidden />
 
       {/* Clients */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        <span className="text-gold text-xs" aria-hidden>✓</span>
-        <span className="text-ivory text-xs font-medium">{t.hero.badges.clientsCount}</span>
-        <span className="text-ivory/40 text-xs">{t.hero.badges.clients}</span>
+      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        <span className="text-gold text-[11px] sm:text-xs" aria-hidden>✓</span>
+        <span className="text-ivory text-[11px] sm:text-xs font-medium">{t.hero.badges.clientsCount}</span>
+        <span className="text-ivory/40 text-[10px] sm:text-xs hidden xs:inline sm:inline">{t.hero.badges.clients}</span>
       </div>
 
       <span className="w-px h-4 bg-gold/25 shrink-0" aria-hidden />
 
       {/* Certified */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        <span className="text-gold text-xs" aria-hidden>♛</span>
-        <span className="text-ivory text-xs">{t.hero.badges.certifiedTitle}</span>
+      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        <span className="text-gold text-[11px] sm:text-xs" aria-hidden>♛</span>
+        <span className="text-ivory text-[10px] sm:text-xs">{t.hero.badges.certifiedTitle}</span>
       </div>
     </div>
   );
