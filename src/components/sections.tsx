@@ -13,7 +13,8 @@ export function Hero() {
     <section id="top" className="relative bg-ink text-ivory pt-24 pb-0 lg:pt-36 lg:pb-28 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center lg:hidden" style={{ backgroundImage: `url(${heroBgMobile.url})` }} aria-hidden />
       <div className="absolute inset-0 bg-cover bg-center hidden lg:block" style={{ backgroundImage: `url(${heroBg.url})` }} aria-hidden />
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/20 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
+      {/* Overlay: dark only behind text at top, fully transparent below so nails are free */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -23,30 +24,38 @@ export function Hero() {
             {t.hero.title}
           </h1>
           <div className="mt-4 gold-rule" />
-          {/* After gold-rule on mobile: nothing — nails must be completely free here */}
+
+          {/* Trust badges — directly under H1, single row, on mobile AND desktop */}
+          <div className="mt-4">
+            <TrustBadges />
+          </div>
+
+          {/* Subtitle + CTA — desktop only */}
           <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">{t.hero.subtitle}</p>
           <div className="hidden lg:flex mt-6 gap-3">
             <a href="#contact" className="btn-gold btn-gold-hover">{t.hero.ctaBook}</a>
             <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">+32 484 16 49 05</a>
           </div>
-          <div className="hidden lg:block mt-8"><TrustBadges /></div>
         </div>
 
-        <div className="lg:hidden fade-in-up space-y-3">
+        {/* Mobile: form only — nails visible between badges above and form here */}
+        <div className="lg:hidden fade-in-up">
           <BookingForm />
-          <a href="tel:+32484164905" className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
-            <span className="text-xl">📞</span> +32 484 16 49 05
-          </a>
         </div>
 
+        {/* Desktop: form right column */}
         <div id="contact" className="fade-in-up hidden lg:block">
           <BookingForm />
         </div>
       </div>
     </section>
 
-    <div className="lg:hidden bg-ink px-5 pt-5 pb-8 space-y-5">
-      <TrustBadges />
+    {/* Mobile only: phone + subtitle below hero */}
+    <div className="lg:hidden bg-ink px-5 pt-4 pb-8 space-y-4">
+      <a href="tel:+32484164905"
+        className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
+        <span className="text-xl">📞</span> +32 484 16 49 05
+      </a>
       <p className="text-ivory/50 text-xs leading-relaxed">{t.hero.subtitle}</p>
     </div>
     </>
@@ -54,45 +63,37 @@ export function Hero() {
 }
 
 
-// Subtle trust signals — Google rating, client count, certified salon.
-// Mobile: 3-column grid, compact and centered. Desktop: inline row with dividers.
+// Subtle trust signals — single horizontal row like reference photo
 function TrustBadges() {
   const { t } = useT();
   return (
-    <div className="mt-8 sm:mt-10 grid grid-cols-3 sm:flex sm:flex-wrap sm:items-center gap-y-4 sm:gap-x-8 border-t border-gold/15 pt-6 sm:border-0 sm:pt-0">
+    <div className="flex items-center gap-3 sm:gap-6 flex-nowrap overflow-x-auto scrollbar-none">
       {/* Google rating */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2.5 text-center sm:text-left">
-        <div className="flex text-gold text-xs sm:text-sm" aria-hidden>
+      <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex text-gold text-xs leading-none">
           {"★★★★★".split("").map((s, i) => (
             <span key={i} className={i === 4 ? "opacity-50" : ""}>{s}</span>
           ))}
         </div>
-        <div className="leading-tight">
-          <div className="text-ivory text-sm font-medium">4,6/5</div>
-          <div className="text-ivory/45 text-[10px] sm:text-[11px] tracking-wide">{t.hero.badges.reviews}</div>
-        </div>
+        <span className="text-ivory text-xs font-medium">4,6</span>
+        <span className="text-ivory/40 text-xs">Google</span>
       </div>
 
-      <span className="hidden sm:block w-px h-8 bg-gold/20" aria-hidden />
+      <span className="w-px h-4 bg-gold/25 shrink-0" aria-hidden />
 
       {/* Clients */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2.5 text-center sm:text-left">
-        <span className="text-gold text-lg sm:text-xl leading-none font-display" aria-hidden>✓</span>
-        <div className="leading-tight">
-          <div className="text-ivory text-sm font-medium">{t.hero.badges.clientsCount}</div>
-          <div className="text-ivory/45 text-[10px] sm:text-[11px] tracking-wide">{t.hero.badges.clients}</div>
-        </div>
+      <div className="flex items-center gap-1.5 shrink-0">
+        <span className="text-gold text-xs" aria-hidden>✓</span>
+        <span className="text-ivory text-xs font-medium">{t.hero.badges.clientsCount}</span>
+        <span className="text-ivory/40 text-xs">{t.hero.badges.clients}</span>
       </div>
 
-      <span className="hidden sm:block w-px h-8 bg-gold/20" aria-hidden />
+      <span className="w-px h-4 bg-gold/25 shrink-0" aria-hidden />
 
       {/* Certified */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2.5 text-center sm:text-left">
-        <span className="text-gold text-base sm:text-lg leading-none" aria-hidden>♛</span>
-        <div className="leading-tight">
-          <div className="text-ivory text-sm font-medium">{t.hero.badges.certifiedTitle}</div>
-          <div className="text-ivory/45 text-[10px] sm:text-[11px] tracking-wide">{t.hero.badges.certifiedSub}</div>
-        </div>
+      <div className="flex items-center gap-1.5 shrink-0">
+        <span className="text-gold text-xs" aria-hidden>♛</span>
+        <span className="text-ivory text-xs">{t.hero.badges.certifiedTitle}</span>
       </div>
     </div>
   );
