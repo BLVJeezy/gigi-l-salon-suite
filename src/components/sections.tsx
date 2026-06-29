@@ -22,8 +22,8 @@ export function Hero() {
         style={{ backgroundImage: `url(${heroBg.url})` }}
         aria-hidden
       />
-      {/* Dark gradient overlay — keeps content legible while showing the photo */}
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/70 to-ink/90 lg:bg-gradient-to-r lg:from-ink/90 lg:via-ink/60 lg:to-ink/20" aria-hidden />
+      {/* Dark gradient overlay — lighter so photo comes through more */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/50 to-ink/80 lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
 
@@ -54,8 +54,9 @@ export function Hero() {
         {/* Mobile: form + phone inline under hero text */}
         <div className="lg:hidden fade-in-up space-y-3">
           <BookingForm />
-          <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors w-full text-center">
-            +32 484 16 49 05
+          <a href="tel:+32484164905"
+            className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
+            <span className="text-xl">📞</span> +32 484 16 49 05
           </a>
         </div>
 

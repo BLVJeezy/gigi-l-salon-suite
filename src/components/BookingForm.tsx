@@ -159,44 +159,69 @@ export function BookingForm() {
   const categoryLabel = categories.find((c) => c.key === category)?.label;
 
   return (
-    <div className="bg-carbon border border-gold/30 p-6 sm:p-7">
-      {/* Header row: title + back button */}
-      <div className="flex items-center gap-3 mb-4">
-        {stepIndex > 0 && (
-          <button
-            type="button"
-            onClick={goBack}
-            aria-label={t.form.back}
-            className="w-8 h-8 flex-shrink-0 flex items-center justify-center border border-gold/30 text-ivory hover:border-gold hover:bg-gold/10 transition-colors"
-          >
-            ←
-          </button>
-        )}
-        <h3 className="font-display text-ivory text-2xl">{t.form.title}</h3>
-      </div>
-
-      <ProgressBar index={stepIndex} total={total} />
-
-      {/* Summary pill (shows from step 2 on) */}
-      {stepIndex > 0 && (
-        <div className="bg-ink border border-gold/20 px-3 py-2.5 text-xs text-ivory/60 flex flex-wrap gap-x-3 gap-y-1 mb-4">
-          {categoryLabel && <span className="text-ivory/50">{categoryLabel}</span>}
-          {service && <span className="text-gold">{service}</span>}
-          {zone && <span>{t.form.zone[zone as "hands" | "feet" | "both"]}</span>}
-          {photoUrl && <span className="text-green-400">📷</span>}
-          {date && <span>{date}</span>}
-          {time && <span>{time}</span>}
+    <div className="relative">
+      {/* Only header + progress bar get a dark backdrop */}
+      <div className="bg-carbon/80 backdrop-blur-sm border border-gold/30 px-6 pt-6 pb-4 sm:px-7 sm:pt-7">
+        {/* Header row: title + back button */}
+        <div className="flex items-center gap-3 mb-4">
+          {stepIndex > 0 && (
+            <button
+              type="button"
+              onClick={goBack}
+              aria-label={t.form.back}
+              className="w-8 h-8 flex-shrink-0 flex items-center justify-center border border-gold/30 text-ivory hover:border-gold hover:bg-gold/10 transition-colors"
+            >
+              ←
+            </button>
+          )}
+          <h3 className="font-display text-ivory text-2xl">{t.form.title}</h3>
         </div>
-      )}
+
+        <ProgressBar index={stepIndex} total={total} />
+
+        {/* Summary pill (shows from step 2 on) */}
+        {stepIndex > 0 && (
+          <div className="bg-ink border border-gold/20 px-3 py-2.5 text-xs text-ivory/60 flex flex-wrap gap-x-3 gap-y-1 mt-4">
+            {categoryLabel && <span className="text-ivory/50">{categoryLabel}</span>}
+            {service && <span className="text-gold">{service}</span>}
+            {zone && <span>{t.form.zone[zone as "hands" | "feet" | "both"]}</span>}
+            {photoUrl && <span className="text-green-400">📷</span>}
+            {date && <span>{date}</span>}
+            {time && <span>{time}</span>}
+          </div>
+        )}
+      </div>{/* closes header backdrop */}
+
+      {/* Steps — transparent background, buttons keep their own bg */}
 
       {/* ── CATEGORY ── */}
       {current === "category" && (
         <div className="space-y-4">
           <Label>{t.form.categoryLabel} *</Label>
+          <style>{`
+            @keyframes shimmer {
+              0%   { background-position: -200% center; }
+              100% { background-position: 200% center; }
+            }
+            .cat-btn-shimmer {
+              background-image: linear-gradient(
+                105deg,
+                transparent 35%,
+                rgba(255,255,255,0.07) 45%,
+                rgba(255,255,255,0.13) 50%,
+                rgba(255,255,255,0.07) 55%,
+                transparent 65%
+              );
+              background-size: 200% 100%;
+              animation: shimmer 3s linear infinite;
+            }
+            .cat-btn-shimmer:nth-child(2) { animation-delay: 1s; }
+            .cat-btn-shimmer:nth-child(3) { animation-delay: 2s; }
+          `}</style>
           <div className="flex flex-col gap-3">
             {categories.map((c) => (
               <button key={c.key} type="button" onClick={() => pickCategory(c.key)}
-                className={`w-full text-center px-4 py-5 text-base font-display tracking-wide border transition-colors ${
+                className={`cat-btn-shimmer w-full text-center px-4 py-5 text-base font-display tracking-wide border transition-colors ${
                   category === c.key ? "bg-gold text-ivory border-gold" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
                 }`}>
                 {c.label}
