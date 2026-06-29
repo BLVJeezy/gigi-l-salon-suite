@@ -118,21 +118,21 @@ export function Hero() {
           trouve un savoir-faire pensé pour son type de cheveux et de peau. Tresses africaines,
           tissage, coloration, brushing, locks et microshading sous un même toit, à Tongres.
         </p>
+
+        <div className="relative mt-10 p-2 border border-gold/30">
+          <img
+            src="/gallery/curly-naturel.jpeg"
+            alt="Cliente aux cheveux bouclés naturels chez GiGi L Coiffure à Tongres"
+            loading="lazy"
+            className="block w-full h-80 sm:h-[420px] lg:h-[560px] object-cover"
+          />
+        </div>
+
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#contact" className="btn-gold btn-gold-hover">Prendre rendez-vous</a>
           <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">
             +32 484 16 49 05
           </a>
-        </div>
-
-        <div className="relative mt-12">
-          <div className="absolute -inset-2 border border-gold/30 hidden lg:block" aria-hidden />
-          <img
-            src="/gallery/curly-naturel.jpeg"
-            alt="Cliente aux cheveux bouclés naturels chez GiGi L Coiffure à Tongres"
-            loading="lazy"
-            className="relative w-full h-80 sm:h-[420px] lg:h-[560px] object-cover"
-          />
         </div>
       </div>
     </section>
