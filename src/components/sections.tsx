@@ -1,5 +1,5 @@
 // All landing-page sections in one file for easy maintenance.
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
@@ -8,14 +8,72 @@ import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
 
 export function Hero() {
   const { t } = useT();
+  const SLIDES = [
+    { mob: heroBgMobile.url, desk: heroBg.url },
+    { mob: "/hero-cornrows.jpg", desk: "/hero-cornrows.jpg" },
+    { mob: "/hero-brows.jpg",    desk: "/hero-brows.jpg"    },
+  ];
+  const [cur, setCur] = useState(0);
+  const [prev, setPrev] = useState<number | null>(null);
+  const [dir, setDir] = useState<"left" | "right">("left");
+
+  // Auto-advance every 3 seconds
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCur(c => {
+        const next = (c + 1) % SLIDES.length;
+        setPrev(c);
+        setDir("left");
+        setTimeout(() => setPrev(null), 700);
+        return next;
+      });
+    }, 3000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
     <section id="top" className="relative bg-ink text-ivory pt-24 pb-0 lg:pt-36 lg:pb-28 overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center lg:hidden" style={{ backgroundImage: `url(${heroBgMobile.url})` }} aria-hidden />
-      <div className="absolute inset-0 bg-cover bg-center hidden lg:block" style={{ backgroundImage: `url(${heroBg.url})` }} aria-hidden />
-      {/* Overlay: dark only behind text at top, fully transparent below so nails are free */}
+
+      {/* Slide backgrounds */}
+      <style>{`
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
+        .hero-slide-in  { animation: slideInRight 0.7s cubic-bezier(0.4,0,0.2,1) forwards; }
+        .hero-slide-out { animation: slideOutLeft 0.7s cubic-bezier(0.4,0,0.2,1) forwards; }
+      `}</style>
+
+      {/* Outgoing slide */}
+      {prev !== null && (
+        <div key={`out-${prev}`}
+          className="hero-slide-out absolute inset-0 bg-cover bg-center lg:hidden"
+          style={{ backgroundImage: `url(${SLIDES[prev].mob})` }} aria-hidden />
+      )}
+      {prev !== null && (
+        <div key={`out-desk-${prev}`}
+          className="hero-slide-out absolute inset-0 bg-cover bg-center hidden lg:block"
+          style={{ backgroundImage: `url(${SLIDES[prev].desk})` }} aria-hidden />
+      )}
+
+      {/* Incoming / current slide */}
+      <div key={`in-mob-${cur}`}
+        className={`absolute inset-0 bg-cover bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : "center top" }} aria-hidden />
+      <div key={`in-desk-${cur}`}
+        className={`absolute inset-0 bg-cover bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].desk})` }} aria-hidden />
+
+      {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+
+      {/* Slide dots */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-20 lg:hidden">
+        {SLIDES.map((_, i) => (
+          <button key={i} onClick={() => { setPrev(cur); setCur(i); setTimeout(() => setPrev(null), 700); }}
+            className={`w-1.5 h-1.5 rounded-full transition-colors ${i === cur ? "bg-gold" : "bg-ivory/30"}`} />
+        ))}
+      </div>
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="fade-in-up">
@@ -24,33 +82,30 @@ export function Hero() {
             {t.hero.title}
           </h1>
           <div className="mt-4 gold-rule" />
+          <div className="mt-4"><TrustBadges /></div>
 
-          {/* Trust badges — directly under H1, single row, on mobile AND desktop */}
-          <div className="mt-4">
-            <TrustBadges />
-          </div>
-
-          {/* Subtitle + CTA — desktop only */}
+          {/* Desktop only */}
           <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">{t.hero.subtitle}</p>
           <div className="hidden lg:flex mt-6 gap-3">
             <a href="#contact" className="btn-gold btn-gold-hover">{t.hero.ctaBook}</a>
             <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">+32 484 16 49 05</a>
           </div>
+          <div className="hidden lg:block mt-8"><TrustBadges /></div>
         </div>
 
-        {/* Mobile: form only — nails visible between badges above and form here */}
+        {/* Mobile form */}
         <div className="lg:hidden fade-in-up">
           <BookingForm />
         </div>
 
-        {/* Desktop: form right column */}
+        {/* Desktop form */}
         <div id="contact" className="fade-in-up hidden lg:block">
           <BookingForm />
         </div>
       </div>
     </section>
 
-    {/* Mobile only: phone + subtitle below hero */}
+    {/* Mobile: phone + subtitle below hero */}
     <div className="lg:hidden bg-ink px-5 pt-4 pb-8 space-y-4">
       <a href="tel:+32484164905"
         className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
