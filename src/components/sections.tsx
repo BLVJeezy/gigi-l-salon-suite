@@ -33,7 +33,7 @@ export function Hero() {
 
   return (
     <>
-    <section id="top" className="relative bg-ink text-ivory pt-24 pb-0 lg:pt-36 lg:pb-28 overflow-hidden" style={{ minHeight: "100svh" }}>
+    <section id="top" className="relative bg-ink text-ivory pt-24 pb-16 lg:pt-36 lg:pb-28 overflow-hidden">
 
       {/* Slide backgrounds */}
       <style>{`
@@ -67,10 +67,10 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
-      {/* Slide dots — fixed bar at very bottom of section */}
-      <div className="absolute bottom-0 left-0 right-0 h-7 flex items-center justify-center gap-2 z-20 lg:hidden">
+      {/* Slide dots */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-20 lg:hidden">
         {SLIDES.map((_, i) => (
-          <button key={i} onClick={() => { setPrev(cur); setCur(i); setTimeout(() => setPrev(null), 900); }}
+          <button key={i} onClick={() => { setPrev(cur); setCur(i); setTimeout(() => setPrev(null), 700); }}
             className={`w-1.5 h-1.5 rounded-full transition-colors ${i === cur ? "bg-gold" : "bg-ivory/30"}`} />
         ))}
       </div>
@@ -94,13 +94,10 @@ export function Hero() {
         </div>
 
         {/* Mobile form + phone — shifted down, floats inside hero */}
-        {/* Mobile form — fills the lower portion of the hero exactly */}
-        <div className="lg:hidden absolute left-0 right-0 px-3 z-10 flex flex-col gap-1.5" style={{ bottom: "28px", top: "52%" }}>
-          <div className="flex-1 min-h-0 overflow-hidden">
-            <BookingForm compact />
-          </div>
+        <div className="lg:hidden fade-in-up mt-14 space-y-2 px-1">
+          <BookingForm compact />
           <a href="tel:+32484164905"
-            className="flex items-center justify-center gap-2 w-full py-2.5 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors shrink-0">
+            className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors">
             <span>📞</span> +32 484 16 49 05
           </a>
         </div>
