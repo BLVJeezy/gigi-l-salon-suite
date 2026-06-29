@@ -33,7 +33,7 @@ export function Hero() {
 
   return (
     <>
-    <section id="top" className="relative bg-ink text-ivory pt-24 pb-0 lg:pt-36 lg:pb-28 overflow-hidden">
+    <section id="top" className="relative bg-ink text-ivory pt-24 pb-16 lg:pt-36 lg:pb-28 overflow-hidden">
 
       {/* Slide backgrounds */}
       <style>{`
@@ -93,9 +93,13 @@ export function Hero() {
           <div className="hidden lg:block mt-8"><TrustBadges /></div>
         </div>
 
-        {/* Mobile form */}
-        <div className="lg:hidden fade-in-up">
-          <BookingForm />
+        {/* Mobile form + phone — shifted down, floats inside hero */}
+        <div className="lg:hidden fade-in-up mt-8 space-y-2 px-1">
+          <BookingForm compact />
+          <a href="tel:+32484164905"
+            className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors">
+            <span>📞</span> +32 484 16 49 05
+          </a>
         </div>
 
         {/* Desktop form */}
@@ -105,12 +109,8 @@ export function Hero() {
       </div>
     </section>
 
-    {/* Mobile: phone + subtitle below hero */}
-    <div className="lg:hidden bg-ink px-5 pt-4 pb-8 space-y-4">
-      <a href="tel:+32484164905"
-        className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
-        <span className="text-xl">📞</span> +32 484 16 49 05
-      </a>
+    {/* Mobile: subtitle below hero */}
+    <div className="lg:hidden bg-ink px-5 pt-3 pb-8">
       <p className="text-ivory/50 text-xs leading-relaxed">{t.hero.subtitle}</p>
     </div>
     </>

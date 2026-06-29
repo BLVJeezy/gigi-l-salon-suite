@@ -31,7 +31,7 @@ const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 8];
 // Internal step ids — we navigate a dynamic list, not fixed numbers.
 type StepId = "category" | "service" | "zone" | "photo" | "date" | "time" | "details";
 
-export function BookingForm() {
+export function BookingForm({ compact = false }: { compact?: boolean }) {
   const { t, lang } = useT();
   const submit = useServerFn(createBooking);
   const upload = useServerFn(uploadBookingPhoto);
@@ -161,20 +161,20 @@ export function BookingForm() {
   return (
     <div className="relative">
       {/* Only header + progress bar get a dark backdrop */}
-      <div className="bg-carbon/80 backdrop-blur-sm border border-gold/30 px-6 pt-6 pb-4 sm:px-7 sm:pt-7">
+      <div className={`bg-carbon/80 backdrop-blur-sm border border-gold/30 ${compact ? "px-4 pt-4 pb-3" : "px-6 pt-6 pb-4 sm:px-7 sm:pt-7"}`}>
         {/* Header row: title + back button */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-3">
           {stepIndex > 0 && (
             <button
               type="button"
               onClick={goBack}
               aria-label={t.form.back}
-              className="w-8 h-8 flex-shrink-0 flex items-center justify-center border border-gold/30 text-ivory hover:border-gold hover:bg-gold/10 transition-colors"
+              className="w-7 h-7 flex-shrink-0 flex items-center justify-center border border-gold/30 text-ivory hover:border-gold hover:bg-gold/10 transition-colors"
             >
               ←
             </button>
           )}
-          <h3 className="font-display text-ivory text-2xl">{t.form.title}</h3>
+          <h3 className={`font-display text-ivory ${compact ? "text-lg" : "text-2xl"}`}>{t.form.title}</h3>
         </div>
 
         <ProgressBar index={stepIndex} total={total} />
@@ -221,7 +221,9 @@ export function BookingForm() {
           <div className="flex flex-col gap-3">
             {categories.map((c) => (
               <button key={c.key} type="button" onClick={() => pickCategory(c.key)}
-                className={`cat-btn-shimmer w-full text-center px-4 py-5 text-base font-display tracking-wide border transition-colors ${
+                className={`cat-btn-shimmer w-full text-center border transition-colors font-display tracking-wide ${
+                  compact ? "px-3 py-3 text-sm" : "px-4 py-5 text-base"
+                } ${
                   category === c.key ? "bg-gold text-ivory border-gold" : "bg-ink border-gold/30 text-ivory hover:border-gold hover:bg-gold/5"
                 }`}>
                 {c.label}
