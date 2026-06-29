@@ -11,20 +11,9 @@ export function Hero() {
   return (
     <>
     <section id="top" className="relative bg-ink text-ivory pt-24 pb-0 lg:pt-36 lg:pb-28 overflow-hidden">
-      {/* Background image — mobile */}
-      <div
-        className="absolute inset-0 bg-cover bg-center lg:hidden"
-        style={{ backgroundImage: `url(${heroBgMobile.url})` }}
-        aria-hidden
-      />
-      {/* Background image — desktop */}
-      <div
-        className="absolute inset-0 bg-cover bg-center hidden lg:block"
-        style={{ backgroundImage: `url(${heroBg.url})` }}
-        aria-hidden
-      />
-      {/* Overlay: dark only at top behind text, fades to transparent so nails are free */}
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/55 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
+      <div className="absolute inset-0 bg-cover bg-center lg:hidden" style={{ backgroundImage: `url(${heroBgMobile.url})` }} aria-hidden />
+      <div className="absolute inset-0 bg-cover bg-center hidden lg:block" style={{ backgroundImage: `url(${heroBg.url})` }} aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/20 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -34,52 +23,36 @@ export function Hero() {
             {t.hero.title}
           </h1>
           <div className="mt-4 gold-rule" />
-
-          {/* Subtitle — desktop only inside hero */}
-          <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">
-            {t.hero.subtitle}
-          </p>
-
-          <div className="mt-6 flex gap-3">
-            <a href="#contact" className="btn-gold btn-gold-hover hidden lg:inline-flex">
-              {t.hero.ctaBook}
-            </a>
-            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors hidden lg:inline-flex">
-              +32 484 16 49 05
-            </a>
+          {/* After gold-rule on mobile: nothing — nails must be completely free here */}
+          <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">{t.hero.subtitle}</p>
+          <div className="hidden lg:flex mt-6 gap-3">
+            <a href="#contact" className="btn-gold btn-gold-hover">{t.hero.ctaBook}</a>
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">+32 484 16 49 05</a>
           </div>
-
-          {/* Trust badges — pulled up tighter on mobile */}
-          <div className="mt-4 lg:mt-8">
-            <TrustBadges />
-          </div>
+          <div className="hidden lg:block mt-8"><TrustBadges /></div>
         </div>
 
-        {/* Mobile: form + phone — no subtitle here */}
-        <div className="lg:hidden fade-in-up space-y-3 pb-0">
+        <div className="lg:hidden fade-in-up space-y-3">
           <BookingForm />
-          <a href="tel:+32484164905"
-            className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
+          <a href="tel:+32484164905" className="flex items-center justify-center gap-3 w-full py-4 bg-gold text-ivory font-display tracking-widest text-sm uppercase hover:bg-gold-deep transition-colors">
             <span className="text-xl">📞</span> +32 484 16 49 05
           </a>
         </div>
 
-        {/* Desktop: form right column */}
         <div id="contact" className="fade-in-up hidden lg:block">
           <BookingForm />
         </div>
       </div>
     </section>
 
-    {/* Subtitle — outside the hero on mobile, below the fold */}
-    <div className="lg:hidden bg-ink px-5 py-6">
-      <p className="text-ivory/60 text-xs leading-relaxed">
-        {t.hero.subtitle}
-      </p>
+    <div className="lg:hidden bg-ink px-5 pt-5 pb-8 space-y-5">
+      <TrustBadges />
+      <p className="text-ivory/50 text-xs leading-relaxed">{t.hero.subtitle}</p>
     </div>
     </>
   );
 }
+
 
 // Subtle trust signals — Google rating, client count, certified salon.
 // Mobile: 3-column grid, compact and centered. Desktop: inline row with dividers.
