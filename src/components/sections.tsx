@@ -102,10 +102,43 @@ export function Hero() {
       </div>
     </section>
 
-    {/* Mobile: subtitle below hero */}
-    <div className="lg:hidden bg-ink px-5 pt-3 pb-8">
-      <p className="text-ivory/50 text-xs leading-relaxed">{t.hero.subtitle}</p>
-    </div>
+    {/* À propos — salon intro */}
+    <section id="apropos" className="bg-ink text-ivory py-16 lg:py-24">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="relative order-1 lg:order-2">
+          <div className="absolute -inset-2 border border-gold/30 hidden lg:block" aria-hidden />
+          <img
+            src="/hero-brows.jpg"
+            alt="Cliente aux cheveux bouclés après microshading chez GiGi L Coiffure à Tongres"
+            loading="lazy"
+            className="relative w-full h-72 sm:h-96 lg:h-[520px] object-cover"
+          />
+        </div>
+
+        <div className="order-2 lg:order-1">
+          <p className="eyebrow">À propos</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] text-ivory">
+            Le seul salon du Limbourg dédié aux cheveux afro, bouclés &amp; crépus
+          </h2>
+          <div className="mt-5 gold-rule" />
+          <p className="mt-6 text-ivory/70 text-base sm:text-lg leading-relaxed">
+            {t.hero.subtitle}
+          </p>
+          <p className="mt-4 text-ivory/55 text-sm sm:text-base leading-relaxed">
+            Chez GiGi L Coiffure, chaque cliente — peau claire ou foncée, boucles fines ou crépues —
+            trouve un savoir-faire pensé pour son type de cheveux et de peau. Tresses africaines,
+            tissage, coloration, brushing, locks et microshading sous un même toit, à Tongres.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#contact" className="btn-gold btn-gold-hover">Prendre rendez-vous</a>
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">
+              +32 484 16 49 05
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     </>
   );
 }
