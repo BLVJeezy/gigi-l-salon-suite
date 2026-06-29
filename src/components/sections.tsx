@@ -9,6 +9,7 @@ import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
 export function Hero() {
   const { t } = useT();
   return (
+    <>
     <section id="top" className="relative bg-ink text-ivory pt-24 pb-0 lg:pt-36 lg:pb-28 overflow-hidden">
       {/* Background image — mobile */}
       <div
@@ -76,6 +77,7 @@ export function Hero() {
         {t.hero.subtitle}
       </p>
     </div>
+    </>
   );
 }
 
