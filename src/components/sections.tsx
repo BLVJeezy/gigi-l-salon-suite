@@ -296,6 +296,88 @@ export function Gallery() {
   );
 }
 
+const GALLERY_IMAGES = [
+  "braids-bordeaux-glasses.jpeg",
+  "burgundy-feedin-braids.jpeg",
+  "cat-microshading.png",
+  "cat-nails.jpeg",
+  "cornrows-homme.jpeg",
+  "curly-naturel.jpeg",
+  "feedin-braids-cowrie.jpeg",
+  "knotless-blond.jpeg",
+  "microshading-sourcils.png",
+  "nails-cat-eye-grey.jpeg",
+  "nails-glitter-nude.jpeg",
+  "nails-gold-chrome.jpeg",
+  "nails-green-french.png",
+  "nails-red-almond.jpeg",
+  "tissage-bordeaux-wavy.jpeg",
+  "tissage-lisse-brun.jpeg",
+  "twists-curly-ends.jpeg",
+];
+
+function AboutGalleryFlow() {
+  const col1 = GALLERY_IMAGES.filter((_, i) => i % 2 === 0);
+  const col2 = GALLERY_IMAGES.filter((_, i) => i % 2 === 1);
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:gap-5" style={{ height: "520px" }}>
+      <GalleryColumn images={col1} direction="up" />
+      <GalleryColumn images={col2} direction="down" />
+    </div>
+  );
+}
+
+function GalleryColumn({ images, direction }: { images: string[]; direction: "up" | "down" }) {
+  const items = [...images, ...images, ...images];
+  const animName = direction === "up" ? "galScrollUp" : "galScrollDown";
+  const itemH = 240; // px — image card height + gap
+  const totalH = images.length * itemH;
+
+  return (
+    <div className="relative overflow-hidden" style={{ height: "520px" }}>
+      {/* Top fade (ink) */}
+      <div className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, var(--ink, #0e0c0a) 0%, transparent 100%)" }} />
+      {/* Bottom fade (ink) */}
+      <div className="absolute bottom-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to top, var(--ink, #0e0c0a) 0%, transparent 100%)" }} />
+
+      <style>{`
+        @keyframes galScrollUp {
+          0%   { transform: translateY(0); }
+          100% { transform: translateY(-${totalH}px); }
+        }
+        @keyframes galScrollDown {
+          0%   { transform: translateY(-${totalH}px); }
+          100% { transform: translateY(0); }
+        }
+      `}</style>
+
+      <div
+        style={{
+          animation: `${animName} ${images.length * 5}s linear infinite`,
+          willChange: "transform",
+        }}
+      >
+        {items.map((src, i) => (
+          <div
+            key={i}
+            className="mb-3 sm:mb-5 border border-gold/30 p-1.5 bg-ink"
+            style={{ height: `${itemH - 12}px` }}
+          >
+            <img
+              src={`/gallery/${src}`}
+              alt=""
+              loading="lazy"
+              className="block w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
 export function Reviews() {
   const { t } = useT();
