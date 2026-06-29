@@ -94,7 +94,7 @@ export function Hero() {
         </div>
 
         {/* Mobile form + phone — shifted down, floats inside hero */}
-        <div className="lg:hidden fade-in-up mt-14 space-y-2 px-1">
+        <div className="lg:hidden fade-in-up mt-20 space-y-2 px-1">
           <BookingForm compact />
           <a href="tel:+32484164905"
             className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors">

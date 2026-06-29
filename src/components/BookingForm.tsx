@@ -161,7 +161,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   return (
     <div className="relative">
       {/* Only header + progress bar get a dark backdrop */}
-      <div className={`bg-carbon/80 backdrop-blur-sm border border-gold/30 ${compact ? "px-4 pt-4 pb-3" : "px-6 pt-6 pb-4 sm:px-7 sm:pt-7"}`}>
+      <div className={`bg-carbon/50 backdrop-blur-sm border border-gold/20 ${compact ? "px-4 pt-4 pb-3" : "px-6 pt-6 pb-4 sm:px-7 sm:pt-7"}`}>
         {/* Header row: title + back button */}
         <div className="flex items-center gap-3 mb-3">
           {stepIndex > 0 && (
