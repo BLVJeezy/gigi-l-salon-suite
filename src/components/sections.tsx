@@ -67,13 +67,6 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
 
-      {/* Slide dots */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-20 lg:hidden">
-        {SLIDES.map((_, i) => (
-          <button key={i} onClick={() => { setPrev(cur); setCur(i); setTimeout(() => setPrev(null), 700); }}
-            className={`w-1.5 h-1.5 rounded-full transition-colors ${i === cur ? "bg-gold" : "bg-ivory/30"}`} />
-        ))}
-      </div>
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div className="fade-in-up">
