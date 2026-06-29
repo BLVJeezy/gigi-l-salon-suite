@@ -213,10 +213,10 @@ export function BookingForm() {
                 transparent 65%
               );
               background-size: 200% 100%;
-              animation: shimmer 3s linear infinite;
+              animation: shimmer 8s ease-in-out infinite;
             }
-            .cat-btn-shimmer:nth-child(2) { animation-delay: 1s; }
-            .cat-btn-shimmer:nth-child(3) { animation-delay: 2s; }
+            .cat-btn-shimmer:nth-child(2) { animation-delay: 2.5s; }
+            .cat-btn-shimmer:nth-child(3) { animation-delay: 5s; }
           `}</style>
           <div className="flex flex-col gap-3">
             {categories.map((c) => (
