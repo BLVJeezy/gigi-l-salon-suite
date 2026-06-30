@@ -14,7 +14,10 @@ const TOKEN_KEY = "gigil_admin_token";
 const LEGACY_TOKEN_KEY = "gigil_admin_token_session";
 const storageAreas = () => {
   if (typeof window === "undefined") return [];
-  return [window.localStorage, window.sessionStorage];
+  const areas: Storage[] = [];
+  try { areas.push(window.localStorage); } catch { /* unavailable */ }
+  try { areas.push(window.sessionStorage); } catch { /* unavailable */ }
+  return areas;
 };
 const getToken = () => {
   if (typeof window === "undefined") return null;
