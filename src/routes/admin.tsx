@@ -93,12 +93,69 @@ function BookingMessage({ message, dark = false }: { message: string | null; dar
   return (
     <div className="space-y-1.5">
       {text && <div className={`text-xs whitespace-pre-wrap ${dark ? "text-ink" : "text-smoke"}`}>{text}</div>}
-      {photoUrl && (
-        <a href={photoUrl} target="_blank" rel="noopener noreferrer"
-          className="inline-block border border-gold/40 hover:border-gold transition-colors">
-          <img src={photoUrl} alt={t.admin.photoAlt} className="h-20 w-20 object-cover" />
+      {photoUrl && <BookingPhoto photoUrl={photoUrl} alt={t.admin.photoAlt} />}
+    </div>
+  );
+}
+
+function BookingPhoto({ photoUrl, alt }: { photoUrl: string; alt: string }) {
+  const sign = useServerFn(getBookingPhotoUrl);
+  const [signed, setSigned] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    sign({ data: { token: getToken() ?? "", photoUrl } })
+      .then((r) => { if (!cancelled) setSigned(r.url); })
+      .catch(() => { if (!cancelled) setSigned(null); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [photoUrl, sign]);
+
+  const href = signed ?? photoUrl;
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch { /* ignore */ }
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <a href={href} target="_blank" rel="noopener noreferrer"
+        className="inline-block border border-gold/40 hover:border-gold transition-colors">
+        {loading ? (
+          <div className="h-24 w-24 flex items-center justify-center bg-smoke/10 text-[10px] text-smoke">…</div>
+        ) : signed ? (
+          <img src={signed} alt={alt} className="h-24 w-24 object-cover" />
+        ) : (
+          <div className="h-24 w-24 flex items-center justify-center bg-smoke/10 text-[10px] text-smoke px-1 text-center">
+            Indisponible
+          </div>
+        )}
+      </a>
+      <div className="flex flex-wrap gap-1.5 text-[10px]">
+        <a href={href} target="_blank" rel="noopener noreferrer"
+          className="px-2 py-1 border border-gold/40 text-gold hover:bg-gold hover:text-ivory transition-colors">
+          Ouvrir
         </a>
-      )}
+        <a href={href} download
+          className="px-2 py-1 border border-gold/40 text-gold hover:bg-gold hover:text-ivory transition-colors">
+          Télécharger
+        </a>
+        <button type="button" onClick={copyLink}
+          className="px-2 py-1 border border-gold/40 text-gold hover:bg-gold hover:text-ivory transition-colors">
+          {copied ? "Copié ✓" : "Copier le lien"}
+        </button>
+        <a href={`https://wa.me/?text=${encodeURIComponent(href)}`} target="_blank" rel="noopener noreferrer"
+          className="px-2 py-1 border border-gold/40 text-gold hover:bg-gold hover:text-ivory transition-colors">
+          WhatsApp
+        </a>
+      </div>
     </div>
   );
 }
