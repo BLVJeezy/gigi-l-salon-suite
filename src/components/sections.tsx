@@ -14,8 +14,8 @@ import heroBrows from "@/assets/hero-brows-new2.jpg.asset.json";
 // ─────────────────────────────────────────────────────────────
 const HERO_BROW_OFFSET = {
   mobile: "500%", // < 768px
-  tablet: "500%", // 768px – 1023px
-  desktop: "500%", // ≥ 1024px
+  tablet: "center", // 768px – 1023px
+  desktop: "center", // ≥ 1024px
 };
 
 export function Hero() {
