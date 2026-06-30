@@ -13,9 +13,9 @@ import heroBrows from "@/assets/hero-brows-new.png.asset.json";
 // Hoger % = foto schuift omlaag (oog komt lager in beeld).
 // ─────────────────────────────────────────────────────────────
 const HERO_BROW_OFFSET = {
-  mobile:  "25%", // < 768px
-  tablet:  "30%", // 768px – 1023px
-  desktop: "40%", // ≥ 1024px
+  mobile: "20%", // < 768px
+  tablet: "20%", // 768px – 1023px
+  desktop: "20%", // ≥ 1024px
 };
 
 export function Hero() {
@@ -23,7 +23,7 @@ export function Hero() {
   const SLIDES = [
     { mob: heroBgMobile.url, desk: heroBg.url },
     { mob: "/hero-cornrows.jpg", desk: "/hero-cornrows.jpg" },
-    { mob: heroBrows.url,    desk: heroBrows.url    },
+    { mob: heroBrows.url, desk: heroBrows.url },
   ];
   const [cur, setCur] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
@@ -32,7 +32,7 @@ export function Hero() {
   // Auto-advance every 3 seconds
   useEffect(() => {
     const id = setInterval(() => {
-      setCur(c => {
+      setCur((c) => {
         const next = (c + 1) % SLIDES.length;
         setPrev(c);
         setDir("left");
@@ -45,10 +45,9 @@ export function Hero() {
 
   return (
     <>
-    <section id="top" className="relative bg-ink text-ivory pt-24 pb-4 lg:pt-36 lg:pb-28 overflow-hidden">
-
-      {/* Slide backgrounds */}
-      <style>{`
+      <section id="top" className="relative bg-ink text-ivory pt-24 pb-4 lg:pt-36 lg:pb-28 overflow-hidden">
+        {/* Slide backgrounds */}
+        <style>{`
         @keyframes slideInRight  { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slideOutLeft  { from { opacity: 1; transform: translateX(0); }    to { opacity: 0; transform: translateX(-100%); } }
         .hero-slide-in  { animation: slideInRight 1.1s ease-in-out forwards; }
@@ -58,107 +57,133 @@ export function Hero() {
         @media (min-width: 1024px) { .hero-brow-bg { background-position: center ${HERO_BROW_OFFSET.desktop}; } }
       `}</style>
 
-      {/* Outgoing slide */}
-      {prev !== null && (
-        <div key={`out-${prev}`}
-          className={`hero-slide-out absolute inset-0 bg-cover bg-center lg:hidden ${prev === 2 ? "hero-brow-bg" : ""}`}
-          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : prev === 2 ? undefined : "center top" }} aria-hidden />
-      )}
-      {prev !== null && (
-        <div key={`out-desk-${prev}`}
-          className={`hero-slide-out absolute inset-0 bg-cover bg-center hidden lg:block ${prev === 2 ? "hero-brow-bg" : ""}`}
-          style={{ backgroundImage: `url(${SLIDES[prev].desk})` }} aria-hidden />
-      )}
+        {/* Outgoing slide */}
+        {prev !== null && (
+          <div
+            key={`out-${prev}`}
+            className={`hero-slide-out absolute inset-0 bg-cover bg-center lg:hidden ${prev === 2 ? "hero-brow-bg" : ""}`}
+            style={{
+              backgroundImage: `url(${SLIDES[prev].mob})`,
+              backgroundPosition: prev === 0 ? "center" : prev === 2 ? undefined : "center top",
+            }}
+            aria-hidden
+          />
+        )}
+        {prev !== null && (
+          <div
+            key={`out-desk-${prev}`}
+            className={`hero-slide-out absolute inset-0 bg-cover bg-center hidden lg:block ${prev === 2 ? "hero-brow-bg" : ""}`}
+            style={{ backgroundImage: `url(${SLIDES[prev].desk})` }}
+            aria-hidden
+          />
+        )}
 
-      {/* Incoming / current slide */}
-      <div key={`in-mob-${cur}`}
-        className={`absolute inset-0 bg-cover bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""} ${cur === 2 ? "hero-brow-bg" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : cur === 2 ? undefined : "center top" }} aria-hidden />
-      <div key={`in-desk-${cur}`}
-        className={`absolute inset-0 bg-cover bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""} ${cur === 2 ? "hero-brow-bg" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].desk})` }} aria-hidden />
+        {/* Incoming / current slide */}
+        <div
+          key={`in-mob-${cur}`}
+          className={`absolute inset-0 bg-cover bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""} ${cur === 2 ? "hero-brow-bg" : ""}`}
+          style={{
+            backgroundImage: `url(${SLIDES[cur].mob})`,
+            backgroundPosition: cur === 0 ? "center" : cur === 2 ? undefined : "center top",
+          }}
+          aria-hidden
+        />
+        <div
+          key={`in-desk-${cur}`}
+          className={`absolute inset-0 bg-cover bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""} ${cur === 2 ? "hero-brow-bg" : ""}`}
+          style={{ backgroundImage: `url(${SLIDES[cur].desk})` }}
+          aria-hidden
+        />
 
+        {/* Overlay */}
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10"
+          aria-hidden
+        />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
 
+        <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="fade-in-up">
+            <p className="eyebrow">{t.hero.eyebrow}</p>
+            <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-ivory">
+              {t.hero.title}
+            </h1>
+            <div className="mt-4 gold-rule" />
+            <div className="mt-4">
+              <TrustBadges />
+            </div>
 
-
-
-
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
-      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, #8A6552 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-
-
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div className="fade-in-up">
-          <p className="eyebrow">{t.hero.eyebrow}</p>
-          <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] text-ivory">
-            {t.hero.title}
-          </h1>
-          <div className="mt-4 gold-rule" />
-          <div className="mt-4"><TrustBadges /></div>
-
-          {/* Desktop only */}
-          <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">{t.hero.subtitle}</p>
-          <div className="hidden lg:flex mt-6 gap-3">
-            <a href="#contact" className="btn-gold btn-gold-hover">{t.hero.ctaBook}</a>
-            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">+32 484 16 49 05</a>
+            {/* Desktop only */}
+            <p className="hidden lg:block mt-6 text-ivory/70 text-lg max-w-xl leading-relaxed">{t.hero.subtitle}</p>
+            <div className="hidden lg:flex mt-6 gap-3">
+              <a href="#contact" className="btn-gold btn-gold-hover">
+                {t.hero.ctaBook}
+              </a>
+              <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">
+                +32 484 16 49 05
+              </a>
+            </div>
+            <div className="hidden lg:block mt-8">
+              <TrustBadges />
+            </div>
           </div>
-          <div className="hidden lg:block mt-8"><TrustBadges /></div>
+
+          {/* Mobile form + phone — shifted down, floats inside hero */}
+          <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1">
+            <BookingForm compact />
+            <a
+              href="tel:+32484164905"
+              className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors"
+            >
+              <span>📞</span> +32 484 16 49 05
+            </a>
+          </div>
+
+          {/* Desktop form */}
+          <div id="contact" className="fade-in-up hidden lg:block">
+            <BookingForm />
+          </div>
         </div>
+      </section>
 
-        {/* Mobile form + phone — shifted down, floats inside hero */}
-        <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1">
-          <BookingForm compact />
-          <a href="tel:+32484164905"
-            className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors">
-            <span>📞</span> +32 484 16 49 05
-          </a>
+      {/* À propos — salon intro */}
+      <section id="apropos" className="bg-ink text-ivory py-16 lg:py-24">
+        <div className="mx-auto max-w-3xl px-5 sm:px-8">
+          <p className="eyebrow">À propos</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] text-ivory">
+            Le seul salon du Limbourg dédié aux cheveux afro, bouclés &amp; crépus
+          </h2>
+          <div className="mt-5 gold-rule" />
+          <p className="mt-6 text-ivory/70 text-base sm:text-lg leading-relaxed">{t.hero.subtitle}</p>
+          <p className="mt-4 text-ivory/55 text-sm sm:text-base leading-relaxed">
+            Chez GiGi L Coiffure, chaque cliente — peau claire ou foncée, boucles fines ou crépues — trouve un
+            savoir-faire pensé pour son type de cheveux et de peau. Tresses africaines, tissage, coloration, brushing,
+            locks et microshading sous un même toit, à Tongres.
+          </p>
+
+          <div className="mt-10">
+            <AboutGalleryFlow />
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#contact" className="btn-gold btn-gold-hover">
+              Prendre rendez-vous
+            </a>
+            <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">
+              +32 484 16 49 05
+            </a>
+          </div>
         </div>
-
-        {/* Desktop form */}
-        <div id="contact" className="fade-in-up hidden lg:block">
-          <BookingForm />
-        </div>
-      </div>
-    </section>
-
-    {/* À propos — salon intro */}
-    <section id="apropos" className="bg-ink text-ivory py-16 lg:py-24">
-      <div className="mx-auto max-w-3xl px-5 sm:px-8">
-        <p className="eyebrow">À propos</p>
-        <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] text-ivory">
-          Le seul salon du Limbourg dédié aux cheveux afro, bouclés &amp; crépus
-        </h2>
-        <div className="mt-5 gold-rule" />
-        <p className="mt-6 text-ivory/70 text-base sm:text-lg leading-relaxed">
-          {t.hero.subtitle}
-        </p>
-        <p className="mt-4 text-ivory/55 text-sm sm:text-base leading-relaxed">
-          Chez GiGi L Coiffure, chaque cliente — peau claire ou foncée, boucles fines ou crépues —
-          trouve un savoir-faire pensé pour son type de cheveux et de peau. Tresses africaines,
-          tissage, coloration, brushing, locks et microshading sous un même toit, à Tongres.
-        </p>
-
-        <div className="mt-10">
-          <AboutGalleryFlow />
-        </div>
-
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          <a href="#contact" className="btn-gold btn-gold-hover">Prendre rendez-vous</a>
-          <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">
-            +32 484 16 49 05
-          </a>
-        </div>
-      </div>
-    </section>
-
-
+      </section>
     </>
   );
 }
-
 
 // Subtle trust signals — single horizontal row like reference photo
 function TrustBadges() {
@@ -169,7 +194,9 @@ function TrustBadges() {
       <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
         <div className="flex text-gold text-[10px] sm:text-xs leading-none">
           {"★★★★★".split("").map((s, i) => (
-            <span key={i} className={i === 4 ? "opacity-50" : ""}>{s}</span>
+            <span key={i} className={i === 4 ? "opacity-50" : ""}>
+              {s}
+            </span>
           ))}
         </div>
         <span className="text-ivory text-[11px] sm:text-xs font-medium">4,6</span>
@@ -180,7 +207,9 @@ function TrustBadges() {
 
       {/* Clients */}
       <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-        <span className="text-gold text-[11px] sm:text-xs" aria-hidden>✓</span>
+        <span className="text-gold text-[11px] sm:text-xs" aria-hidden>
+          ✓
+        </span>
         <span className="text-ivory text-[11px] sm:text-xs font-medium">{t.hero.badges.clientsCount}</span>
         <span className="text-ivory/40 text-[10px] sm:text-xs hidden xs:inline sm:inline">{t.hero.badges.clients}</span>
       </div>
@@ -189,7 +218,9 @@ function TrustBadges() {
 
       {/* Certified */}
       <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-        <span className="text-gold text-[11px] sm:text-xs" aria-hidden>♛</span>
+        <span className="text-gold text-[11px] sm:text-xs" aria-hidden>
+          ♛
+        </span>
         <span className="text-ivory text-[10px] sm:text-xs">{t.hero.badges.certifiedTitle}</span>
       </div>
     </div>
@@ -226,7 +257,10 @@ export function Services() {
                     if (ph) ph.style.display = "flex";
                   }}
                 />
-                <div className="w-full h-full flex-col items-center justify-center bg-gradient-to-br from-carbon to-ink" style={{ display: "none" }}>
+                <div
+                  className="w-full h-full flex-col items-center justify-center bg-gradient-to-br from-carbon to-ink"
+                  style={{ display: "none" }}
+                >
                   <span className="font-display text-gold/25 text-4xl select-none">GL</span>
                 </div>
               </div>
@@ -291,7 +325,10 @@ export function Gallery() {
             <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl text-ink">{t.gallery.title}</h2>
             <div className="mt-5 gold-rule" />
           </div>
-          <a href="/galerie" className="text-xs tracking-[0.2em] uppercase text-ink hover:text-gold border-b border-gold/40 hover:border-gold pb-1 transition-colors">
+          <a
+            href="/galerie"
+            className="text-xs tracking-[0.2em] uppercase text-ink hover:text-gold border-b border-gold/40 hover:border-gold pb-1 transition-colors"
+          >
             {t.gallery.eyebrow} →
           </a>
         </div>
@@ -357,11 +394,15 @@ function GalleryColumn({ images, direction }: { images: string[]; direction: "up
   return (
     <div className="relative overflow-hidden" style={{ height: "520px" }}>
       {/* Top fade (ink) */}
-      <div className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, var(--ink, #0e0c0a) 0%, transparent 100%)" }} />
+      <div
+        className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, var(--ink, #0e0c0a) 0%, transparent 100%)" }}
+      />
       {/* Bottom fade (ink) */}
-      <div className="absolute bottom-0 left-0 right-0 h-28 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to top, var(--ink, #0e0c0a) 0%, transparent 100%)" }} />
+      <div
+        className="absolute bottom-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to top, var(--ink, #0e0c0a) 0%, transparent 100%)" }}
+      />
 
       <style>{`
         @keyframes galScrollUp {
@@ -386,12 +427,7 @@ function GalleryColumn({ images, direction }: { images: string[]; direction: "up
             className="mb-3 sm:mb-5 border border-gold/30 p-1.5 bg-ink"
             style={{ height: `${itemH - 12}px` }}
           >
-            <img
-              src={`/gallery/${src}`}
-              alt=""
-              loading="lazy"
-              className="block w-full h-full object-cover"
-            />
+            <img src={`/gallery/${src}`} alt="" loading="lazy" className="block w-full h-full object-cover" />
           </div>
         ))}
       </div>
@@ -399,31 +435,74 @@ function GalleryColumn({ images, direction }: { images: string[]; direction: "up
   );
 }
 
-
 export function Reviews() {
   const { t } = useT();
 
   const REVIEWS = [
-    { name: "Lahla Moussa",        stars: 5, text: "Salon de qualité, la coiffeuse est au top, ambiance garantie, coiffure exactement ce que j'ai demandé. Je reviendrai ! 🔥🔥" },
-    { name: "Sara Neven",          stars: 5, text: "Mijn dochter haar haren zijn altijd super mooi in orde! Super bekwame Afrikaanse kapster." },
-    { name: "K. B.",               stars: 5, text: "Coiffeuse vraiment très accueillante, sympathique, ponctuelle et professionnelle. Son salon est beau, propre, je recommande." },
-    { name: "drissia larabi",      stars: 5, text: "C'était magnifique. Elle est très gentille. Je suis satisfaite de son travail. Un très très super broching !" },
-    { name: "Jean François B.",    stars: 5, text: "Accueil au top et le résultat de la coupe de cheveux est excellent, je recommande vivement." },
-    { name: "Marylene Rahir",      stars: 5, text: "Super travail et super coiffeuse. Sympa et professionnelle." },
-    { name: "Wendy",               stars: 5, text: "Coiffeuse sympathique, accueil le client très bien, prend le temps de conseiller. Mon coiffeur préféré !" },
-    { name: "christine leclercq",  stars: 5, text: "Commerçante artiste comique avec beaucoup de professionnalisme. UNIQUE." },
-    { name: "Nathalie Alberico",   stars: 5, text: "Coiffeuse professionnelle et super sympathique. On rigole beaucoup." },
-    { name: "Manuella Isabella",   stars: 5, text: "Coiffeuse super sympa, travail de qualité je la recommande. Tjrs au top." },
-    { name: "Andre Lux",           stars: 5, text: "Cadre exceptionnel, patronne divine et d'une gentillesse sans pareils." },
-    { name: "Patricia Piedboeuf",  stars: 5, text: "Ambiance joyeuse et travail tjrs parfait." },
-    { name: "Jean Francois Carrasco", stars: 5, text: "Très bien accueillit, bien rigoler, je suis content de ma coupe aussi." },
-    { name: "LINA MOUSSA BACKA",   stars: 5, text: "Best Salon du monde for me 🙏🏾💎" },
-    { name: "Rachel Evrard",       stars: 5, text: "Super patronne." },
+    {
+      name: "Lahla Moussa",
+      stars: 5,
+      text: "Salon de qualité, la coiffeuse est au top, ambiance garantie, coiffure exactement ce que j'ai demandé. Je reviendrai ! 🔥🔥",
+    },
+    {
+      name: "Sara Neven",
+      stars: 5,
+      text: "Mijn dochter haar haren zijn altijd super mooi in orde! Super bekwame Afrikaanse kapster.",
+    },
+    {
+      name: "K. B.",
+      stars: 5,
+      text: "Coiffeuse vraiment très accueillante, sympathique, ponctuelle et professionnelle. Son salon est beau, propre, je recommande.",
+    },
+    {
+      name: "drissia larabi",
+      stars: 5,
+      text: "C'était magnifique. Elle est très gentille. Je suis satisfaite de son travail. Un très très super broching !",
+    },
+    {
+      name: "Jean François B.",
+      stars: 5,
+      text: "Accueil au top et le résultat de la coupe de cheveux est excellent, je recommande vivement.",
+    },
+    { name: "Marylene Rahir", stars: 5, text: "Super travail et super coiffeuse. Sympa et professionnelle." },
+    {
+      name: "Wendy",
+      stars: 5,
+      text: "Coiffeuse sympathique, accueil le client très bien, prend le temps de conseiller. Mon coiffeur préféré !",
+    },
+    {
+      name: "christine leclercq",
+      stars: 5,
+      text: "Commerçante artiste comique avec beaucoup de professionnalisme. UNIQUE.",
+    },
+    {
+      name: "Nathalie Alberico",
+      stars: 5,
+      text: "Coiffeuse professionnelle et super sympathique. On rigole beaucoup.",
+    },
+    {
+      name: "Manuella Isabella",
+      stars: 5,
+      text: "Coiffeuse super sympa, travail de qualité je la recommande. Tjrs au top.",
+    },
+    { name: "Andre Lux", stars: 5, text: "Cadre exceptionnel, patronne divine et d'une gentillesse sans pareils." },
+    { name: "Patricia Piedboeuf", stars: 5, text: "Ambiance joyeuse et travail tjrs parfait." },
+    {
+      name: "Jean Francois Carrasco",
+      stars: 5,
+      text: "Très bien accueillit, bien rigoler, je suis content de ma coupe aussi.",
+    },
+    { name: "LINA MOUSSA BACKA", stars: 5, text: "Best Salon du monde for me 🙏🏾💎" },
+    { name: "Rachel Evrard", stars: 5, text: "Super patronne." },
     { name: "Régis SOSSOU BIADJA", stars: 5, text: "C'est juste top!!!" },
-    { name: "Claudine Ida",        stars: 5, text: "Génial." },
-    { name: "patricia piedboeuf",  stars: 5, text: "Un accueil plus que sympathique, on s'y sent comme à la maison. Merci à Armande pour son originalité." },
-    { name: "Novitz Janos",        stars: 5, text: "Très bo travail." },
-    { name: "Anick Rabe",          stars: 5, text: "Convivial. La patronne est très gentille et propose un super accueil." },
+    { name: "Claudine Ida", stars: 5, text: "Génial." },
+    {
+      name: "patricia piedboeuf",
+      stars: 5,
+      text: "Un accueil plus que sympathique, on s'y sent comme à la maison. Merci à Armande pour son originalité.",
+    },
+    { name: "Novitz Janos", stars: 5, text: "Très bo travail." },
+    { name: "Anick Rabe", stars: 5, text: "Convivial. La patronne est très gentille et propose un super accueil." },
   ];
 
   // Split into two columns — stagger so they feel different
@@ -474,11 +553,15 @@ function ReviewColumn({ reviews, direction }: { reviews: ReviewItem[]; direction
       onTouchEnd={() => setPaused(false)}
     >
       {/* Top fade */}
-      <div className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, var(--sand) 0%, transparent 100%)" }} />
+      <div
+        className="absolute top-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, var(--sand) 0%, transparent 100%)" }}
+      />
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-28 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to top, var(--sand) 0%, transparent 100%)" }} />
+      <div
+        className="absolute bottom-0 left-0 right-0 h-28 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to top, var(--sand) 0%, transparent 100%)" }}
+      />
 
       <style>{`
         @keyframes scrollUp {
@@ -544,7 +627,11 @@ export function Faq() {
                   aria-expanded={isOpen}
                 >
                   <span className="font-display text-lg text-ink">{item.q}</span>
-                  <span className={`text-gold text-2xl font-light leading-none transition-transform ${isOpen ? "rotate-45" : ""}`}>+</span>
+                  <span
+                    className={`text-gold text-2xl font-light leading-none transition-transform ${isOpen ? "rotate-45" : ""}`}
+                  >
+                    +
+                  </span>
                 </button>
                 {isOpen && <p className="pb-6 text-smoke text-sm leading-relaxed pr-8">{item.a}</p>}
               </div>
@@ -563,29 +650,57 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 lg:py-24 text-center border-b border-gold/15">
         <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-ivory">{t.footer.ctaTitle}</h2>
         <p className="mt-4 text-ivory/65 max-w-xl mx-auto">{t.footer.ctaSub}</p>
-        <a href="#contact" className="btn-gold btn-gold-hover mt-8">{t.footer.ctaBtn}</a>
+        <a href="#contact" className="btn-gold btn-gold-hover mt-8">
+          {t.footer.ctaBtn}
+        </a>
       </div>
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 grid md:grid-cols-3 gap-10">
         <div>
-          <p className="font-display text-xl">GiGi <span className="text-gold">L</span> Coiffure</p>
+          <p className="font-display text-xl">
+            GiGi <span className="text-gold">L</span> Coiffure
+          </p>
           <address className="mt-4 not-italic text-ivory/65 text-sm leading-relaxed">
-            Koninksemsteenweg 144<br />
-            3700 Tongeren — België<br />
-            <a href="tel:+32484164905" className="text-gold hover:underline">+32 484 16 49 05</a>
+            Koninksemsteenweg 144
+            <br />
+            3700 Tongeren — België
+            <br />
+            <a href="tel:+32484164905" className="text-gold hover:underline">
+              +32 484 16 49 05
+            </a>
           </address>
         </div>
         <div>
           <p className="eyebrow">{t.footer.hoursTitle}</p>
           <ul className="mt-4 text-ivory/65 text-sm space-y-1">
-            {t.footer.hoursLines.map(l => <li key={l}>{l}</li>)}
+            {t.footer.hoursLines.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
           </ul>
         </div>
         <div>
           <p className="eyebrow">{t.footer.linksTitle}</p>
           <ul className="mt-4 space-y-2 text-sm">
-            <li><a className="text-ivory/80 hover:text-gold" href="https://www.google.com/maps/search/?api=1&query=Koninksemsteenweg+144+Tongeren" target="_blank" rel="noopener noreferrer">Google Maps →</a></li>
-            <li><a className="text-ivory/80 hover:text-gold" href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook →</a></li>
+            <li>
+              <a
+                className="text-ivory/80 hover:text-gold"
+                href="https://www.google.com/maps/search/?api=1&query=Koninksemsteenweg+144+Tongeren"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Google Maps →
+              </a>
+            </li>
+            <li>
+              <a
+                className="text-ivory/80 hover:text-gold"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Facebook →
+              </a>
+            </li>
           </ul>
         </div>
       </div>
