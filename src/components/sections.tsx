@@ -207,14 +207,12 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Mobile swipe catcher — empty space between trust badges and form */}
+          {/* Mobile spacer — empty space between trust badges and form (pointer handler on section catches the swipe) */}
           <div
-            className="lg:hidden h-[300px] -mb-[300px] relative z-20"
-            style={{ touchAction: "pan-y" }}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-            aria-label="Swipe to change hero image"
+            className="lg:hidden h-[300px] -mb-[300px] relative z-10 pointer-events-none"
+            aria-hidden
           />
+
 
           {/* Mobile form + phone — shifted down, floats inside hero */}
           <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1 relative z-10">
