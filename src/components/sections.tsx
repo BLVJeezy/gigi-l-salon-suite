@@ -197,8 +197,16 @@ export function Hero() {
             </div>
           </div>
 
+          {/* Mobile swipe catcher — empty space between trust badges and form */}
+          <div
+            className="lg:hidden h-[260px] -mb-[260px] relative z-10"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            aria-label="Swipe to change hero image"
+          />
+
           {/* Mobile form + phone — shifted down, floats inside hero */}
-          <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1">
+          <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1 relative z-10">
             <BookingForm compact />
             <a
               href="tel:+32484164905"
