@@ -60,16 +60,16 @@ export function Hero() {
 
   const onTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
-    touchRef.x = t.clientX;
-    touchRef.y = t.clientY;
-    touchRef.active = true;
+    touchRef.current.x = t.clientX;
+    touchRef.current.y = t.clientY;
+    touchRef.current.active = true;
   };
   const onTouchEnd = (e: React.TouchEvent) => {
-    if (!touchRef.active) return;
-    touchRef.active = false;
+    if (!touchRef.current.active) return;
+    touchRef.current.active = false;
     const t = e.changedTouches[0];
-    const dx = t.clientX - touchRef.x;
-    const dy = t.clientY - touchRef.y;
+    const dx = t.clientX - touchRef.current.x;
+    const dy = t.clientY - touchRef.current.y;
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
       if (dx < 0) goNext();
       else goPrev();
