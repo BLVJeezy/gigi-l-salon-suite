@@ -25,7 +25,7 @@ export function Hero() {
         const next = (c + 1) % SLIDES.length;
         setPrev(c);
         setDir("left");
-        setTimeout(() => setPrev(null), 700);
+        setTimeout(() => setPrev(null), 1100);
         return next;
       });
     }, 5000);
