@@ -48,7 +48,7 @@ export function Hero() {
       {prev !== null && (
         <div key={`out-${prev}`}
           className="hero-slide-out absolute inset-0 bg-center lg:hidden"
-          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : prev === 2 ? "center 35%" : "center top", backgroundSize: prev === 2 ? "auto 75%" : "cover", backgroundRepeat: "no-repeat", backgroundColor: "var(--ink)" }} aria-hidden />
+          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : prev === 2 ? "center 55%" : "center top", backgroundSize: prev === 2 ? "auto 75%" : "cover", backgroundRepeat: "no-repeat", backgroundColor: "var(--ink)" }} aria-hidden />
       )}
       {prev !== null && (
         <div key={`out-desk-${prev}`}
@@ -59,7 +59,7 @@ export function Hero() {
       {/* Incoming / current slide */}
       <div key={`in-mob-${cur}`}
         className={`absolute inset-0 bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : cur === 2 ? "center 35%" : "center top", backgroundSize: cur === 2 ? "auto 75%" : "cover", backgroundRepeat: "no-repeat", backgroundColor: "var(--ink)" }} aria-hidden />
+        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : cur === 2 ? "center 55%" : "center top", backgroundSize: cur === 2 ? "auto 75%" : "cover", backgroundRepeat: "no-repeat", backgroundColor: "var(--ink)" }} aria-hidden />
       <div key={`in-desk-${cur}`}
         className={`absolute inset-0 bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
         style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundPosition: cur === 2 ? "center 40%" : "center", backgroundSize: "cover", backgroundRepeat: "no-repeat" }} aria-hidden />
