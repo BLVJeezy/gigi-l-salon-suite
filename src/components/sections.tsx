@@ -70,7 +70,7 @@ export function Hero() {
     const t = e.changedTouches[0];
     const dx = t.clientX - touchRef.current.x;
     const dy = t.clientY - touchRef.current.y;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    if (Math.abs(dx) > 25 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       if (dx < 0) goNext();
       else goPrev();
     }
