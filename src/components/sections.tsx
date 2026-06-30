@@ -38,22 +38,22 @@ export function Hero() {
 
       {/* Slide backgrounds */}
       <style>{`
-        @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-        .hero-slide-in  { animation: fadeIn  0.9s ease-in-out forwards; }
-        .hero-slide-out { animation: fadeOut 0.9s ease-in-out forwards; }
+        @keyframes slideInRight  { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutLeft  { from { opacity: 1; transform: translateX(0); }    to { opacity: 0; transform: translateX(-100%); } }
+        .hero-slide-in  { animation: slideInRight 1.1s ease-in-out forwards; }
+        .hero-slide-out { animation: slideOutLeft  1.1s ease-in-out forwards; }
       `}</style>
 
       {/* Outgoing slide */}
       {prev !== null && (
         <div key={`out-${prev}`}
           className="hero-slide-out absolute inset-0 bg-cover bg-center lg:hidden"
-          style={{ backgroundImage: `url(${SLIDES[prev].mob})` }} aria-hidden />
+          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : prev === 2 ? "right center" : "center top" }} aria-hidden />
       )}
       {prev !== null && (
         <div key={`out-desk-${prev}`}
           className="hero-slide-out absolute inset-0 bg-cover bg-center hidden lg:block"
-          style={{ backgroundImage: `url(${SLIDES[prev].desk})` }} aria-hidden />
+          style={{ backgroundImage: `url(${SLIDES[prev].desk})`, backgroundPosition: prev === 2 ? "right center" : "center" }} aria-hidden />
       )}
 
       {/* Incoming / current slide */}
@@ -63,6 +63,7 @@ export function Hero() {
       <div key={`in-desk-${cur}`}
         className={`absolute inset-0 bg-cover hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
         style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundPosition: cur === 2 ? "right center" : "center" }} aria-hidden />
+
 
 
 
