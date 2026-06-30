@@ -4,7 +4,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const TOKEN_TTL_MS = 1000 * 60 * 60 * 8;
 function getSecret() {
   const raw = process.env.SESSION_SECRET ?? "";
   return raw.length >= 32 ? raw : raw + "x".repeat(64);
