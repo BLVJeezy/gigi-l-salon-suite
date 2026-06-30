@@ -13,9 +13,9 @@ import heroBrows from "@/assets/hero-brows-new.png.asset.json";
 // Hoger % = foto schuift omlaag (oog komt lager in beeld).
 // ─────────────────────────────────────────────────────────────
 const HERO_BROW_OFFSET = {
-  mobile: "100%", // < 768px
-  tablet: "100%", // 768px – 1023px
-  desktop: "100%", // ≥ 1024px
+  mobile: "500%", // < 768px
+  tablet: "500%", // 768px – 1023px
+  desktop: "500%", // ≥ 1024px
 };
 
 export function Hero() {
