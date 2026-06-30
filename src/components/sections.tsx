@@ -41,19 +41,18 @@ export function Hero() {
   const goNext = () => goTo((cur + 1) % SLIDES.length, "left");
   const goPrev = () => goTo((cur - 1 + SLIDES.length) % SLIDES.length, "right");
 
-  // Auto-advance every 5 seconds
+  // Auto-advance every 5 seconds — resets whenever `cur` changes (manual swipe too)
   useEffect(() => {
-    const id = setInterval(() => {
-      setCur((c) => {
-        const next = (c + 1) % SLIDES.length;
-        setPrev(c);
-        setDir("left");
-        setTimeout(() => setPrev(null), 1100);
-        return next;
-      });
+    const id = setTimeout(() => {
+      const next = (cur + 1) % SLIDES.length;
+      setPrev(cur);
+      setDir("left");
+      setCur(next);
+      setTimeout(() => setPrev(null), 1100);
     }, 5000);
-    return () => clearInterval(id);
-  }, []);
+    return () => clearTimeout(id);
+  }, [cur]);
+
 
   // Swipe / drag handling — works for touch (mobile/tablet) and mouse drag (desktop)
   const pointerRef = useRef({ x: 0, y: 0, active: false, id: -1 });
