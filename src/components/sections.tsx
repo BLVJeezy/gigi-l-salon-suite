@@ -55,22 +55,24 @@ export function Hero() {
     return () => clearInterval(id);
   }, []);
 
-  // Swipe handling for mobile empty area
-  const touchRef = useRef({ x: 0, y: 0, active: false });
+  // Swipe / drag handling — works for touch (mobile/tablet) and mouse drag (desktop)
+  const pointerRef = useRef({ x: 0, y: 0, active: false, id: -1 });
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    touchRef.current.x = t.clientX;
-    touchRef.current.y = t.clientY;
-    touchRef.current.active = true;
+  const onPointerDown = (e: React.PointerEvent) => {
+    // Ignore drags that start on interactive controls (links, buttons, inputs, form)
+    const target = e.target as HTMLElement;
+    if (target.closest("a, button, input, textarea, select, label, form")) return;
+    pointerRef.current.x = e.clientX;
+    pointerRef.current.y = e.clientY;
+    pointerRef.current.active = true;
+    pointerRef.current.id = e.pointerId;
   };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (!touchRef.current.active) return;
-    touchRef.current.active = false;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - touchRef.current.x;
-    const dy = t.clientY - touchRef.current.y;
-    if (Math.abs(dx) > 25 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!pointerRef.current.active || pointerRef.current.id !== e.pointerId) return;
+    pointerRef.current.active = false;
+    const dx = e.clientX - pointerRef.current.x;
+    const dy = e.clientY - pointerRef.current.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       if (dx < 0) goNext();
       else goPrev();
     }
@@ -79,7 +81,15 @@ export function Hero() {
 
   return (
     <>
-      <section id="top" className="relative bg-ink text-ivory pt-24 pb-4 lg:pt-36 lg:pb-28 overflow-hidden">
+      <section
+        id="top"
+        className="relative bg-ink text-ivory pt-24 pb-4 lg:pt-36 lg:pb-28 overflow-hidden select-none"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        style={{ touchAction: "pan-y" }}
+      >
+
         {/* Slide backgrounds */}
         <style>{`
         @keyframes slideInRight  { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
@@ -197,14 +207,12 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Mobile swipe catcher — empty space between trust badges and form */}
+          {/* Mobile spacer — empty space between trust badges and form (pointer handler on section catches the swipe) */}
           <div
-            className="lg:hidden h-[300px] -mb-[300px] relative z-20"
-            style={{ touchAction: "pan-y" }}
-            onTouchStart={onTouchStart}
-            onTouchEnd={onTouchEnd}
-            aria-label="Swipe to change hero image"
+            className="lg:hidden h-[300px] -mb-[300px] relative z-10 pointer-events-none"
+            aria-hidden
           />
+
 
           {/* Mobile form + phone — shifted down, floats inside hero */}
           <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1 relative z-10">
