@@ -91,10 +91,14 @@ export function Hero() {
 
         {/* Slide backgrounds */}
         <style>{`
-        @keyframes slideInRight  { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes slideOutLeft  { from { opacity: 1; transform: translateX(0); }    to { opacity: 0; transform: translateX(-100%); } }
-        .hero-slide-in  { animation: slideInRight 1.1s ease-in-out forwards; }
-        .hero-slide-out { animation: slideOutLeft  1.1s ease-in-out forwards; }
+        @keyframes slideInRight  { from { opacity: 0; transform: translateX(100%); }  to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutLeft  { from { opacity: 1; transform: translateX(0); }     to { opacity: 0; transform: translateX(-100%); } }
+        @keyframes slideInLeft   { from { opacity: 0; transform: translateX(-100%); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { from { opacity: 1; transform: translateX(0); }     to { opacity: 0; transform: translateX(100%); } }
+        .hero-slide-in-left   { animation: slideInRight  1.1s ease-in-out forwards; }
+        .hero-slide-out-left  { animation: slideOutLeft  1.1s ease-in-out forwards; }
+        .hero-slide-in-right  { animation: slideInLeft   1.1s ease-in-out forwards; }
+        .hero-slide-out-right { animation: slideOutRight 1.1s ease-in-out forwards; }
         .hero-brow-img {
           position: absolute; inset: 0;
           width: 100%; height: 100%;
@@ -105,9 +109,10 @@ export function Hero() {
         @media (min-width: 1024px) { .hero-brow-img { object-position: center ${HERO_BROW_OFFSET.desktop}; } }
       `}</style>
 
+
         {/* Outgoing slide */}
         {prev !== null && (
-          <div key={`out-${prev}`} className="hero-slide-out absolute inset-0 lg:hidden" aria-hidden>
+          <div key={`out-${prev}`} className={`hero-slide-out-${dir} absolute inset-0 lg:hidden`} aria-hidden>
             {prev === 2 ? (
               <img src={SLIDES[prev].mob} alt="" className="hero-brow-img" />
             ) : (
@@ -122,7 +127,7 @@ export function Hero() {
           </div>
         )}
         {prev !== null && (
-          <div key={`out-desk-${prev}`} className="hero-slide-out absolute inset-0 hidden lg:block" aria-hidden>
+          <div key={`out-desk-${prev}`} className={`hero-slide-out-${dir} absolute inset-0 hidden lg:block`} aria-hidden>
             {prev === 2 ? (
               <img src={SLIDES[prev].desk} alt="" className="hero-brow-img" />
             ) : (
@@ -137,7 +142,7 @@ export function Hero() {
         {/* Incoming / current slide */}
         <div
           key={`in-mob-${cur}`}
-          className={`absolute inset-0 lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
+          className={`absolute inset-0 lg:hidden ${prev !== null ? `hero-slide-in-${dir}` : ""}`}
           aria-hidden
         >
           {cur === 2 ? (
@@ -154,7 +159,7 @@ export function Hero() {
         </div>
         <div
           key={`in-desk-${cur}`}
-          className={`absolute inset-0 hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
+          className={`absolute inset-0 hidden lg:block ${prev !== null ? `hero-slide-in-${dir}` : ""}`}
           aria-hidden
         >
           {cur === 2 ? (
