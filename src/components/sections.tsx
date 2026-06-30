@@ -56,10 +56,8 @@ export function Hero() {
   }, []);
 
   // Swipe handling for mobile empty area
-  const touchRef = (() => {
-    const r = { x: 0, y: 0, active: false };
-    return r;
-  })();
+  const touchRef = useRef({ x: 0, y: 0, active: false });
+
   const onTouchStart = (e: React.TouchEvent) => {
     const t = e.touches[0];
     touchRef.x = t.clientX;
