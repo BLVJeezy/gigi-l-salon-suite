@@ -199,7 +199,8 @@ export function Hero() {
 
           {/* Mobile swipe catcher — empty space between trust badges and form */}
           <div
-            className="lg:hidden h-[260px] -mb-[260px] relative z-10"
+            className="lg:hidden h-[300px] -mb-[300px] relative z-20"
+            style={{ touchAction: "pan-y" }}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
             aria-label="Swipe to change hero image"
