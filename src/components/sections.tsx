@@ -7,6 +7,17 @@ import heroBg from "@/assets/hero-nails.png.asset.json";
 import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
 import heroBrows from "@/assets/hero-brows-new.png.asset.json";
 
+// ─────────────────────────────────────────────────────────────
+// HERO BROW PHOTO — verticale positie per breakpoint tunen.
+// Lager % = foto schuift omhoog (oog komt hoger in beeld).
+// Hoger % = foto schuift omlaag (oog komt lager in beeld).
+// ─────────────────────────────────────────────────────────────
+const HERO_BROW_OFFSET = {
+  mobile:  "25%", // < 768px
+  tablet:  "30%", // 768px – 1023px
+  desktop: "40%", // ≥ 1024px
+};
+
 export function Hero() {
   const { t } = useT();
   const SLIDES = [
