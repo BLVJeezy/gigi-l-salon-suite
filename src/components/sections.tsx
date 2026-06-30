@@ -53,27 +53,31 @@ export function Hero() {
         @keyframes slideOutLeft  { from { opacity: 1; transform: translateX(0); }    to { opacity: 0; transform: translateX(-100%); } }
         .hero-slide-in  { animation: slideInRight 1.1s ease-in-out forwards; }
         .hero-slide-out { animation: slideOutLeft  1.1s ease-in-out forwards; }
+        .hero-brow-bg   { background-position: center ${HERO_BROW_OFFSET.mobile}; }
+        @media (min-width: 768px)  { .hero-brow-bg { background-position: center ${HERO_BROW_OFFSET.tablet}; } }
+        @media (min-width: 1024px) { .hero-brow-bg { background-position: center ${HERO_BROW_OFFSET.desktop}; } }
       `}</style>
 
       {/* Outgoing slide */}
       {prev !== null && (
         <div key={`out-${prev}`}
-          className="hero-slide-out absolute inset-0 bg-center lg:hidden"
-          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : prev === 2 ? "center 25%" : "center top", backgroundSize: prev === 2 ? "cover" : "cover", backgroundRepeat: "no-repeat", backgroundColor: "var(--ink)" }} aria-hidden />
+          className={`hero-slide-out absolute inset-0 bg-cover bg-center lg:hidden ${prev === 2 ? "hero-brow-bg" : ""}`}
+          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : prev === 2 ? undefined : "center top" }} aria-hidden />
       )}
       {prev !== null && (
         <div key={`out-desk-${prev}`}
-          className="hero-slide-out absolute inset-0 bg-center hidden lg:block"
-          style={{ backgroundImage: `url(${SLIDES[prev].desk})`, backgroundPosition: prev === 2 ? "center 40%" : "center", backgroundSize: "cover", backgroundRepeat: "no-repeat" }} aria-hidden />
+          className={`hero-slide-out absolute inset-0 bg-cover bg-center hidden lg:block ${prev === 2 ? "hero-brow-bg" : ""}`}
+          style={{ backgroundImage: `url(${SLIDES[prev].desk})` }} aria-hidden />
       )}
 
       {/* Incoming / current slide */}
       <div key={`in-mob-${cur}`}
-        className={`absolute inset-0 bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : cur === 2 ? "center 25%" : "center top", backgroundSize: cur === 2 ? "cover" : "cover", backgroundRepeat: "no-repeat", backgroundColor: "var(--ink)" }} aria-hidden />
+        className={`absolute inset-0 bg-cover bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""} ${cur === 2 ? "hero-brow-bg" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : cur === 2 ? undefined : "center top" }} aria-hidden />
       <div key={`in-desk-${cur}`}
-        className={`absolute inset-0 bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundPosition: cur === 2 ? "center 40%" : "center", backgroundSize: "cover", backgroundRepeat: "no-repeat" }} aria-hidden />
+        className={`absolute inset-0 bg-cover bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""} ${cur === 2 ? "hero-brow-bg" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].desk})` }} aria-hidden />
+
 
 
 
