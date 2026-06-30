@@ -73,6 +73,26 @@ export const listBookings = createServerFn({ method: "POST" })
     return { bookings: rows ?? [] };
   });
 
+// Generate a short-lived signed URL for a booking photo so admins can view/download it
+// even though the bucket is private.
+export const getBookingPhotoUrl = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string(), photoUrl: z.string().url() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    // Extract key after "booking-photos/" from the stored public URL.
+    const m = data.photoUrl.match(/\/booking-photos\/(.+?)(?:\?|$)/);
+    if (!m) throw new Error("Invalid photo URL");
+    const key = decodeURIComponent(m[1]);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from("booking-photos")
+      .createSignedUrl(key, 60 * 60); // 1h
+    if (error || !signed) throw new Error(error?.message ?? "Sign failed");
+    return { url: signed.signedUrl, key };
+  });
+
 export const updateBookingStatus = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z
