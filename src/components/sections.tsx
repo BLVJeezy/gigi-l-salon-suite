@@ -58,11 +58,12 @@ export function Hero() {
 
       {/* Incoming / current slide */}
       <div key={`in-mob-${cur}`}
-        className={`absolute inset-0 bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : "center top", backgroundRepeat: "no-repeat", backgroundSize: cur === 2 ? "auto 75%" : "cover" }} aria-hidden />
+        className={`absolute inset-0 bg-cover lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : cur === 2 ? "right center" : "center top" }} aria-hidden />
       <div key={`in-desk-${cur}`}
-        className={`absolute inset-0 bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundRepeat: "no-repeat", backgroundSize: cur === 2 ? "auto 85%" : "cover" }} aria-hidden />
+        className={`absolute inset-0 bg-cover hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundPosition: cur === 2 ? "right center" : "center" }} aria-hidden />
+
 
 
       {/* Overlay */}
