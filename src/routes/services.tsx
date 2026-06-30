@@ -157,7 +157,7 @@ function ServicesPage() {
                     <div className="bg-sand p-5">
                       <p className="eyebrow mb-3">{t.servicesPage.infoLabel}</p>
                       <ul className="space-y-2 text-sm text-smoke">
-                        <li>📞 <a href="tel:+32484164905" className="text-gold hover:underline">+32 484 16 49 05</a></li>
+                        <li><a href="tel:+32484164905" className="text-gold hover:underline">+32 484 16 49 05</a></li>
                         <li>📍 Koninksemsteenweg 144, Tongeren</li>
                         <li>🕐 {t.servicesPage.byAppt}</li>
                       </ul>
