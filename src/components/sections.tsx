@@ -159,7 +159,7 @@ export function Hero() {
         </div>
         <div
           key={`in-desk-${cur}`}
-          className={`absolute inset-0 hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
+          className={`absolute inset-0 hidden lg:block ${prev !== null ? `hero-slide-in-${dir}` : ""}`}
           aria-hidden
         >
           {cur === 2 ? (
