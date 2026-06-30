@@ -14,6 +14,7 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://gigilcoiffure.be/" },
     ],
     links: [
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "canonical", href: "https://gigilcoiffure.be/" },
       { rel: "alternate", hrefLang: "fr", href: "https://gigilcoiffure.be/" },
       { rel: "alternate", hrefLang: "nl", href: "https://gigilcoiffure.be/" },
