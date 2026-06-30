@@ -29,7 +29,19 @@ export function Hero() {
   const [prev, setPrev] = useState<number | null>(null);
   const [dir, setDir] = useState<"left" | "right">("left");
 
-  // Auto-advance every 3 seconds
+  const goTo = (next: number, direction: "left" | "right") => {
+    setCur((c) => {
+      if (next === c) return c;
+      setPrev(c);
+      setDir(direction);
+      setTimeout(() => setPrev(null), 1100);
+      return next;
+    });
+  };
+  const goNext = () => goTo((cur + 1) % SLIDES.length, "left");
+  const goPrev = () => goTo((cur - 1 + SLIDES.length) % SLIDES.length, "right");
+
+  // Auto-advance every 5 seconds
   useEffect(() => {
     const id = setInterval(() => {
       setCur((c) => {
@@ -42,6 +54,30 @@ export function Hero() {
     }, 5000);
     return () => clearInterval(id);
   }, []);
+
+  // Swipe handling for mobile empty area
+  const touchRef = (() => {
+    const r = { x: 0, y: 0, active: false };
+    return r;
+  })();
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchRef.x = t.clientX;
+    touchRef.y = t.clientY;
+    touchRef.active = true;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touchRef.active) return;
+    touchRef.active = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchRef.x;
+    const dy = t.clientY - touchRef.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) goNext();
+      else goPrev();
+    }
+  };
+
 
   return (
     <>
