@@ -11,15 +11,30 @@ import {
 import { LangProvider, useT } from "@/lib/i18n";
 
 const TOKEN_KEY = "gigil_admin_token";
-const getToken = () => (typeof window === "undefined" ? null : sessionStorage.getItem(TOKEN_KEY));
-const setToken = (t: string) => sessionStorage.setItem(TOKEN_KEY, t);
-const clearToken = () => sessionStorage.removeItem(TOKEN_KEY);
+const getToken = () => {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
+};
+const setToken = (t: string) => {
+  localStorage.setItem(TOKEN_KEY, t);
+  sessionStorage.setItem(TOKEN_KEY, t);
+};
+const clearToken = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(TOKEN_KEY);
+};
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "GiGi L — Admin" },
+      { title: "GIGI L Admin" },
       { name: "robots", content: "noindex,nofollow" },
+      { name: "apple-mobile-web-app-title", content: "GIGI L Admin" },
+      { name: "application-name", content: "GIGI L Admin" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+    ],
+    links: [
+      { rel: "manifest", href: "/manifest-admin.webmanifest" },
     ],
   }),
   component: () => (
