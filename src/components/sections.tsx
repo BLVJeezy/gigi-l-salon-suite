@@ -70,7 +70,7 @@ export function Hero() {
     const t = e.changedTouches[0];
     const dx = t.clientX - touchRef.current.x;
     const dy = t.clientY - touchRef.current.y;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    if (Math.abs(dx) > 25 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       if (dx < 0) goNext();
       else goPrev();
     }
@@ -199,7 +199,8 @@ export function Hero() {
 
           {/* Mobile swipe catcher — empty space between trust badges and form */}
           <div
-            className="lg:hidden h-[260px] -mb-[260px] relative z-10"
+            className="lg:hidden h-[300px] -mb-[300px] relative z-20"
+            style={{ touchAction: "pan-y" }}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
             aria-label="Swipe to change hero image"
