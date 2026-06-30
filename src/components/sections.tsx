@@ -48,21 +48,22 @@ export function Hero() {
       {prev !== null && (
         <div key={`out-${prev}`}
           className="hero-slide-out absolute inset-0 bg-cover bg-center lg:hidden"
-          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : prev === 2 ? "right center" : "center top" }} aria-hidden />
+          style={{ backgroundImage: `url(${SLIDES[prev].mob})`, backgroundPosition: prev === 0 ? "center" : "center top" }} aria-hidden />
       )}
       {prev !== null && (
         <div key={`out-desk-${prev}`}
           className="hero-slide-out absolute inset-0 bg-cover bg-center hidden lg:block"
-          style={{ backgroundImage: `url(${SLIDES[prev].desk})`, backgroundPosition: prev === 2 ? "right center" : "center" }} aria-hidden />
+          style={{ backgroundImage: `url(${SLIDES[prev].desk})`, backgroundPosition: prev === 2 ? "center top" : "center" }} aria-hidden />
       )}
 
       {/* Incoming / current slide */}
       <div key={`in-mob-${cur}`}
         className={`absolute inset-0 bg-cover lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : cur === 2 ? "right center" : "center top" }} aria-hidden />
+        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : "center top" }} aria-hidden />
       <div key={`in-desk-${cur}`}
         className={`absolute inset-0 bg-cover hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundPosition: cur === 2 ? "right center" : "center" }} aria-hidden />
+        style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundPosition: cur === 2 ? "center top" : "center" }} aria-hidden />
+
 
 
 
