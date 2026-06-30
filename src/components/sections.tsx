@@ -112,7 +112,7 @@ export function Hero() {
 
         {/* Outgoing slide */}
         {prev !== null && (
-          <div key={`out-${prev}`} className="hero-slide-out absolute inset-0 lg:hidden" aria-hidden>
+          <div key={`out-${prev}`} className={`hero-slide-out-${dir} absolute inset-0 lg:hidden`} aria-hidden>
             {prev === 2 ? (
               <img src={SLIDES[prev].mob} alt="" className="hero-brow-img" />
             ) : (
