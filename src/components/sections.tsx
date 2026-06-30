@@ -142,7 +142,7 @@ export function Hero() {
         {/* Incoming / current slide */}
         <div
           key={`in-mob-${cur}`}
-          className={`absolute inset-0 lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
+          className={`absolute inset-0 lg:hidden ${prev !== null ? `hero-slide-in-${dir}` : ""}`}
           aria-hidden
         >
           {cur === 2 ? (
