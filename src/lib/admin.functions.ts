@@ -4,7 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const TOKEN_TTL_MS = 1000 * 60 * 60 * 8; // 8h
+const TOKEN_TTL_MS = 1000 * 60 * 60 * 24 * 180; // 180 days
 
 function getSecret() {
   const raw = process.env.SESSION_SECRET ?? "";
@@ -56,7 +56,8 @@ export const adminLogin = createServerFn({ method: "POST" })
 export const adminCheck = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ token: z.string().nullable() }).parse(input))
   .handler(async ({ data }) => {
-    return { authenticated: await verifyToken(data.token) };
+    const authenticated = await verifyToken(data.token);
+    return { authenticated, token: authenticated ? await makeToken() : null };
   });
 
 export const listBookings = createServerFn({ method: "POST" })

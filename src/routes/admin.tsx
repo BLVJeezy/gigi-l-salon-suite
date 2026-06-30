@@ -1,4 +1,4 @@
-// Admin dashboard — password-gated via signed token (sessionStorage).
+// Admin dashboard — password-gated via signed token persisted for installed app use.
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -11,17 +11,33 @@ import {
 import { LangProvider, useT } from "@/lib/i18n";
 
 const TOKEN_KEY = "gigil_admin_token";
+const LEGACY_TOKEN_KEY = "gigil_admin_token_session";
+const storageAreas = () => {
+  if (typeof window === "undefined") return [];
+  return [window.localStorage, window.sessionStorage];
+};
 const getToken = () => {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
+  for (const storage of storageAreas()) {
+    try {
+      const token = storage.getItem(TOKEN_KEY) ?? storage.getItem(LEGACY_TOKEN_KEY);
+      if (token) return token;
+    } catch { /* storage can be unavailable in some mobile privacy modes */ }
+  }
+  return null;
 };
 const setToken = (t: string) => {
-  localStorage.setItem(TOKEN_KEY, t);
-  sessionStorage.setItem(TOKEN_KEY, t);
+  for (const storage of storageAreas()) {
+    try { storage.setItem(TOKEN_KEY, t); } catch { /* ignore */ }
+  }
 };
 const clearToken = () => {
-  localStorage.removeItem(TOKEN_KEY);
-  sessionStorage.removeItem(TOKEN_KEY);
+  for (const storage of storageAreas()) {
+    try {
+      storage.removeItem(TOKEN_KEY);
+      storage.removeItem(LEGACY_TOKEN_KEY);
+    } catch { /* ignore */ }
+  }
 };
 
 export const Route = createFileRoute("/admin")({
@@ -182,7 +198,17 @@ function AdminPage() {
   useEffect(() => {
     const token = getToken();
     if (!token) { setAuthed(false); return; }
-    check({ data: { token } }).then(r => setAuthed(r.authenticated)).catch(() => setAuthed(false));
+    check({ data: { token } })
+      .then(r => {
+        if (r.authenticated && r.token) {
+          setToken(r.token);
+          setAuthed(true);
+        } else {
+          clearToken();
+          setAuthed(false);
+        }
+      })
+      .catch(() => { clearToken(); setAuthed(false); });
   }, [check]);
 
   if (authed === null) return <div className="min-h-screen bg-ink text-ivory flex items-center justify-center">…</div>;
