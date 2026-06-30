@@ -5,7 +5,7 @@ import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
 import heroBg from "@/assets/hero-nails.png.asset.json";
 import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
-import heroBrows from "@/assets/hero-brows-new.png.asset.json";
+import heroBrows from "@/assets/hero-brows-new2.jpg.asset.json";
 
 // ─────────────────────────────────────────────────────────────
 // HERO BROW PHOTO — verticale positie per breakpoint tunen.
