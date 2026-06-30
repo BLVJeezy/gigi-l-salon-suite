@@ -5,13 +5,14 @@ import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
 import heroBg from "@/assets/hero-nails.png.asset.json";
 import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
+import heroBrows from "@/assets/hero-brows-new.png.asset.json";
 
 export function Hero() {
   const { t } = useT();
   const SLIDES = [
     { mob: heroBgMobile.url, desk: heroBg.url },
     { mob: "/hero-cornrows.jpg", desk: "/hero-cornrows.jpg" },
-    { mob: "/hero-brows.jpg",    desk: "/hero-brows.jpg"    },
+    { mob: heroBrows.url,    desk: heroBrows.url    },
   ];
   const [cur, setCur] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
