@@ -9,14 +9,26 @@ const schema = z.object({
   filename: z.string().max(120).optional(),
 });
 
-const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/heic"];
+const ALLOWED = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+  "image/gif",
+  "image/avif",
+  "image/bmp",
+  "image/tiff",
+  "image/svg+xml",
+];
 
 export const uploadBookingPhoto = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
     const match = data.dataUrl.match(/^data:([^;]+);base64,(.+)$/);
     if (!match) throw new Error("Invalid image data");
-    const mime = match[1];
+    const mime = match[1].toLowerCase();
     if (!ALLOWED.includes(mime)) throw new Error("Unsupported image type");
 
     const buffer = Buffer.from(match[2], "base64");
