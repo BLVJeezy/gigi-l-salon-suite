@@ -1,42 +1,42 @@
-## Bestand
-`src/components/sections.tsx` — bovenaan in de `Hero` component (rond regel 48–66).
+## Probleem
+Met `background-image` op de slide-div hangt het bereik van `background-position` af van hoeveel de afbeelding overflowt — bij een portret-foto in een portret-container blijft die marge soms minimaal, waardoor 25% en 75% nauwelijks verschil maken.
 
-## De twee regels die er toe doen
+## Oplossing
+De wenkbrauw-slide rendert als een echte `<img>` met `object-fit: cover` en `object-position`. Dat geeft hetzelfde "vult alles" gedrag, maar `object-position` werkt voorspelbaar van 0% → 100% over de volledige overflow, en breakpoints kunnen via één CSS-class met media queries de offset bepalen.
 
-Er zijn 4 vrijwel identieke `<div>` blokken (outgoing mobiel, outgoing desktop, incoming mobiel, incoming desktop). De wenkbrauw-foto is **slide index 2** (`cur === 2` / `prev === 2`).
+## Wijzigingen in `src/components/sections.tsx`
 
-Voor mobiel staat er nu:
-```ts
-backgroundPosition: cur === 2 ? "center 55%" : "center top"
-backgroundSize:     cur === 2 ? "auto 75%"  : "cover"
+1. **Config blijft bovenaan** (één plek tunen):
+   ```ts
+   const HERO_BROW_OFFSET = {
+     mobile:  "25%", // < 768px
+     tablet:  "30%", // 768–1023px
+     desktop: "40%", // ≥ 1024px
+   };
+   ```
+
+2. **`<style>` block** vervangt de bg-class door een img-class:
+   ```css
+   .hero-brow-img {
+     position: absolute; inset: 0;
+     width: 100%; height: 100%;
+     object-fit: cover;
+     object-position: center 25%;
+   }
+   @media (min-width: 768px)  { .hero-brow-img { object-position: center 30%; } }
+   @media (min-width: 1024px) { .hero-brow-img { object-position: center 40%; } }
+   ```
+
+3. **Render-logica**: bij slide index 2 wordt een `<img>` gerenderd in plaats van een `background-image` div. De andere slides blijven exact zoals nu (background-image). De fade-in/fade-out wrappers blijven.
+
+```text
+slide 0,1  → div met background-image (zoals nu)
+slide 2    → div wrapper met fade-class + <img className="hero-brow-img" />
 ```
 
-Voor desktop:
-```ts
-backgroundPosition: cur === 2 ? "center 40%" : "center"
-backgroundSize: "cover"
-```
+4. **Outgoing + incoming** krijgen allebei dezelfde behandeling, zodat de overgang naadloos blijft.
 
-## Wat elk getal doet
-
-- **`backgroundPosition: "center XX%"`** — verschuift de foto verticaal.
-  - Lager getal (bv. `"center 20%"`) → foto schuift **omhoog**, oog komt **hoger** in beeld.
-  - Hoger getal (bv. `"center 80%"`) → foto schuift **omlaag**, oog komt **lager** in beeld.
-  - Vuistregel: wil je het oog 5% lager? Verhoog het percentage met ~10.
-
-- **`backgroundSize: "auto XX%"`** — bepaalt de zoom.
-  - Lager getal (bv. `"auto 60%"`) → meer **uitgezoomd** (foto kleiner, meer zwart eromheen).
-  - Hoger getal (bv. `"auto 90%"` of `"cover"`) → meer **ingezoomd** (foto groter, vult meer van het scherm).
-
-## Belangrijk: pas het op 2 plekken aan
-
-De foto verschijnt in zowel de **outgoing** als de **incoming** slide-div (anders verspringt hij bij de fade-overgang). Dus als je `"center 55%"` wijzigt, doe het bij **beide** mobiel-regels (en idem voor desktop op de twee desktop-regels).
-
-Tip: zoek met Cmd+F op `cur === 2` om alle 4 plekken meteen te vinden.
-
-## Snel voorbeeld
-Oog nóg iets lager + iets meer uitgezoomd op mobiel:
-```ts
-backgroundPosition: cur === 2 ? "center 65%" : "center top"
-backgroundSize:     cur === 2 ? "auto 70%"  : "cover"
-```
+## Resultaat
+- `HERO_BROW_OFFSET.tablet = "80%"` zakt het oog echt zichtbaar omlaag op 768px.
+- Range 0% → 100% dekt nu de volledige hoogte van de foto in de viewport.
+- Tunen blijft op één plek in code.
