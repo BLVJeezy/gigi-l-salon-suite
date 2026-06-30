@@ -1,0 +1,1 @@
+CREATE POLICY "Public read booking-photos" ON storage.objects FOR SELECT USING (bucket_id = 'booking-photos');
