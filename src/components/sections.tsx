@@ -206,9 +206,6 @@ export function Hero() {
                 +32 484 16 49 05
               </a>
             </div>
-            <div className="hidden lg:block mt-8">
-              <TrustBadges />
-            </div>
           </div>
 
           {/* Mobile spacer — empty space between trust badges and form (pointer handler on section catches the swipe) */}
