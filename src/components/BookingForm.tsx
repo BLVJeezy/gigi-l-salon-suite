@@ -286,7 +286,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
             <>
               <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
               <button type="button" disabled={uploading} onClick={() => fileRef.current?.click()}
-                className="w-full px-4 py-6 border border-dashed border-gold/40 text-ivory/70 hover:border-gold hover:text-ivory transition-colors text-sm disabled:opacity-50">
+                className="w-full px-4 py-6 bg-ink border border-dashed border-gold/30 text-ivory/70 hover:border-gold hover:text-ivory hover:bg-carbon transition-colors text-sm disabled:opacity-50">
                 {uploading ? t.form.photo.uploading : `📷 ${t.form.photo.upload}`}
               </button>
               {uploadErr && <p className="text-red-400 text-xs">{uploadErr}</p>}
