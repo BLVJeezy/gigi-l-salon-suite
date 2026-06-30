@@ -102,7 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", href: "/__l5e/assets-v1/f589b0f0-41a7-4742-bb16-f8f2b65ab4bd/gigil-logo.png" },
       { rel: "shortcut icon", type: "image/png", href: "/__l5e/assets-v1/f589b0f0-41a7-4742-bb16-f8f2b65ab4bd/gigil-logo.png" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/__l5e/assets-v1/f589b0f0-41a7-4742-bb16-f8f2b65ab4bd/gigil-logo.png" },
-      { rel: "manifest", href: "/manifest.webmanifest" },
+      // Note: manifest link is set per-route (index uses /manifest.webmanifest, admin uses /manifest-admin.webmanifest) so installs scope correctly.
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500&display=swap" },
