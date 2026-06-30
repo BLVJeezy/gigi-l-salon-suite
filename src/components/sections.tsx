@@ -1,5 +1,5 @@
 // All landing-page sections in one file for easy maintenance.
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
@@ -29,7 +29,19 @@ export function Hero() {
   const [prev, setPrev] = useState<number | null>(null);
   const [dir, setDir] = useState<"left" | "right">("left");
 
-  // Auto-advance every 3 seconds
+  const goTo = (next: number, direction: "left" | "right") => {
+    setCur((c) => {
+      if (next === c) return c;
+      setPrev(c);
+      setDir(direction);
+      setTimeout(() => setPrev(null), 1100);
+      return next;
+    });
+  };
+  const goNext = () => goTo((cur + 1) % SLIDES.length, "left");
+  const goPrev = () => goTo((cur - 1 + SLIDES.length) % SLIDES.length, "right");
+
+  // Auto-advance every 5 seconds
   useEffect(() => {
     const id = setInterval(() => {
       setCur((c) => {
@@ -42,6 +54,28 @@ export function Hero() {
     }, 5000);
     return () => clearInterval(id);
   }, []);
+
+  // Swipe handling for mobile empty area
+  const touchRef = useRef({ x: 0, y: 0, active: false });
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchRef.current.x = t.clientX;
+    touchRef.current.y = t.clientY;
+    touchRef.current.active = true;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touchRef.current.active) return;
+    touchRef.current.active = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchRef.current.x;
+    const dy = t.clientY - touchRef.current.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) goNext();
+      else goPrev();
+    }
+  };
+
 
   return (
     <>
@@ -163,8 +197,16 @@ export function Hero() {
             </div>
           </div>
 
+          {/* Mobile swipe catcher — empty space between trust badges and form */}
+          <div
+            className="lg:hidden h-[260px] -mb-[260px] relative z-10"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            aria-label="Swipe to change hero image"
+          />
+
           {/* Mobile form + phone — shifted down, floats inside hero */}
-          <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1">
+          <div className="lg:hidden fade-in-up mt-[260px] space-y-2 px-1 relative z-10">
             <BookingForm compact />
             <a
               href="tel:+32484164905"
