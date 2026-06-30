@@ -58,11 +58,12 @@ export function Hero() {
 
       {/* Incoming / current slide */}
       <div key={`in-mob-${cur}`}
-        className={`absolute inset-0 bg-cover bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : "center top" }} aria-hidden />
+        className={`absolute inset-0 bg-center lg:hidden ${prev !== null ? "hero-slide-in" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].mob})`, backgroundPosition: cur === 0 ? "center" : "center top", backgroundRepeat: "no-repeat", backgroundSize: cur === 2 ? "auto 75%" : "cover" }} aria-hidden />
       <div key={`in-desk-${cur}`}
-        className={`absolute inset-0 bg-cover bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
-        style={{ backgroundImage: `url(${SLIDES[cur].desk})` }} aria-hidden />
+        className={`absolute inset-0 bg-center hidden lg:block ${prev !== null ? "hero-slide-in" : ""}`}
+        style={{ backgroundImage: `url(${SLIDES[cur].desk})`, backgroundRepeat: "no-repeat", backgroundSize: cur === 2 ? "auto 85%" : "cover" }} aria-hidden />
+
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-ink/92 via-ink/10 to-transparent lg:bg-gradient-to-r lg:from-ink/80 lg:via-ink/45 lg:to-ink/10" aria-hidden />
