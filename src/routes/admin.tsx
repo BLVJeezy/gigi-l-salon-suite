@@ -1200,21 +1200,65 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
         </form>
       </section>
 
+      {/* Category management */}
+      <section className="border border-gold/20 bg-ivory p-4 sm:p-5">
+        <button type="button" onClick={() => setShowCatMgr(v => !v)}
+          className="w-full flex items-center justify-between text-left">
+          <h2 className="font-display text-lg text-ink">Gérer les catégories <span className="text-smoke text-sm">({cats.length})</span></h2>
+          <span className="text-gold">{showCatMgr ? "▲" : "▼"}</span>
+        </button>
+        {showCatMgr && (
+          <div className="mt-4 space-y-3">
+            {cats.map(c => {
+              const inUse = items.filter(x => x.category === c.key).length;
+              return (
+                <div key={c.key} className="flex flex-wrap items-center gap-2 border-b border-gold/10 pb-2">
+                  <span className="text-[10px] uppercase tracking-widest text-smoke w-20">{c.key}</span>
+                  <input defaultValue={c.label_fr}
+                    onBlur={(e) => { if (e.target.value !== c.label_fr) onRenameCategory(c.key, e.target.value); }}
+                    className="flex-1 min-w-[140px] border border-border bg-ivory px-2 py-1 text-sm" />
+                  <span className="text-xs text-smoke">{inUse} photo{inUse !== 1 ? "s" : ""}</span>
+                  <button type="button" onClick={() => onDeleteCategory(c.key)}
+                    className="text-[10px] uppercase tracking-widest border border-red-300 text-red-700 px-2 py-1 hover:bg-red-50">
+                    Supprimer
+                  </button>
+                </div>
+              );
+            })}
+            <form onSubmit={onAddCategory} className="flex flex-wrap items-center gap-2 pt-2">
+              <input value={newCatKey} onChange={(e) => setNewCatKey(e.target.value)} placeholder="clé (ex: barbe)"
+                className="w-32 border border-border bg-ivory px-2 py-1 text-sm" />
+              <input value={newCatLabel} onChange={(e) => setNewCatLabel(e.target.value)} placeholder="Nom affiché"
+                className="flex-1 min-w-[140px] border border-border bg-ivory px-2 py-1 text-sm" />
+              <button type="submit" disabled={!newCatKey.trim()} className="btn-gold btn-gold-hover disabled:opacity-50 text-xs">
+                Ajouter
+              </button>
+            </form>
+          </div>
+        )}
+      </section>
+
       {/* Filter + list */}
       <section>
         <div className="flex flex-wrap items-center gap-2 pb-3">
-          {(["all", ...CATEGORIES] as const).map(c => {
-            const count = c === "all" ? items.length : items.filter(x => x.category === c).length;
+          {(["all", ...catKeys, "__none"] as const).map(c => {
+            const count = c === "all"
+              ? items.length
+              : c === "__none"
+                ? items.filter(x => !x.category || !catKeys.includes(x.category)).length
+                : items.filter(x => x.category === c).length;
+            if (c === "__none" && count === 0) return null;
             return (
               <button key={c} onClick={() => setFilterCat(c)}
                 className={`px-3 py-1.5 text-xs uppercase tracking-widest border ${
                   filterCat === c ? "bg-gold text-ivory border-gold" : "border-smoke/25 text-smoke hover:border-gold"
                 }`}>
-                {c === "all" ? "Toutes" : (CATEGORY_LABELS[c] ?? c)} <span className="opacity-60">({count})</span>
+                {c === "all" ? "Toutes" : c === "__none" ? "Sans catégorie" : (CAT_LABEL[c] ?? c)} <span className="opacity-60">({count})</span>
               </button>
             );
           })}
         </div>
+
 
 
         {loading ? <p className="text-smoke text-sm">…</p> : (() => {
