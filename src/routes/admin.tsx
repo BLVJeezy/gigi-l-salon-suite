@@ -311,7 +311,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         </div>
         <nav className="mx-auto max-w-7xl px-5 sm:px-8 flex gap-1 overflow-x-auto scrollbar-none">
-          {(["leads", "day", "week", "diensten"] as const).map(k => (
+          {(["leads", "day", "week", "diensten", "gallery"] as const).map(k => (
             <button
               key={k}
               onClick={() => setTab(k)}
