@@ -48,6 +48,8 @@ const PHOTOS: Photo[] = [
   { cat: "nails", src: "/gallery/nails-cat-eye-grey.jpeg", alt_fr: "Vernis cat-eye gris", alt_nl: "Cat-eye lak grijs", alt_en: "Grey cat-eye polish" },
   { cat: "nails", src: "/gallery/nails-gold-chrome.jpeg", alt_fr: "Chrome doré, forme amande", alt_nl: "Goud chrome, amandelvorm", alt_en: "Gold chrome, almond shape", span: 2 },
   { cat: "nails", src: "/gallery/nails-green-french.png", alt_fr: "French vert avec strass", alt_nl: "Groene french met steentjes", alt_en: "Green French tips with gems" },
+  { cat: "perruques", src: "/gallery/perruque-pink-bob.png", alt_fr: "Perruque lace bob rose", alt_nl: "Lace bob pruik roze", alt_en: "Pink lace bob wig", span: 3 },
+  { cat: "perruques", src: "/gallery/perruque-honey-wavy.png", alt_fr: "Perruque longue ondulée blond miel", alt_nl: "Lange golvende honingblonde pruik", alt_en: "Long wavy honey-blonde wig", span: 2 },
   { cat: "micro", src: "/gallery/microshading-sourcils.png", alt_fr: "Microshading sourcils — effet poudré naturel", alt_nl: "Microshading wenkbrauwen — natuurlijk poedereffect", alt_en: "Microshading brows — natural powder effect", span: 2 },
   { cat: "micro", src: "/__l5e/assets-v1/5e59da53-63fb-4e03-a1b6-1ecc4917728e/hero-brows-new2.jpg", alt_fr: "Microshading sourcils — résultat naturel", alt_nl: "Microshading wenkbrauwen — natuurlijk resultaat", alt_en: "Microshading brows — natural result" },
 ];
@@ -156,6 +158,7 @@ function GalleryPage() {
     { key: "nails",    label: t.galleryPage.filterNails },
     { key: "coupes",   label: t.galleryPage.filterCoupes },
     { key: "chignons", label: t.galleryPage.filterChignons },
+    { key: "perruques", label: t.galleryPage.filterPerruques },
   ];
 
   const filtered = active === "all" ? PHOTOS : PHOTOS.filter(p => p.cat === active);

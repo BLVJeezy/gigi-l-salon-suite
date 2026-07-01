@@ -165,6 +165,22 @@ function ServicesPage() {
                           ))}
                         </div>
                       )}
+                      {i === 8 && (
+                        <div className="mt-5 grid grid-cols-2 gap-2">
+                          {[
+                            "/gallery/perruque-pink-bob.png",
+                            "/gallery/perruque-honey-wavy.png",
+                          ].map((src) => (
+                            <img
+                              key={src}
+                              src={src}
+                              alt="Perruques GiGi L"
+                              loading="lazy"
+                              className="aspect-[3/4] w-full object-cover border border-gold/15"
+                            />
+                          ))}
+                        </div>
+                      )}
                       <Link
                         to="/reservations"
                         className="mt-5 inline-flex items-center gap-2 text-gold text-xs tracking-widest uppercase hover:gap-3 transition-all"
