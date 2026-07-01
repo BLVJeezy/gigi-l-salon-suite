@@ -147,6 +147,24 @@ function ServicesPage() {
                   <div className="pb-7 pl-17 sm:pl-20 grid sm:grid-cols-2 gap-6 lg:gap-12 items-start" style={{ paddingLeft: "4.25rem" }}>
                     <div>
                       <p className="text-smoke text-sm leading-relaxed">{details[i]}</p>
+                      {i === 0 && (
+                        <div className="mt-5 grid grid-cols-4 gap-2">
+                          {[
+                            "/gallery/nattes-burgundy-long.png",
+                            "/gallery/nattes-cornrows-top.png",
+                            "/gallery/nattes-curly-top.png",
+                            "/gallery/nattes-cornrows-side.png",
+                          ].map((src) => (
+                            <img
+                              key={src}
+                              src={src}
+                              alt="Nattes GiGi L"
+                              loading="lazy"
+                              className="aspect-square w-full object-cover border border-gold/15"
+                            />
+                          ))}
+                        </div>
+                      )}
                       <Link
                         to="/reservations"
                         className="mt-5 inline-flex items-center gap-2 text-gold text-xs tracking-widest uppercase hover:gap-3 transition-all"
