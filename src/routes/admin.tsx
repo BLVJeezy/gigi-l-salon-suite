@@ -1270,9 +1270,10 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
             <div key={it.id} className={`border ${it.active ? "border-gold/25" : "border-red-300 opacity-60"} bg-ivory`}>
               <img src={it.url} alt={it.caption_fr || "photo"} className="w-full aspect-square object-cover" />
               <div className="p-2 sm:p-3 space-y-2">
-                <select value={it.category} onChange={(e) => changeCategory(it, e.target.value)}
+                <select value={it.category ?? ""} onChange={(e) => changeCategory(it, e.target.value)}
                   className="w-full border border-border bg-ivory px-2 py-1 text-xs">
-                  {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
+                  <option value="">— Sans catégorie —</option>
+                  {catKeys.map(c => <option key={c} value={c}>{CAT_LABEL[c] ?? c}</option>)}
                 </select>
                 <div className="flex gap-2">
                   <button onClick={() => toggleActive(it)}
