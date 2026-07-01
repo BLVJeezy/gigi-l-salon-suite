@@ -143,6 +143,45 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery: {
+        Row: {
+          active: boolean
+          caption_en: string
+          caption_fr: string
+          caption_nl: string
+          category: string
+          created_at: string
+          id: string
+          sort_order: number
+          span: number
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          caption_en?: string
+          caption_fr?: string
+          caption_nl?: string
+          category: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          span?: number
+          url: string
+        }
+        Update: {
+          active?: boolean
+          caption_en?: string
+          caption_fr?: string
+          caption_nl?: string
+          category?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          span?: number
+          url?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           active: boolean

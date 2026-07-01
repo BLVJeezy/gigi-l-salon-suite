@@ -1,9 +1,11 @@
 // /galerie — fotogalerij met categoriefiltter
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { LangProvider, useT } from "@/lib/i18n";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/sections";
+import { listPublicGallery, type GalleryItem } from "@/lib/gallery.functions";
 
 export const Route = createFileRoute("/galerie")({
   head: () => ({
@@ -148,6 +150,27 @@ function GalleryPage() {
   const { t, lang } = useT();
   const [active, setActive] = useState("all");
   const [lightbox, setLightbox] = useState<Photo | null>(null);
+  const [dbPhotos, setDbPhotos] = useState<Photo[]>([]);
+  const loadPublic = useServerFn(listPublicGallery);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadPublic()
+      .then((r: { items: GalleryItem[] }) => {
+        if (cancelled) return;
+        const mapped: Photo[] = r.items.map((it) => ({
+          cat: it.category,
+          src: it.url,
+          alt_fr: it.caption_fr || "GiGi L Coiffure",
+          alt_nl: it.caption_nl || it.caption_fr || "GiGi L Coiffure",
+          alt_en: it.caption_en || it.caption_fr || "GiGi L Coiffure",
+          span: (it.span === 2 || it.span === 3 ? it.span : 1) as 1 | 2 | 3,
+        }));
+        setDbPhotos(mapped);
+      })
+      .catch(() => { /* ignore — fallback to hardcoded */ });
+    return () => { cancelled = true; };
+  }, [loadPublic]);
 
   const categories = [
     { key: "all",      label: t.galleryPage.filterAll },
@@ -161,7 +184,8 @@ function GalleryPage() {
     { key: "perruques", label: t.galleryPage.filterPerruques },
   ];
 
-  const filtered = active === "all" ? PHOTOS : PHOTOS.filter(p => p.cat === active);
+  const allPhotos: Photo[] = [...dbPhotos, ...PHOTOS];
+  const filtered = active === "all" ? allPhotos : allPhotos.filter(p => p.cat === active);
 
   function altFor(p: Photo) {
     return lang === "nl" ? p.alt_nl : lang === "en" ? p.alt_en : p.alt_fr;
@@ -186,7 +210,7 @@ function GalleryPage() {
           </div>
           <div className="lg:text-right">
             <p className="text-ivory/30 font-display text-5xl lg:text-7xl select-none">
-              {PHOTOS.length}
+              {allPhotos.length}
             </p>
             <p className="text-ivory/40 text-xs tracking-widest uppercase mt-1">{t.galleryPage.photoCount}</p>
           </div>
@@ -202,7 +226,7 @@ function GalleryPage() {
               categories={categories}
               active={active}
               onChange={(key) => { setActive(key); }}
-              photos={PHOTOS}
+              photos={allPhotos}
             />
           </div>
           {/* Desktop: horizontal scroll pills */}
@@ -220,7 +244,7 @@ function GalleryPage() {
               >
                 {c.label}
                 <span className={`ml-2 text-[10px] ${active === c.key ? "text-ink/60" : "text-smoke/50"}`}>
-                  {c.key === "all" ? PHOTOS.length : PHOTOS.filter(p => p.cat === c.key).length}
+                  {c.key === "all" ? allPhotos.length : allPhotos.filter(p => p.cat === c.key).length}
                 </span>
               </button>
             ))}
