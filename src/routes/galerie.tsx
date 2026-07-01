@@ -244,7 +244,7 @@ function GalleryPage() {
               >
                 {c.label}
                 <span className={`ml-2 text-[10px] ${active === c.key ? "text-ink/60" : "text-smoke/50"}`}>
-                  {c.key === "all" ? PHOTOS.length : PHOTOS.filter(p => p.cat === c.key).length}
+                  {c.key === "all" ? allPhotos.length : allPhotos.filter(p => p.cat === c.key).length}
                 </span>
               </button>
             ))}
