@@ -1045,14 +1045,60 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
     const token = getToken();
     if (!token) { onLogout(); return; }
     try {
-      const r = await list({ data: { token } });
+      const [r, rc] = await Promise.all([list({ data: { token } }), listCats()]);
       setItems(r.items);
+      setCats(rc.categories);
+      setCategory(prev => prev || rc.categories[0]?.key || "");
     } catch (e: any) {
       console.error(e);
       setErr(e?.message ?? "Erreur");
     } finally { setLoading(false); }
   };
   useEffect(() => { void refresh(); /* eslint-disable-next-line */ }, []);
+
+  async function onAddCategory(e: FormEvent) {
+    e.preventDefault();
+    const token = getToken();
+    if (!token || !newCatKey.trim()) return;
+    try {
+      const res = await addCat({ data: {
+        token, key: newCatKey.trim().toLowerCase(),
+        label_fr: newCatLabel.trim() || newCatKey.trim(),
+        label_nl: newCatLabel.trim() || newCatKey.trim(),
+        label_en: newCatLabel.trim() || newCatKey.trim(),
+        sort_order: (cats[cats.length - 1]?.sort_order ?? 0) + 10,
+      }});
+      setCats(prev => [...prev, res.category]);
+      setNewCatKey(""); setNewCatLabel("");
+    } catch (e: any) { setErr(e?.message ?? "Erreur"); }
+  }
+
+  async function onRenameCategory(key: string, label: string) {
+    const token = getToken();
+    if (!token) return;
+    try {
+      await updateCat({ data: { token, key, label_fr: label, label_nl: label, label_en: label } });
+      setCats(prev => prev.map(c => c.key === key ? { ...c, label_fr: label, label_nl: label, label_en: label } : c));
+    } catch (e) { console.error(e); }
+  }
+
+  async function onDeleteCategory(key: string) {
+    const inUse = items.filter(x => x.category === key).length;
+    const msg = inUse > 0
+      ? `Supprimer la catégorie "${CAT_LABEL[key] ?? key}" ? ${inUse} photo(s) resteront sans catégorie.`
+      : `Supprimer la catégorie "${CAT_LABEL[key] ?? key}" ?`;
+    if (!confirm(msg)) return;
+    const token = getToken();
+    if (!token) return;
+    try {
+      await delCat({ data: { token, key } });
+      setCats(prev => prev.filter(c => c.key !== key));
+      setItems(prev => prev.map(x => x.category === key ? { ...x, category: "" } : x));
+      if (filterCat === key) setFilterCat("all");
+      if (category === key) setCategory(cats[0]?.key ?? "");
+    } catch (e: any) { setErr(e?.message ?? "Erreur"); }
+  }
+
 
   function onPickFile(f: File | null) {
     setFile(f);
