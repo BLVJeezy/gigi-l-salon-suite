@@ -19,7 +19,7 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="font-display text-ivory text-xl tracking-wide">
           GiGi <span className="text-gold">L</span>{" "}
-          <span className="hidden sm:inline text-ivory/80 text-sm tracking-[0.25em] uppercase ml-1">Coiffure</span>
+          <span className="text-ivory/80 text-sm tracking-[0.25em] uppercase ml-1">Coiffure</span>
         </Link>
 
         {/* Desktop nav */}
