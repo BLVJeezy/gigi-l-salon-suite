@@ -364,15 +364,24 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
         <div className="space-y-4">
           <Label>{t.form.time} *</Label>
           <div className="grid grid-cols-4 gap-1.5">
-            {TIME_SLOTS.map((slot) => (
-              <button key={slot} type="button" onClick={() => { setTime(slot); goNext(); }}
-                className={`py-2.5 text-xs tracking-wider border transition-colors ${
-                  time === slot ? "bg-gold text-ivory border-gold font-medium" : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
-                }`}>
-                {slot}
-              </button>
-            ))}
+            {TIME_SLOTS.map((slot) => {
+              const isDisabled = disabledSlots.has(slot);
+              return (
+                <button key={slot} type="button" disabled={isDisabled}
+                  onClick={() => { if (isDisabled) return; setTime(slot); goNext(); }}
+                  className={`py-2.5 text-xs tracking-wider border transition-colors ${
+                    isDisabled
+                      ? "bg-ink/50 border-white/5 text-ivory/25 line-through cursor-not-allowed"
+                      : time === slot
+                        ? "bg-gold text-ivory border-gold font-medium"
+                        : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
+                  }`}>
+                  {slot}
+                </button>
+              );
+            })}
           </div>
+          <p className="text-ivory/40 text-[10px] tracking-wider">{t.form.bookedHint}</p>
         </div>
       )}
 
