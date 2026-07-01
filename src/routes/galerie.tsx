@@ -158,6 +158,7 @@ function GalleryPage() {
     { key: "nails",    label: t.galleryPage.filterNails },
     { key: "coupes",   label: t.galleryPage.filterCoupes },
     { key: "chignons", label: t.galleryPage.filterChignons },
+    { key: "perruques", label: t.galleryPage.filterPerruques },
   ];
 
   const filtered = active === "all" ? PHOTOS : PHOTOS.filter(p => p.cat === active);
