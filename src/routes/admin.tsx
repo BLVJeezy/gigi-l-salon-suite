@@ -1067,11 +1067,11 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
       const up = await upload({ data: { token, dataUrl: preview } });
       const res = await add({ data: {
         token, url: up.url, category: category as any,
-        caption_fr: captionFr, caption_nl: captionNl, caption_en: captionEn,
-        span, sort_order: 0,
+        caption_fr: "", caption_nl: "", caption_en: "",
+        span: 1, sort_order: 0,
       }});
       setItems(prev => [res.item, ...prev]);
-      setFile(null); setPreview(null); setCaptionFr(""); setCaptionNl(""); setCaptionEn(""); setSpan(1);
+      setFile(null); setPreview(null);
       const input = document.getElementById("gallery-file") as HTMLInputElement | null;
       if (input) input.value = "";
     } catch (e: any) {
