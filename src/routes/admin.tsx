@@ -1292,15 +1292,16 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
             return <p className="text-smoke text-sm">Aucune photo dans cette catégorie.</p>;
           }
           if (filterCat === "all") {
+            const uncategorized = items.filter(x => !x.category || !catKeys.includes(x.category));
             return (
               <div className="space-y-8">
-                {CATEGORIES.map(cat => {
+                {catKeys.map(cat => {
                   const rows = items.filter(x => x.category === cat);
                   if (rows.length === 0) return null;
                   return (
                     <div key={cat}>
                       <h3 className="font-display text-lg text-ink mb-3 border-b border-gold/20 pb-1">
-                        {CATEGORY_LABELS[cat] ?? cat} <span className="text-smoke text-sm">({rows.length})</span>
+                        {CAT_LABEL[cat] ?? cat} <span className="text-smoke text-sm">({rows.length})</span>
                       </h3>
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         {rows.map(renderCard)}
@@ -1308,6 +1309,16 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
                     </div>
                   );
                 })}
+                {uncategorized.length > 0 && (
+                  <div>
+                    <h3 className="font-display text-lg text-ink mb-3 border-b border-red-200 pb-1">
+                      Sans catégorie <span className="text-smoke text-sm">({uncategorized.length})</span>
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {uncategorized.map(renderCard)}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           }
