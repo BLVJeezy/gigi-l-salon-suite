@@ -159,6 +159,7 @@ export const translations = {
       filterNails: "Nails",
       filterCoupes: "Coupes",
       filterChignons: "Chignons",
+      filterPerruques: "Perruques",
       empty: "Aucune réalisation dans cette catégorie pour le moment.",
       ctaTitle: "Vous aimez ce que vous voyez ?",
       ctaSub: "Prenez rendez-vous et laissez-nous sublimer vos cheveux.",
