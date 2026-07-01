@@ -150,6 +150,27 @@ function GalleryPage() {
   const { t, lang } = useT();
   const [active, setActive] = useState("all");
   const [lightbox, setLightbox] = useState<Photo | null>(null);
+  const [dbPhotos, setDbPhotos] = useState<Photo[]>([]);
+  const loadPublic = useServerFn(listPublicGallery);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadPublic()
+      .then((r: { items: GalleryItem[] }) => {
+        if (cancelled) return;
+        const mapped: Photo[] = r.items.map((it) => ({
+          cat: it.category,
+          src: it.url,
+          alt_fr: it.caption_fr || "GiGi L Coiffure",
+          alt_nl: it.caption_nl || it.caption_fr || "GiGi L Coiffure",
+          alt_en: it.caption_en || it.caption_fr || "GiGi L Coiffure",
+          span: (it.span === 2 || it.span === 3 ? it.span : 1) as 1 | 2 | 3,
+        }));
+        setDbPhotos(mapped);
+      })
+      .catch(() => { /* ignore — fallback to hardcoded */ });
+    return () => { cancelled = true; };
+  }, [loadPublic]);
 
   const categories = [
     { key: "all",      label: t.galleryPage.filterAll },
@@ -163,7 +184,8 @@ function GalleryPage() {
     { key: "perruques", label: t.galleryPage.filterPerruques },
   ];
 
-  const filtered = active === "all" ? PHOTOS : PHOTOS.filter(p => p.cat === active);
+  const allPhotos: Photo[] = [...dbPhotos, ...PHOTOS];
+  const filtered = active === "all" ? allPhotos : allPhotos.filter(p => p.cat === active);
 
   function altFor(p: Photo) {
     return lang === "nl" ? p.alt_nl : lang === "en" ? p.alt_en : p.alt_fr;
