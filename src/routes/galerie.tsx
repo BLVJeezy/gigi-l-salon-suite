@@ -210,7 +210,7 @@ function GalleryPage() {
           </div>
           <div className="lg:text-right">
             <p className="text-ivory/30 font-display text-5xl lg:text-7xl select-none">
-              {PHOTOS.length}
+              {allPhotos.length}
             </p>
             <p className="text-ivory/40 text-xs tracking-widest uppercase mt-1">{t.galleryPage.photoCount}</p>
           </div>
