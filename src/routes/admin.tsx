@@ -1160,7 +1160,11 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
     } catch (e) { console.error(e); }
   }
 
-  const visible = filterCat === "all" ? items : items.filter(x => x.category === filterCat);
+  const visible = filterCat === "all"
+    ? items
+    : filterCat === "__none"
+      ? items.filter(x => !x.category || !catKeys.includes(x.category))
+      : items.filter(x => x.category === filterCat);
 
   return (
     <div className="space-y-8">
