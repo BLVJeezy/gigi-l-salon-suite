@@ -305,7 +305,7 @@ export const translations = {
       ctaSub: "Boek uw afspraak en beleef de GiGi L-ervaring.",
       ctaBtn: "Maak een afspraak",
       hoursTitle: "Openingsuren",
-      hoursLines: ["Ma, Do – Za: 09:00 – 20:00", "Di – Wo, Zo: op afspraak"],
+      hoursLines: ["Ma, Wo – Za: 09:00 – 19:00", "Di & Zo: gesloten"],
       linksTitle: "Links",
       rights: "Alle rechten voorbehouden.",
     },
