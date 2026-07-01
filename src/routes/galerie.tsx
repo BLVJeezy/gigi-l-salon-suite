@@ -1,9 +1,11 @@
 // /galerie — fotogalerij met categoriefiltter
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { LangProvider, useT } from "@/lib/i18n";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/sections";
+import { listPublicGallery, type GalleryItem } from "@/lib/gallery.functions";
 
 export const Route = createFileRoute("/galerie")({
   head: () => ({
