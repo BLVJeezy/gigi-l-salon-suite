@@ -220,7 +220,7 @@ export function Hero() {
             <BookingForm compact />
             <a
               href="tel:+32484164905"
-              className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display tracking-widest text-xs uppercase hover:bg-gold transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-3 bg-gold/90 backdrop-blur-sm text-ivory font-display font-semibold tracking-widest text-sm uppercase hover:bg-gold transition-colors"
             >
               +32 484 16 49 05
             </a>
