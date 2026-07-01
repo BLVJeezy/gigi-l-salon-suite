@@ -30,6 +30,10 @@ export const Route = createFileRoute("/galerie")({
 type Photo = { cat: string; alt_fr: string; alt_nl: string; alt_en: string; src?: string; span?: 1 | 2 | 3 };
 
 const PHOTOS: Photo[] = [
+  { cat: "tresses", src: "/gallery/nattes-burgundy-long.png", alt_fr: "Cornrows bordeaux longs devant le mur GiGi L", alt_nl: "Lange bordeaux cornrows voor de GiGi L muur", alt_en: "Long burgundy cornrows in front of the GiGi L wall", span: 3 },
+  { cat: "tresses", src: "/gallery/nattes-cornrows-top.png", alt_fr: "Cornrows homme vue de dessus", alt_nl: "Cornrows heren van bovenaf", alt_en: "Men's cornrows top view", span: 2 },
+  { cat: "tresses", src: "/gallery/nattes-curly-top.png", alt_fr: "Cornrows avec afro bouclé", alt_nl: "Cornrows met krullende afro", alt_en: "Cornrows with curly afro top" },
+  { cat: "tresses", src: "/gallery/nattes-cornrows-side.png", alt_fr: "Cornrows homme avec fondu et natte tressée", alt_nl: "Cornrows heren met fade en gevlochten staart", alt_en: "Men's cornrows with fade and braided tail", span: 3 },
   { cat: "tresses", src: "/gallery/burgundy-feedin-braids.jpeg", alt_fr: "Tresses collées bordeaux", alt_nl: "Bordeaux feed-in braids", alt_en: "Burgundy feed-in braids", span: 3 },
   { cat: "tresses", src: "/gallery/cornrows-homme.jpeg", alt_fr: "Cornrows homme", alt_nl: "Cornrows heren", alt_en: "Men's cornrows" },
   { cat: "tresses", src: "/gallery/feedin-braids-cowrie.jpeg", alt_fr: "Tresses collées avec coquillages", alt_nl: "Feed-in braids met kauri", alt_en: "Feed-in braids with cowrie shells", span: 2 },
