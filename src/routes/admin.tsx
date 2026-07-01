@@ -1005,34 +1005,39 @@ function AddServiceForm({
   );
 }
 
-// ─── Gallery admin ───────────────────────────────────────────────────────────
-const CATEGORY_LABELS: Record<string, string> = {
-  tresses: "Nattes / Tresses",
-  tissage: "Tissage",
-  locks: "Locks & crochet",
-  micro: "Microshading",
-  nails: "Nails",
-  coupes: "Coupes",
-  chignons: "Chignons",
-  perruques: "Perruques",
-};
-
 function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
   const list = useServerFn(listGallery);
   const upload = useServerFn(uploadGalleryPhoto);
   const add = useServerFn(addGalleryItem);
   const update = useServerFn(updateGalleryItem);
   const del = useServerFn(deleteGalleryItem);
+  const listCats = useServerFn(listCategories);
+  const addCat = useServerFn(addCategory);
+  const updateCat = useServerFn(updateCategory);
+  const delCat = useServerFn(deleteCategory);
 
   const [items, setItems] = useState<GalleryItem[]>([]);
+  const [cats, setCats] = useState<GalleryCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [category, setCategory] = useState<string>("tresses");
+  const [category, setCategory] = useState<string>("");
   const [filterCat, setFilterCat] = useState<string>("all");
+
+  // Category management UI state
+  const [showCatMgr, setShowCatMgr] = useState(false);
+  const [newCatKey, setNewCatKey] = useState("");
+  const [newCatLabel, setNewCatLabel] = useState("");
+
+  const CAT_LABEL: Record<string, string> = useMemo(() => {
+    const m: Record<string, string> = {};
+    for (const c of cats) m[c.key] = c.label_fr || c.key;
+    return m;
+  }, [cats]);
+  const catKeys = useMemo(() => cats.map(c => c.key), [cats]);
 
   const refresh = async () => {
     setLoading(true);
