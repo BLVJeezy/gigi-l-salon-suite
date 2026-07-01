@@ -34,7 +34,13 @@ export const CATEGORIES = [
   "tresses", "tissage", "locks", "micro", "nails", "coupes", "chignons", "perruques",
 ] as const;
 
-const categoryEnum = z.enum(CATEGORIES);
+// Category is a free-form string so admins can add/rename/delete categories at runtime.
+// Empty string = "uncategorized" (used when a category the item pointed to was deleted).
+const categoryEnum = z.string().max(50);
+
+export type GalleryCategory = {
+  key: string; label_fr: string; label_nl: string; label_en: string; sort_order: number;
+};
 
 const ALLOWED_MIME = [
   "image/jpeg", "image/jpg", "image/png", "image/webp",
