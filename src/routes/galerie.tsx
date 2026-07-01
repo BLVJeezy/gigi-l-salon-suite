@@ -226,7 +226,7 @@ function GalleryPage() {
               categories={categories}
               active={active}
               onChange={(key) => { setActive(key); }}
-              photos={PHOTOS}
+              photos={allPhotos}
             />
           </div>
           {/* Desktop: horizontal scroll pills */}
