@@ -208,7 +208,7 @@ export const translations = {
         clients: "Tevreden klanten",
         clientsCount: "500+",
         certifiedTitle: "Gecertificeerd salon",
-        certifiedSub: "Coiffure & beauty",
+        certifiedSub: "Haar & schoonheid",
       },
     },
     form: {
@@ -230,7 +230,7 @@ export const translations = {
       bookedHint: "Doorgestreepte tijden zijn al geboekt.",
       edit: "Wijzigen",
       categoryLabel: "Kies een categorie",
-      categories: { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" },
+      categories: { coiffure: "Kapper", nails: "Nails", microshading: "Microshading" },
       back: "Terug",
       nails: {
         services: ["Volledige set", "Bijwerking", "Gel verwijderen", "Reparatie 1 nagel", "Pedicure zonder tips", "Semi-permanente lak"],
@@ -414,7 +414,7 @@ export const translations = {
       bookedHint: "Struck-through times are already booked.",
       edit: "Change",
       categoryLabel: "Choose a category",
-      categories: { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" },
+      categories: { coiffure: "Braids & hair", nails: "Nails", microshading: "Microshading" },
       back: "Back",
       nails: {
         services: ["Full set", "Refill", "Gel removal", "Repair 1 nail", "Pedicure without tips", "Semi-permanent polish"],
@@ -547,7 +547,7 @@ export const translations = {
     },
     galleryPage: {
       title: "Our work",
-      subtitle: "Every hairstyle is unique. Here are some examples of what we do at the salon in Tongeren.",
+      subtitle: "Every hairstyle is unique. Here are some examples of our work as a hair salon in Tongeren: braids, blow-dry, colouring, weaves and more.",
       photoCount: "photos",
       filterAll: "All",
       filterTresses: "Braids",
