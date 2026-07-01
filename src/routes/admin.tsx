@@ -8,6 +8,10 @@ import {
 import {
   listServices, updateService, addService, deleteService, seedServices, type ServiceItem,
 } from "@/lib/services.functions";
+import {
+  listGallery, uploadGalleryPhoto, addGalleryItem, updateGalleryItem, deleteGalleryItem,
+  CATEGORIES, type GalleryItem,
+} from "@/lib/gallery.functions";
 import { LangProvider, useT } from "@/lib/i18n";
 
 const TOKEN_KEY = "gigil_admin_token";
