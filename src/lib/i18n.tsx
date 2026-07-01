@@ -554,6 +554,7 @@ export const translations = {
       filterNails: "Nails",
       filterCoupes: "Cuts",
       filterChignons: "Updos",
+      filterPerruques: "Wigs",
       empty: "No photos in this category yet.",
       ctaTitle: "Like what you see?",
       ctaSub: "Book an appointment and let us elevate your look.",
