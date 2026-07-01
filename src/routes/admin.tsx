@@ -10,7 +10,8 @@ import {
 } from "@/lib/services.functions";
 import {
   listGallery, uploadGalleryPhoto, addGalleryItem, updateGalleryItem, deleteGalleryItem,
-  CATEGORIES, type GalleryItem,
+  listCategories, addCategory, updateCategory, deleteCategory,
+  type GalleryItem, type GalleryCategory,
 } from "@/lib/gallery.functions";
 import { LangProvider, useT } from "@/lib/i18n";
 
@@ -1004,34 +1005,39 @@ function AddServiceForm({
   );
 }
 
-// ─── Gallery admin ───────────────────────────────────────────────────────────
-const CATEGORY_LABELS: Record<string, string> = {
-  tresses: "Nattes / Tresses",
-  tissage: "Tissage",
-  locks: "Locks & crochet",
-  micro: "Microshading",
-  nails: "Nails",
-  coupes: "Coupes",
-  chignons: "Chignons",
-  perruques: "Perruques",
-};
-
 function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
   const list = useServerFn(listGallery);
   const upload = useServerFn(uploadGalleryPhoto);
   const add = useServerFn(addGalleryItem);
   const update = useServerFn(updateGalleryItem);
   const del = useServerFn(deleteGalleryItem);
+  const listCats = useServerFn(listCategories);
+  const addCat = useServerFn(addCategory);
+  const updateCat = useServerFn(updateCategory);
+  const delCat = useServerFn(deleteCategory);
 
   const [items, setItems] = useState<GalleryItem[]>([]);
+  const [cats, setCats] = useState<GalleryCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [category, setCategory] = useState<string>("tresses");
+  const [category, setCategory] = useState<string>("");
   const [filterCat, setFilterCat] = useState<string>("all");
+
+  // Category management UI state
+  const [showCatMgr, setShowCatMgr] = useState(false);
+  const [newCatKey, setNewCatKey] = useState("");
+  const [newCatLabel, setNewCatLabel] = useState("");
+
+  const CAT_LABEL: Record<string, string> = useMemo(() => {
+    const m: Record<string, string> = {};
+    for (const c of cats) m[c.key] = c.label_fr || c.key;
+    return m;
+  }, [cats]);
+  const catKeys = useMemo(() => cats.map(c => c.key), [cats]);
 
   const refresh = async () => {
     setLoading(true);
@@ -1039,14 +1045,60 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
     const token = getToken();
     if (!token) { onLogout(); return; }
     try {
-      const r = await list({ data: { token } });
+      const [r, rc] = await Promise.all([list({ data: { token } }), listCats()]);
       setItems(r.items);
+      setCats(rc.categories);
+      setCategory(prev => prev || rc.categories[0]?.key || "");
     } catch (e: any) {
       console.error(e);
       setErr(e?.message ?? "Erreur");
     } finally { setLoading(false); }
   };
   useEffect(() => { void refresh(); /* eslint-disable-next-line */ }, []);
+
+  async function onAddCategory(e: FormEvent) {
+    e.preventDefault();
+    const token = getToken();
+    if (!token || !newCatKey.trim()) return;
+    try {
+      const res = await addCat({ data: {
+        token, key: newCatKey.trim().toLowerCase(),
+        label_fr: newCatLabel.trim() || newCatKey.trim(),
+        label_nl: newCatLabel.trim() || newCatKey.trim(),
+        label_en: newCatLabel.trim() || newCatKey.trim(),
+        sort_order: (cats[cats.length - 1]?.sort_order ?? 0) + 10,
+      }});
+      setCats(prev => [...prev, res.category]);
+      setNewCatKey(""); setNewCatLabel("");
+    } catch (e: any) { setErr(e?.message ?? "Erreur"); }
+  }
+
+  async function onRenameCategory(key: string, label: string) {
+    const token = getToken();
+    if (!token) return;
+    try {
+      await updateCat({ data: { token, key, label_fr: label, label_nl: label, label_en: label } });
+      setCats(prev => prev.map(c => c.key === key ? { ...c, label_fr: label, label_nl: label, label_en: label } : c));
+    } catch (e) { console.error(e); }
+  }
+
+  async function onDeleteCategory(key: string) {
+    const inUse = items.filter(x => x.category === key).length;
+    const msg = inUse > 0
+      ? `Supprimer la catégorie "${CAT_LABEL[key] ?? key}" ? ${inUse} photo(s) resteront sans catégorie.`
+      : `Supprimer la catégorie "${CAT_LABEL[key] ?? key}" ?`;
+    if (!confirm(msg)) return;
+    const token = getToken();
+    if (!token) return;
+    try {
+      await delCat({ data: { token, key } });
+      setCats(prev => prev.filter(c => c.key !== key));
+      setItems(prev => prev.map(x => x.category === key ? { ...x, category: "" } : x));
+      if (filterCat === key) setFilterCat("all");
+      if (category === key) setCategory(cats[0]?.key ?? "");
+    } catch (e: any) { setErr(e?.message ?? "Erreur"); }
+  }
+
 
   function onPickFile(f: File | null) {
     setFile(f);
@@ -1108,7 +1160,11 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
     } catch (e) { console.error(e); }
   }
 
-  const visible = filterCat === "all" ? items : items.filter(x => x.category === filterCat);
+  const visible = filterCat === "all"
+    ? items
+    : filterCat === "__none"
+      ? items.filter(x => !x.category || !catKeys.includes(x.category))
+      : items.filter(x => x.category === filterCat);
 
   return (
     <div className="space-y-8">
@@ -1132,7 +1188,8 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
             <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Catégorie</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)}
               className="w-full border border-border bg-ivory px-3 py-2 text-sm">
-              {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
+              {catKeys.length === 0 && <option value="">— Aucune catégorie —</option>}
+              {catKeys.map(c => <option key={c} value={c}>{CAT_LABEL[c] ?? c}</option>)}
             </select>
           </div>
 
@@ -1147,21 +1204,65 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
         </form>
       </section>
 
+      {/* Category management */}
+      <section className="border border-gold/20 bg-ivory p-4 sm:p-5">
+        <button type="button" onClick={() => setShowCatMgr(v => !v)}
+          className="w-full flex items-center justify-between text-left">
+          <h2 className="font-display text-lg text-ink">Gérer les catégories <span className="text-smoke text-sm">({cats.length})</span></h2>
+          <span className="text-gold">{showCatMgr ? "▲" : "▼"}</span>
+        </button>
+        {showCatMgr && (
+          <div className="mt-4 space-y-3">
+            {cats.map(c => {
+              const inUse = items.filter(x => x.category === c.key).length;
+              return (
+                <div key={c.key} className="flex flex-wrap items-center gap-2 border-b border-gold/10 pb-2">
+                  <span className="text-[10px] uppercase tracking-widest text-smoke w-20">{c.key}</span>
+                  <input defaultValue={c.label_fr}
+                    onBlur={(e) => { if (e.target.value !== c.label_fr) onRenameCategory(c.key, e.target.value); }}
+                    className="flex-1 min-w-[140px] border border-border bg-ivory px-2 py-1 text-sm" />
+                  <span className="text-xs text-smoke">{inUse} photo{inUse !== 1 ? "s" : ""}</span>
+                  <button type="button" onClick={() => onDeleteCategory(c.key)}
+                    className="text-[10px] uppercase tracking-widest border border-red-300 text-red-700 px-2 py-1 hover:bg-red-50">
+                    Supprimer
+                  </button>
+                </div>
+              );
+            })}
+            <form onSubmit={onAddCategory} className="flex flex-wrap items-center gap-2 pt-2">
+              <input value={newCatKey} onChange={(e) => setNewCatKey(e.target.value)} placeholder="clé (ex: barbe)"
+                className="w-32 border border-border bg-ivory px-2 py-1 text-sm" />
+              <input value={newCatLabel} onChange={(e) => setNewCatLabel(e.target.value)} placeholder="Nom affiché"
+                className="flex-1 min-w-[140px] border border-border bg-ivory px-2 py-1 text-sm" />
+              <button type="submit" disabled={!newCatKey.trim()} className="btn-gold btn-gold-hover disabled:opacity-50 text-xs">
+                Ajouter
+              </button>
+            </form>
+          </div>
+        )}
+      </section>
+
       {/* Filter + list */}
       <section>
         <div className="flex flex-wrap items-center gap-2 pb-3">
-          {(["all", ...CATEGORIES] as const).map(c => {
-            const count = c === "all" ? items.length : items.filter(x => x.category === c).length;
+          {(["all", ...catKeys, "__none"] as const).map(c => {
+            const count = c === "all"
+              ? items.length
+              : c === "__none"
+                ? items.filter(x => !x.category || !catKeys.includes(x.category)).length
+                : items.filter(x => x.category === c).length;
+            if (c === "__none" && count === 0) return null;
             return (
               <button key={c} onClick={() => setFilterCat(c)}
                 className={`px-3 py-1.5 text-xs uppercase tracking-widest border ${
                   filterCat === c ? "bg-gold text-ivory border-gold" : "border-smoke/25 text-smoke hover:border-gold"
                 }`}>
-                {c === "all" ? "Toutes" : (CATEGORY_LABELS[c] ?? c)} <span className="opacity-60">({count})</span>
+                {c === "all" ? "Toutes" : c === "__none" ? "Sans catégorie" : (CAT_LABEL[c] ?? c)} <span className="opacity-60">({count})</span>
               </button>
             );
           })}
         </div>
+
 
 
         {loading ? <p className="text-smoke text-sm">…</p> : (() => {
@@ -1169,9 +1270,10 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
             <div key={it.id} className={`border ${it.active ? "border-gold/25" : "border-red-300 opacity-60"} bg-ivory`}>
               <img src={it.url} alt={it.caption_fr || "photo"} className="w-full aspect-square object-cover" />
               <div className="p-2 sm:p-3 space-y-2">
-                <select value={it.category} onChange={(e) => changeCategory(it, e.target.value)}
+                <select value={it.category ?? ""} onChange={(e) => changeCategory(it, e.target.value)}
                   className="w-full border border-border bg-ivory px-2 py-1 text-xs">
-                  {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
+                  <option value="">— Sans catégorie —</option>
+                  {catKeys.map(c => <option key={c} value={c}>{CAT_LABEL[c] ?? c}</option>)}
                 </select>
                 <div className="flex gap-2">
                   <button onClick={() => toggleActive(it)}
@@ -1190,15 +1292,16 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
             return <p className="text-smoke text-sm">Aucune photo dans cette catégorie.</p>;
           }
           if (filterCat === "all") {
+            const uncategorized = items.filter(x => !x.category || !catKeys.includes(x.category));
             return (
               <div className="space-y-8">
-                {CATEGORIES.map(cat => {
+                {catKeys.map(cat => {
                   const rows = items.filter(x => x.category === cat);
                   if (rows.length === 0) return null;
                   return (
                     <div key={cat}>
                       <h3 className="font-display text-lg text-ink mb-3 border-b border-gold/20 pb-1">
-                        {CATEGORY_LABELS[cat] ?? cat} <span className="text-smoke text-sm">({rows.length})</span>
+                        {CAT_LABEL[cat] ?? cat} <span className="text-smoke text-sm">({rows.length})</span>
                       </h3>
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         {rows.map(renderCard)}
@@ -1206,6 +1309,16 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
                     </div>
                   );
                 })}
+                {uncategorized.length > 0 && (
+                  <div>
+                    <h3 className="font-display text-lg text-ink mb-3 border-b border-red-200 pb-1">
+                      Sans catégorie <span className="text-smoke text-sm">({uncategorized.length})</span>
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {uncategorized.map(renderCard)}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           }
