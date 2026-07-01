@@ -1164,36 +1164,57 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
         </div>
 
 
-        {loading ? <p className="text-smoke text-sm">…</p> : (
-          visible.length === 0 ? (
-            <p className="text-smoke text-sm">Aucune photo dans cette catégorie.</p>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {visible.map(it => (
-                <div key={it.id} className={`border ${it.active ? "border-gold/25" : "border-red-300 opacity-60"} bg-ivory`}>
-                  <img src={it.url} alt={it.caption_fr || "photo"} className="w-full aspect-square object-cover" />
-                  <div className="p-3 space-y-2">
-                    <select value={it.category} onChange={(e) => changeCategory(it, e.target.value)}
-                      className="w-full border border-border bg-ivory px-2 py-1 text-xs">
-                      {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
-                    </select>
-                    {it.caption_fr && <p className="text-xs text-smoke truncate">{it.caption_fr}</p>}
-                    <div className="flex gap-2">
-                      <button onClick={() => toggleActive(it)}
-                        className="flex-1 text-[10px] uppercase tracking-widest border border-smoke/30 py-1 hover:border-gold hover:text-gold">
-                        {it.active ? "Masquer" : "Afficher"}
-                      </button>
-                      <button onClick={() => onDelete(it)}
-                        className="flex-1 text-[10px] uppercase tracking-widest border border-red-300 text-red-700 py-1 hover:bg-red-50">
-                        Supprimer
-                      </button>
-                    </div>
-                  </div>
+        {loading ? <p className="text-smoke text-sm">…</p> : (() => {
+          const renderCard = (it: GalleryItem) => (
+            <div key={it.id} className={`border ${it.active ? "border-gold/25" : "border-red-300 opacity-60"} bg-ivory`}>
+              <img src={it.url} alt={it.caption_fr || "photo"} className="w-full aspect-square object-cover" />
+              <div className="p-2 sm:p-3 space-y-2">
+                <select value={it.category} onChange={(e) => changeCategory(it, e.target.value)}
+                  className="w-full border border-border bg-ivory px-2 py-1 text-xs">
+                  {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
+                </select>
+                <div className="flex gap-2">
+                  <button onClick={() => toggleActive(it)}
+                    className="flex-1 text-[10px] uppercase tracking-widest border border-smoke/30 py-1 hover:border-gold hover:text-gold">
+                    {it.active ? "Masquer" : "Afficher"}
+                  </button>
+                  <button onClick={() => onDelete(it)}
+                    className="flex-1 text-[10px] uppercase tracking-widest border border-red-300 text-red-700 py-1 hover:bg-red-50">
+                    Suppr.
+                  </button>
                 </div>
-              ))}
+              </div>
             </div>
-          )
-        )}
+          );
+          if (visible.length === 0) {
+            return <p className="text-smoke text-sm">Aucune photo dans cette catégorie.</p>;
+          }
+          if (filterCat === "all") {
+            return (
+              <div className="space-y-8">
+                {CATEGORIES.map(cat => {
+                  const rows = items.filter(x => x.category === cat);
+                  if (rows.length === 0) return null;
+                  return (
+                    <div key={cat}>
+                      <h3 className="font-display text-lg text-ink mb-3 border-b border-gold/20 pb-1">
+                        {CATEGORY_LABELS[cat] ?? cat} <span className="text-smoke text-sm">({rows.length})</span>
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {rows.map(renderCard)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+          return (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {visible.map(renderCard)}
+            </div>
+          );
+        })()}
       </section>
     </div>
   );
