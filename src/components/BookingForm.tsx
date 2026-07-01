@@ -35,6 +35,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   const { t, lang } = useT();
   const submit = useServerFn(createBooking);
   const upload = useServerFn(uploadBookingPhoto);
+  const fetchAvailability = useServerFn(getDateAvailability);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
