@@ -400,9 +400,16 @@ function Field({
 }) {
   return (
     <div>
-      <Label>{label}{required && " *"}</Label>
-      <input type={type} required={required} value={value} autoFocus={autoFocus} aria-label={label}
-        onChange={(e) => onChange(e.target.value)} className={inputCls} />
+      <input
+        type={type}
+        required={required}
+        value={value}
+        autoFocus={autoFocus}
+        aria-label={label}
+        placeholder={`${label}${required ? " *" : ""}`}
+        onChange={(e) => onChange(e.target.value)}
+        className={`${inputCls} placeholder:text-ivory/50 placeholder:uppercase placeholder:tracking-wider placeholder:text-xs`}
+      />
     </div>
   );
 }
