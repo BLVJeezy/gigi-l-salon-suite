@@ -90,8 +90,13 @@ export const uploadGalleryPhoto = createServerFn({ method: "POST" })
       contentType: mime, upsert: false,
     });
     if (error) throw new Error(error.message);
-    const { data: pub } = supabaseAdmin.storage.from("gallery").getPublicUrl(key);
-    return { url: pub.publicUrl };
+    // Long-lived signed URL (10 years) so the private bucket stays private but
+    // the public site can still render the image without a per-request round trip.
+    const { data: signed, error: signErr } = await supabaseAdmin.storage
+      .from("gallery")
+      .createSignedUrl(key, 60 * 60 * 24 * 365 * 10);
+    if (signErr || !signed) throw new Error(signErr?.message ?? "Signing failed");
+    return { url: signed.signedUrl };
   });
 
 const addSchema = z.object({
