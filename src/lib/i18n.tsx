@@ -122,7 +122,7 @@ export const translations = {
       ctaSub: "Réservez votre rendez-vous et vivez l'expérience GiGi L.",
       ctaBtn: "Prendre rendez-vous",
       hoursTitle: "Horaires d'ouverture",
-      hoursLines: ["Lun, Jeu – Sam : 09h00 – 20h00", "Mar – Mer, Dim : sur rendez-vous"],
+      hoursLines: ["Lun, Mer – Sam : 09h00 – 19h00", "Mar & Dim : fermé"],
       linksTitle: "Liens",
       rights: "Tous droits réservés.",
     },
