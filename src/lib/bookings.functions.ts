@@ -14,6 +14,35 @@ const schema = z.object({
   lang: z.enum(["fr", "nl", "en"]).default("fr"),
 });
 
+const availabilitySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+
+/**
+ * Returns non-PII booking windows for a date + service duration map,
+ * so the client can grey out overlapping time slots.
+ */
+export const getDateAvailability = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => availabilitySchema.parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const [bookingsRes, servicesRes] = await Promise.all([
+      supabaseAdmin
+        .from("bookings")
+        .select("booking_time, service")
+        .eq("booking_date", data.date)
+        .neq("status", "cancelled"),
+      supabaseAdmin.from("services").select("name, duration_min"),
+    ]);
+    const durations: Record<string, number> = {};
+    for (const s of servicesRes.data ?? []) durations[s.name] = s.duration_min ?? 60;
+    const booked = (bookingsRes.data ?? []).map((b) => ({
+      time: String(b.booking_time).slice(0, 5),
+      durationMin: durations[b.service] ?? 60,
+    }));
+    return { booked, durations };
+  });
+
 export const createBooking = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
