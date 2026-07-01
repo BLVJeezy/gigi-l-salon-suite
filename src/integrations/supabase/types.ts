@@ -182,6 +182,33 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_categories: {
+        Row: {
+          created_at: string
+          key: string
+          label_en: string
+          label_fr: string
+          label_nl: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          label_en?: string
+          label_fr?: string
+          label_nl?: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          label_en?: string
+          label_fr?: string
+          label_nl?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           active: boolean
