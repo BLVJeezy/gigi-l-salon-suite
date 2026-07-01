@@ -1031,10 +1031,6 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [category, setCategory] = useState<string>("tresses");
-  const [captionFr, setCaptionFr] = useState("");
-  const [captionNl, setCaptionNl] = useState("");
-  const [captionEn, setCaptionEn] = useState("");
-  const [span, setSpan] = useState<1 | 2 | 3>(1);
   const [filterCat, setFilterCat] = useState<string>("all");
 
   const refresh = async () => {
