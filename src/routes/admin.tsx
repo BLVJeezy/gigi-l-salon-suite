@@ -1184,7 +1184,8 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
             <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Catégorie</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)}
               className="w-full border border-border bg-ivory px-3 py-2 text-sm">
-              {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
+              {catKeys.length === 0 && <option value="">— Aucune catégorie —</option>}
+              {catKeys.map(c => <option key={c} value={c}>{CAT_LABEL[c] ?? c}</option>)}
             </select>
           </div>
 
