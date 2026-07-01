@@ -342,6 +342,7 @@ export const translations = {
       filterNails: "Nails",
       filterCoupes: "Knipbeurten",
       filterChignons: "Opsteekkapsels",
+      filterPerruques: "Pruiken",
       empty: "Nog geen realisaties in deze categorie.",
       ctaTitle: "Ziet u iets wat u aanspreekt?",
       ctaSub: "Maak een afspraak en laat ons uw haar sublimeren.",
