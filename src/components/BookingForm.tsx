@@ -52,7 +52,38 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [booked, setBooked] = useState<{ time: string; durationMin: number }[]>([]);
+  const [durations, setDurations] = useState<Record<string, number>>({});
+
   const today = new Date().toISOString().slice(0, 10);
+
+  // Load booked windows + service durations when a date is chosen.
+  useEffect(() => {
+    if (!date) { setBooked([]); return; }
+    let cancelled = false;
+    fetchAvailability({ data: { date } })
+      .then((r) => { if (!cancelled) { setBooked(r.booked); setDurations(r.durations); } })
+      .catch(() => { if (!cancelled) { setBooked([]); } });
+    return () => { cancelled = true; };
+  }, [date, fetchAvailability]);
+
+  // Compute time slots that overlap an existing booking, given the chosen service's duration.
+  const toMin = (hhmm: string) => {
+    const [h, m] = hhmm.split(":").map(Number);
+    return h * 60 + m;
+  };
+  const selectedDuration = durations[service] ?? 60;
+  const disabledSlots = new Set<string>();
+  for (const slot of TIME_SLOTS) {
+    const a1 = toMin(slot);
+    const a2 = a1 + selectedDuration;
+    for (const b of booked) {
+      const b1 = toMin(b.time);
+      const b2 = b1 + b.durationMin;
+      if (a1 < b2 && b1 < a2) { disabledSlots.add(slot); break; }
+    }
+  }
+
 
   const categories: { key: CategoryKey; label: string }[] = [
     { key: "coiffure", label: t.form.categories.coiffure },
