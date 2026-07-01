@@ -10,9 +10,9 @@
 //   7. Name · Email · Phone
 //
 // Extra answers (zone, photo URL) are folded into the booking `message` field.
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { createBooking } from "@/lib/bookings.functions";
+import { createBooking, getDateAvailability } from "@/lib/bookings.functions";
 import { uploadBookingPhoto } from "@/lib/upload.functions";
 import { useT } from "@/lib/i18n";
 
@@ -35,6 +35,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   const { t, lang } = useT();
   const submit = useServerFn(createBooking);
   const upload = useServerFn(uploadBookingPhoto);
+  const fetchAvailability = useServerFn(getDateAvailability);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "err">("idle");
@@ -51,7 +52,38 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [booked, setBooked] = useState<{ time: string; durationMin: number }[]>([]);
+  const [durations, setDurations] = useState<Record<string, number>>({});
+
   const today = new Date().toISOString().slice(0, 10);
+
+  // Load booked windows + service durations when a date is chosen.
+  useEffect(() => {
+    if (!date) { setBooked([]); return; }
+    let cancelled = false;
+    fetchAvailability({ data: { date } })
+      .then((r) => { if (!cancelled) { setBooked(r.booked); setDurations(r.durations); } })
+      .catch(() => { if (!cancelled) { setBooked([]); } });
+    return () => { cancelled = true; };
+  }, [date, fetchAvailability]);
+
+  // Compute time slots that overlap an existing booking, given the chosen service's duration.
+  const toMin = (hhmm: string) => {
+    const [h, m] = hhmm.split(":").map(Number);
+    return h * 60 + m;
+  };
+  const selectedDuration = durations[service] ?? 60;
+  const disabledSlots = new Set<string>();
+  for (const slot of TIME_SLOTS) {
+    const a1 = toMin(slot);
+    const a2 = a1 + selectedDuration;
+    for (const b of booked) {
+      const b1 = toMin(b.time);
+      const b2 = b1 + b.durationMin;
+      if (a1 < b2 && b1 < a2) { disabledSlots.add(slot); break; }
+    }
+  }
+
 
   const categories: { key: CategoryKey; label: string }[] = [
     { key: "coiffure", label: t.form.categories.coiffure },
@@ -332,15 +364,24 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
         <div className="space-y-4">
           <Label>{t.form.time} *</Label>
           <div className="grid grid-cols-4 gap-1.5">
-            {TIME_SLOTS.map((slot) => (
-              <button key={slot} type="button" onClick={() => { setTime(slot); goNext(); }}
-                className={`py-2.5 text-xs tracking-wider border transition-colors ${
-                  time === slot ? "bg-gold text-ivory border-gold font-medium" : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
-                }`}>
-                {slot}
-              </button>
-            ))}
+            {TIME_SLOTS.map((slot) => {
+              const isDisabled = disabledSlots.has(slot);
+              return (
+                <button key={slot} type="button" disabled={isDisabled}
+                  onClick={() => { if (isDisabled) return; setTime(slot); goNext(); }}
+                  className={`py-2.5 text-xs tracking-wider border transition-colors ${
+                    isDisabled
+                      ? "bg-ink/50 border-white/5 text-ivory/25 line-through cursor-not-allowed"
+                      : time === slot
+                        ? "bg-gold text-ivory border-gold font-medium"
+                        : "bg-ink border-gold/20 text-ivory/70 hover:border-gold/60 hover:text-ivory"
+                  }`}>
+                  {slot}
+                </button>
+              );
+            })}
           </div>
+          <p className="text-ivory/40 text-[10px] tracking-wider">{t.form.bookedHint}</p>
         </div>
       )}
 
