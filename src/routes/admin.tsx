@@ -10,7 +10,8 @@ import {
 } from "@/lib/services.functions";
 import {
   listGallery, uploadGalleryPhoto, addGalleryItem, updateGalleryItem, deleteGalleryItem,
-  CATEGORIES, type GalleryItem,
+  listCategories, addCategory, updateCategory, deleteCategory,
+  type GalleryItem, type GalleryCategory,
 } from "@/lib/gallery.functions";
 import { LangProvider, useT } from "@/lib/i18n";
 
