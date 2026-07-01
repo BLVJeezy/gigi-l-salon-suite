@@ -168,3 +168,72 @@ export const deleteGalleryItem = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+// ─── Category management ───────────────────────────────────────────────────
+export const listCategories = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const db = supabaseAdmin as unknown as { from: (t: string) => any };
+  const { data, error } = await db.from("gallery_categories")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("key", { ascending: true });
+  if (error) throw new Error(error.message);
+  return { categories: (data ?? []) as GalleryCategory[] };
+});
+
+const catKeySchema = z.string().min(1).max(50).regex(/^[a-z0-9_-]+$/, "Utilise lettres minuscules, chiffres, - ou _");
+
+export const addCategory = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({
+    token: z.string(),
+    key: catKeySchema,
+    label_fr: z.string().max(100).default(""),
+    label_nl: z.string().max(100).default(""),
+    label_en: z.string().max(100).default(""),
+    sort_order: z.number().int().default(999),
+  }).parse(input))
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { token: _t, ...row } = data;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as unknown as { from: (t: string) => any };
+    const { data: inserted, error } = await db.from("gallery_categories").insert(row).select("*").single();
+    if (error) throw new Error(error.message);
+    return { category: inserted as GalleryCategory };
+  });
+
+export const updateCategory = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({
+    token: z.string(),
+    key: catKeySchema,
+    label_fr: z.string().max(100).optional(),
+    label_nl: z.string().max(100).optional(),
+    label_en: z.string().max(100).optional(),
+    sort_order: z.number().int().optional(),
+  }).parse(input))
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { token: _t, key, ...rest } = data;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as unknown as { from: (t: string) => any };
+    const { error } = await db.from("gallery_categories").update(rest).eq("key", key);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// Deletes the category row. Photos in that category are kept — their
+// `category` column is set to '' so they appear as "uncategorized".
+export const deleteCategory = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ token: z.string(), key: catKeySchema }).parse(input))
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as unknown as { from: (t: string) => any };
+    // Orphan photos: keep the row, just clear the category.
+    const { error: upErr } = await db.from("gallery").update({ category: "" }).eq("category", data.key);
+    if (upErr) throw new Error(upErr.message);
+    const { error } = await db.from("gallery_categories").delete().eq("key", data.key);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
