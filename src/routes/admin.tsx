@@ -1031,10 +1031,6 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [category, setCategory] = useState<string>("tresses");
-  const [captionFr, setCaptionFr] = useState("");
-  const [captionNl, setCaptionNl] = useState("");
-  const [captionEn, setCaptionEn] = useState("");
-  const [span, setSpan] = useState<1 | 2 | 3>(1);
   const [filterCat, setFilterCat] = useState<string>("all");
 
   const refresh = async () => {
@@ -1071,11 +1067,11 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
       const up = await upload({ data: { token, dataUrl: preview } });
       const res = await add({ data: {
         token, url: up.url, category: category as any,
-        caption_fr: captionFr, caption_nl: captionNl, caption_en: captionEn,
-        span, sort_order: 0,
+        caption_fr: "", caption_nl: "", caption_en: "",
+        span: 1, sort_order: 0,
       }});
       setItems(prev => [res.item, ...prev]);
-      setFile(null); setPreview(null); setCaptionFr(""); setCaptionNl(""); setCaptionEn(""); setSpan(1);
+      setFile(null); setPreview(null);
       const input = document.getElementById("gallery-file") as HTMLInputElement | null;
       if (input) input.value = "";
     } catch (e: any) {
@@ -1119,10 +1115,10 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
       {/* Upload form */}
       <section className="border border-gold/20 bg-sand/40 p-5 sm:p-6">
         <h2 className="font-display text-xl text-ink">Ajouter une photo</h2>
-        <p className="text-xs text-smoke mt-1">Choisis la photo, la catégorie et les légendes (facultatives).</p>
+        <p className="text-xs text-smoke mt-1">Choisis la photo et la catégorie.</p>
 
-        <form onSubmit={onSubmit} className="mt-5 grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
+        <form onSubmit={onSubmit} className="mt-5 grid gap-4">
+          <div>
             <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Photo</label>
             <input id="gallery-file" type="file" accept="image/*"
               onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
@@ -1133,42 +1129,16 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
           </div>
 
           <div>
-            <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Catégorie (tag)</label>
+            <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Catégorie</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)}
               className="w-full border border-border bg-ivory px-3 py-2 text-sm">
               {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
             </select>
           </div>
 
-          <div>
-            <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Taille</label>
-            <select value={span} onChange={(e) => setSpan(Number(e.target.value) as 1 | 2 | 3)}
-              className="w-full border border-border bg-ivory px-3 py-2 text-sm">
-              <option value={1}>Normale</option>
-              <option value={2}>Large</option>
-              <option value={3}>Haute</option>
-            </select>
-          </div>
+          {err && <p className="text-sm text-red-700">{err}</p>}
 
-          <div>
-            <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Légende FR</label>
-            <input value={captionFr} onChange={(e) => setCaptionFr(e.target.value)}
-              className="w-full border border-border bg-ivory px-3 py-2 text-sm" placeholder="Ex : Cornrows bordeaux" />
-          </div>
-          <div>
-            <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Légende NL</label>
-            <input value={captionNl} onChange={(e) => setCaptionNl(e.target.value)}
-              className="w-full border border-border bg-ivory px-3 py-2 text-sm" placeholder="Bijv. Bordeaux cornrows" />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block text-xs uppercase tracking-widest text-smoke mb-2">Caption EN</label>
-            <input value={captionEn} onChange={(e) => setCaptionEn(e.target.value)}
-              className="w-full border border-border bg-ivory px-3 py-2 text-sm" placeholder="E.g. Burgundy cornrows" />
-          </div>
-
-          {err && <p className="sm:col-span-2 text-sm text-red-700">{err}</p>}
-
-          <div className="sm:col-span-2 flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button type="submit" disabled={busy || !preview} className="btn-gold btn-gold-hover disabled:opacity-50">
               {busy ? "Envoi…" : "Ajouter à la galerie"}
             </button>
@@ -1179,47 +1149,72 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
 
       {/* Filter + list */}
       <section>
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 scrollbar-none">
-          {(["all", ...CATEGORIES] as const).map(c => (
-            <button key={c} onClick={() => setFilterCat(c)}
-              className={`flex-shrink-0 px-3 py-1.5 text-xs uppercase tracking-widest border ${
-                filterCat === c ? "bg-gold text-ivory border-gold" : "border-smoke/25 text-smoke hover:border-gold"
-              }`}>
-              {c === "all" ? "Toutes" : (CATEGORY_LABELS[c] ?? c)}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-2 pb-3">
+          {(["all", ...CATEGORIES] as const).map(c => {
+            const count = c === "all" ? items.length : items.filter(x => x.category === c).length;
+            return (
+              <button key={c} onClick={() => setFilterCat(c)}
+                className={`px-3 py-1.5 text-xs uppercase tracking-widest border ${
+                  filterCat === c ? "bg-gold text-ivory border-gold" : "border-smoke/25 text-smoke hover:border-gold"
+                }`}>
+                {c === "all" ? "Toutes" : (CATEGORY_LABELS[c] ?? c)} <span className="opacity-60">({count})</span>
+              </button>
+            );
+          })}
         </div>
 
-        {loading ? <p className="text-smoke text-sm">…</p> : (
-          visible.length === 0 ? (
-            <p className="text-smoke text-sm">Aucune photo dans cette catégorie.</p>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {visible.map(it => (
-                <div key={it.id} className={`border ${it.active ? "border-gold/25" : "border-red-300 opacity-60"} bg-ivory`}>
-                  <img src={it.url} alt={it.caption_fr || "photo"} className="w-full aspect-square object-cover" />
-                  <div className="p-3 space-y-2">
-                    <select value={it.category} onChange={(e) => changeCategory(it, e.target.value)}
-                      className="w-full border border-border bg-ivory px-2 py-1 text-xs">
-                      {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
-                    </select>
-                    {it.caption_fr && <p className="text-xs text-smoke truncate">{it.caption_fr}</p>}
-                    <div className="flex gap-2">
-                      <button onClick={() => toggleActive(it)}
-                        className="flex-1 text-[10px] uppercase tracking-widest border border-smoke/30 py-1 hover:border-gold hover:text-gold">
-                        {it.active ? "Masquer" : "Afficher"}
-                      </button>
-                      <button onClick={() => onDelete(it)}
-                        className="flex-1 text-[10px] uppercase tracking-widest border border-red-300 text-red-700 py-1 hover:bg-red-50">
-                        Supprimer
-                      </button>
-                    </div>
-                  </div>
+
+        {loading ? <p className="text-smoke text-sm">…</p> : (() => {
+          const renderCard = (it: GalleryItem) => (
+            <div key={it.id} className={`border ${it.active ? "border-gold/25" : "border-red-300 opacity-60"} bg-ivory`}>
+              <img src={it.url} alt={it.caption_fr || "photo"} className="w-full aspect-square object-cover" />
+              <div className="p-2 sm:p-3 space-y-2">
+                <select value={it.category} onChange={(e) => changeCategory(it, e.target.value)}
+                  className="w-full border border-border bg-ivory px-2 py-1 text-xs">
+                  {CATEGORIES.map(c => <option key={c} value={c}>{CATEGORY_LABELS[c] ?? c}</option>)}
+                </select>
+                <div className="flex gap-2">
+                  <button onClick={() => toggleActive(it)}
+                    className="flex-1 text-[10px] uppercase tracking-widest border border-smoke/30 py-1 hover:border-gold hover:text-gold">
+                    {it.active ? "Masquer" : "Afficher"}
+                  </button>
+                  <button onClick={() => onDelete(it)}
+                    className="flex-1 text-[10px] uppercase tracking-widest border border-red-300 text-red-700 py-1 hover:bg-red-50">
+                    Suppr.
+                  </button>
                 </div>
-              ))}
+              </div>
             </div>
-          )
-        )}
+          );
+          if (visible.length === 0) {
+            return <p className="text-smoke text-sm">Aucune photo dans cette catégorie.</p>;
+          }
+          if (filterCat === "all") {
+            return (
+              <div className="space-y-8">
+                {CATEGORIES.map(cat => {
+                  const rows = items.filter(x => x.category === cat);
+                  if (rows.length === 0) return null;
+                  return (
+                    <div key={cat}>
+                      <h3 className="font-display text-lg text-ink mb-3 border-b border-gold/20 pb-1">
+                        {CATEGORY_LABELS[cat] ?? cat} <span className="text-smoke text-sm">({rows.length})</span>
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {rows.map(renderCard)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+          return (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {visible.map(renderCard)}
+            </div>
+          );
+        })()}
       </section>
     </div>
   );
