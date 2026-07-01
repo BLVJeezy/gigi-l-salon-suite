@@ -263,7 +263,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const update = useServerFn(updateBookingStatus);
 
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [tab, setTab] = useState<"leads" | "day" | "week" | "diensten">("leads");
+  const [tab, setTab] = useState<"leads" | "day" | "week" | "diensten" | "gallery">("leads");
   const [loading, setLoading] = useState(true);
 
   const refresh = async () => {
