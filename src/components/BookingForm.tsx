@@ -10,9 +10,9 @@
 //   7. Name · Email · Phone
 //
 // Extra answers (zone, photo URL) are folded into the booking `message` field.
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { createBooking } from "@/lib/bookings.functions";
+import { createBooking, getDateAvailability } from "@/lib/bookings.functions";
 import { uploadBookingPhoto } from "@/lib/upload.functions";
 import { useT } from "@/lib/i18n";
 
