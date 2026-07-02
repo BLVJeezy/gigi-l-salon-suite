@@ -1,0 +1,79 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/sections";
+import { LangProvider } from "@/lib/i18n";
+
+export const Route = createFileRoute("/box-braids-tongeren")({
+  head: () => ({
+    meta: [
+      { title: "Box Braids Tongeren — Knotless & klassiek | GiGi L Coiffure" },
+      { name: "description", content: "Box braids in Tongeren — knotless box braids, klassieke box braids, kleur en lengte naar keuze. GiGi L Coiffure, Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Bilzen en Hasselt." },
+      { property: "og:title", content: "Box Braids Tongeren — GiGi L Coiffure" },
+      { property: "og:url", content: "https://gigilcoiffure.be/box-braids-tongeren" },
+    ],
+    links: [{ rel: "canonical", href: "https://gigilcoiffure.be/box-braids-tongeren" }],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "HairSalon",
+      name: "GiGi L Coiffure", telephone: "+32484164905",
+      address: { "@type": "PostalAddress", streetAddress: "Koninksemsteenweg 144", postalCode: "3700", addressLocality: "Tongeren", addressCountry: "BE" },
+      url: "https://gigilcoiffure.be/box-braids-tongeren",
+      description: "Specialist in box braids in Tongeren — knotless en klassiek, in alle kleuren en lengtes.",
+    }) }],
+  }),
+  component: () => (
+    <LangProvider>
+      <Header />
+      <main className="bg-ivory min-h-screen">
+        <section className="bg-ink text-ivory pt-32 pb-20 px-5">
+          <div className="max-w-3xl mx-auto">
+            <p className="eyebrow">Tongeren · Box braids specialist</p>
+            <h1 className="mt-4 font-display text-4xl sm:text-5xl text-ivory leading-tight">Box braids in Tongeren</h1>
+            <div className="mt-4 gold-rule" />
+            <p className="mt-6 text-ivory/70 text-lg leading-relaxed">Knotless box braids, klassieke box braids, jumbo of micro — GiGi L Coiffure is de specialist voor box braids in Tongeren. Kleur, lengte en dikte volledig naar uw wens. Beschermend kapsel dat 6 tot 8 weken mooi blijft.</p>
+            <Link to="/reservations" className="mt-8 btn-gold btn-gold-hover inline-flex">Afspraak box braids</Link>
+          </div>
+        </section>
+        <section className="py-16 px-5 max-w-3xl mx-auto">
+          <h2 className="font-display text-3xl text-ink mb-8">Box braids stijlen in Tongeren</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              { t: "Knotless box braids", d: "Geen knoop aan de wortel — minder trek op de haargrens, comfortabeler en cleaner qua uitstraling." },
+              { t: "Klassieke box braids", d: "Met knoop aan de basis voor extra stevigheid. Ideaal voor langere lengtes." },
+              { t: "Jumbo box braids", d: "Dikke, opvallende braids die snel gezet zijn en een statement maken." },
+              { t: "Micro box braids", d: "Fijne, subtiele braids die maandenlang netjes blijven." },
+              { t: "Box braids met kleur", d: "Voeg kleur toe via ombre, highlights of een full colour — zonder chemische behandeling." },
+              { t: "Box braids met curly ends", d: "Krul aan de uiteinden voor een romantisch, vrouwelijk effect." },
+            ].map(s => (
+              <div key={s.t} className="bg-white border border-border p-5">
+                <h3 className="font-display text-lg text-ink mb-1">{s.t}</h3>
+                <p className="text-smoke text-sm leading-relaxed">{s.d}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 bg-sand p-6">
+            <h3 className="font-display text-xl text-ink mb-4">Veelgestelde vragen over box braids</h3>
+            {[
+              { q: "Hoe lang duren box braids?", a: "Kort (tot schouders): 2–3 uur. Middenlang: 3–4 uur. Lang (taille of langer): 4–6 uur." },
+              { q: "Hoe lang blijven box braids mooi?", a: "Gemiddeld 6 tot 8 weken bij goede verzorging. Slaap met een satijnen mutsje en bevochtig de haargrens regelmatig." },
+              { q: "Wat kost een set box braids in Tongeren?", a: "De prijs varieert per lengte en stijl. Neem contact op voor een offerte op maat." },
+            ].map(f => (
+              <div key={f.q} className="mb-4">
+                <p className="font-medium text-ink">{f.q}</p>
+                <p className="text-smoke text-sm mt-1">{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section className="py-12 px-5 max-w-3xl mx-auto text-center">
+          <h2 className="font-display text-2xl text-ink mb-4">Box braids boeken in Tongeren</h2>
+          <p className="text-smoke mb-6">Koninksemsteenweg 144, 3700 Tongeren · bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link to="/reservations" className="btn-gold btn-gold-hover inline-flex justify-center">Online boeken</Link>
+            <a href="tel:+32484164905" className="btn-gold-outline inline-flex justify-center">📞 +32 484 16 49 05</a>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </LangProvider>
+  ),
+});

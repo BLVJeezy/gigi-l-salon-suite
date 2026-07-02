@@ -21,6 +21,21 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as VlechtenTongerenRouteImport } from './routes/vlechten-tongeren'
+import { Route as NagelsTongerenRouteImport } from './routes/nagels-tongeren'
+import { Route as MicroshadingTongerenRouteImport } from './routes/microshading-tongeren'
+import { Route as BeautySalonTongerenRouteImport } from './routes/beauty-salon-tongeren'
+import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
+import { Route as KapsalonTongerenRouteImport } from './routes/kapsalon-tongeren'
+import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
+
+const VlechtenTongerenRoute = VlechtenTongerenRouteImport.update({ id: '/vlechten-tongeren', path: '/vlechten-tongeren', getParentRoute: () => rootRouteImport } as any)
+const NagelsTongerenRoute = NagelsTongerenRouteImport.update({ id: '/nagels-tongeren', path: '/nagels-tongeren', getParentRoute: () => rootRouteImport } as any)
+const MicroshadingTongerenRoute = MicroshadingTongerenRouteImport.update({ id: '/microshading-tongeren', path: '/microshading-tongeren', getParentRoute: () => rootRouteImport } as any)
+const BeautySalonTongerenRoute = BeautySalonTongerenRouteImport.update({ id: '/beauty-salon-tongeren', path: '/beauty-salon-tongeren', getParentRoute: () => rootRouteImport } as any)
+const KapsterTongerenRoute = KapsterTongerenRouteImport.update({ id: '/kapster-tongeren', path: '/kapster-tongeren', getParentRoute: () => rootRouteImport } as any)
+const KapsalonTongerenRoute = KapsalonTongerenRouteImport.update({ id: '/kapsalon-tongeren', path: '/kapsalon-tongeren', getParentRoute: () => rootRouteImport } as any)
+const BoxBraidsTongerenRoute = BoxBraidsTongerenRouteImport.update({ id: '/box-braids-tongeren', path: '/box-braids-tongeren', getParentRoute: () => rootRouteImport } as any)
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -285,6 +300,13 @@ const rootRouteChildren: RootRouteChildren = {
   ReservationsRoute: ReservationsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  VlechtenTongerenRoute: VlechtenTongerenRoute,
+  NagelsTongerenRoute: NagelsTongerenRoute,
+  MicroshadingTongerenRoute: MicroshadingTongerenRoute,
+  BeautySalonTongerenRoute: BeautySalonTongerenRoute,
+  KapsterTongerenRoute: KapsterTongerenRoute,
+  KapsalonTongerenRoute: KapsalonTongerenRoute,
+  BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
   AnnulerTokenRoute: AnnulerTokenRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,

@@ -33,6 +33,13 @@ export const Route = createFileRoute("/sitemap.xml")({
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
+  <url><loc>${BASE_URL}/vlechten-tongeren</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>${BASE_URL}/nagels-tongeren</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>${BASE_URL}/microshading-tongeren</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>${BASE_URL}/beauty-salon-tongeren</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>${BASE_URL}/kapster-tongeren</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>${BASE_URL}/kapsalon-tongeren</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>${BASE_URL}/box-braids-tongeren</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
 </urlset>`;
         return new Response(xml, {
           headers: { "Content-Type": "application/xml", "Cache-Control": "public, max-age=3600" },
