@@ -148,6 +148,18 @@ export const translations = {
       infoLabel: "Infos pratiques",
       byAppt: "Sur rendez-vous",
     },
+    specialties: {
+      heading: "Spécialités",
+      links: [
+        { to: "/vlechten-tongeren", label: "Tresses" },
+        { to: "/box-braids-tongeren", label: "Box braids" },
+        { to: "/nagels-tongeren", label: "Ongles" },
+        { to: "/microshading-tongeren", label: "Microshading" },
+        { to: "/kapster-tongeren", label: "Coiffeuse" },
+        { to: "/kapsalon-tongeren", label: "Salon" },
+        { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+      ],
+    },
     galleryPage: {
       title: "Nos réalisations",
       subtitle: "Chaque coiffure est unique. Voici quelques exemples de notre travail de coiffeuse à Tongres : tresses, brushings, colorations et plus encore.",
@@ -331,6 +343,18 @@ export const translations = {
       ctaSub: "Maak online een afspraak of bel ons direct in het salon.",
       infoLabel: "Praktische info",
       byAppt: "Op afspraak",
+    },
+    specialties: {
+      heading: "Specialisaties",
+      links: [
+        { to: "/vlechten-tongeren", label: "Vlechten" },
+        { to: "/box-braids-tongeren", label: "Box braids" },
+        { to: "/nagels-tongeren", label: "Nagels" },
+        { to: "/microshading-tongeren", label: "Microshading" },
+        { to: "/kapster-tongeren", label: "Kapster" },
+        { to: "/kapsalon-tongeren", label: "Kapsalon" },
+        { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+      ],
     },
     galleryPage: {
       title: "Ons werk",
@@ -544,6 +568,18 @@ export const translations = {
       ctaSub: "Book online or call us directly at the salon.",
       infoLabel: "Practical info",
       byAppt: "By appointment",
+    },
+    specialties: {
+      heading: "Specialities",
+      links: [
+        { to: "/vlechten-tongeren", label: "Braids" },
+        { to: "/box-braids-tongeren", label: "Box braids" },
+        { to: "/nagels-tongeren", label: "Nails" },
+        { to: "/microshading-tongeren", label: "Microshading" },
+        { to: "/kapster-tongeren", label: "Hairdresser" },
+        { to: "/kapsalon-tongeren", label: "Hair salon" },
+        { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+      ],
     },
     galleryPage: {
       title: "Our work",
