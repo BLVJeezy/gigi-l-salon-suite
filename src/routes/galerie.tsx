@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { LangProvider, useT } from "@/lib/i18n";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/sections";
+import { BookingSection, Footer } from "@/components/sections";
 import { listPublicGallery, type GalleryItem } from "@/lib/gallery.functions";
 
 export const Route = createFileRoute("/galerie")({
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/galerie")({
     <LangProvider>
       <Header />
       <GalleryPage />
+      <BookingSection />
       <Footer />
     </LangProvider>
   ),

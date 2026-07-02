@@ -686,6 +686,34 @@ function ReviewColumn({ reviews, direction }: { reviews: ReviewItem[]; direction
   );
 }
 
+export function BookingSection({ title }: { title?: string }) {
+  const { t } = useT();
+  return (
+    <section id="contact" className="bg-ink py-16 px-5">
+      <div className="mx-auto max-w-7xl grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="text-ivory">
+          <p className="eyebrow">{t.bookingPage.eyebrow}</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl text-ivory">
+            {title ?? t.bookingPage.title}
+          </h2>
+          <div className="mt-4 gold-rule" />
+          <p className="mt-5 text-ivory/60 text-sm leading-relaxed">{t.bookingPage.subtitle}</p>
+          <a href="tel:+32484164905"
+            className="mt-6 flex items-center gap-3 text-gold hover:text-ivory transition-colors text-sm">
+            📞 +32 484 16 49 05
+          </a>
+          <div className="mt-3 text-ivory/40 text-xs">
+            {t.footer.hoursLines[0]} · {t.footer.hoursLines[1]}
+          </div>
+        </div>
+        <div>
+          <BookingForm />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Faq() {
   const { t } = useT();
   const [open, setOpen] = useState<number | null>(0);

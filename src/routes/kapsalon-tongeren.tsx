@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/sections";
+import { BookingSection, Footer } from "@/components/sections";
 import { LangProvider } from "@/lib/i18n";
 
 export const Route = createFileRoute("/kapsalon-tongeren")({
@@ -62,13 +62,7 @@ export const Route = createFileRoute("/kapsalon-tongeren")({
             <p className="text-smoke mt-2">Koninksemsteenweg 144, 3700 Tongeren — parking in de buurt beschikbaar.</p>
           </div>
         </section>
-        <section className="py-12 px-5 max-w-3xl mx-auto text-center">
-          <h2 className="font-display text-2xl text-ink mb-4">Afspraak in ons kapsalon in Tongeren</h2>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/reservations" className="btn-gold btn-gold-hover inline-flex justify-center">Online boeken</Link>
-            <a href="tel:+32484164905" className="btn-gold-outline inline-flex justify-center">📞 +32 484 16 49 05</a>
-          </div>
-        </section>
+        <BookingSection />
       </main>
       <Footer />
     </LangProvider>

@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { LangProvider, useT } from "@/lib/i18n";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/sections";
+import { BookingSection, Footer } from "@/components/sections";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -34,6 +34,7 @@ export const Route = createFileRoute("/services")({
     <LangProvider>
       <Header />
       <ServicesPage />
+      <BookingSection />
       <Footer />
     </LangProvider>
   ),
