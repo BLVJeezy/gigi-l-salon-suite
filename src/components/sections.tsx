@@ -359,6 +359,24 @@ export function Services() {
             </div>
           ))}
         </div>
+
+        {/* Subtiele links naar gespecialiseerde pagina's */}
+        <div className="mt-8 flex flex-wrap gap-2">
+          {[
+            { to: "/vlechten-tongeren", label: "Vlechten" },
+            { to: "/box-braids-tongeren", label: "Box braids" },
+            { to: "/nagels-tongeren", label: "Nagels" },
+            { to: "/microshading-tongeren", label: "Microshading" },
+            { to: "/kapster-tongeren", label: "Kapster" },
+            { to: "/kapsalon-tongeren", label: "Kapsalon" },
+            { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+          ].map((l) => (
+            <Link key={l.to} to={l.to as any}
+              className="px-3 py-1.5 text-xs border border-gold/30 text-gold/70 hover:border-gold hover:text-gold transition-colors tracking-wide">
+              {l.label} →
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );

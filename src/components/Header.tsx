@@ -72,6 +72,32 @@ export function Header() {
               {l.label}
             </Link>
           ))}
+
+          {/* Specialisaties — subtiele links naar SEO-pagina's */}
+          <div className="border-t border-gold/15 pt-4">
+            <p className="text-ivory/30 text-[10px] uppercase tracking-widest mb-3">Specialisaties</p>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+              {[
+                { to: "/vlechten-tongeren", label: "Vlechten" },
+                { to: "/box-braids-tongeren", label: "Box braids" },
+                { to: "/nagels-tongeren", label: "Nagels" },
+                { to: "/microshading-tongeren", label: "Microshading" },
+                { to: "/kapster-tongeren", label: "Kapster" },
+                { to: "/kapsalon-tongeren", label: "Kapsalon" },
+                { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+              ].map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to as any}
+                  onClick={() => setOpen(false)}
+                  className="text-ivory/50 hover:text-gold text-sm transition-colors"
+                >
+                  → {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
           <Link
             to="/reservations"
             onClick={() => setOpen(false)}
