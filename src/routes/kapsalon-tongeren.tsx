@@ -62,6 +62,17 @@ export const Route = createFileRoute("/kapsalon-tongeren")({
             <p className="text-smoke mt-2">Koninksemsteenweg 144, 3700 Tongeren — parking in de buurt beschikbaar.</p>
           </div>
         </section>
+
+        <section className="bg-sand py-6 px-5">
+          <div className="max-w-3xl mx-auto">
+            <p className="text-smoke text-xs mb-3 uppercase tracking-wider">Gerelateerde diensten</p>
+            <div className="flex flex-wrap gap-4">
+            <Link to="/vlechten-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Vlechten Tongeren</Link>
+            <Link to="/kapster-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Kapster Tongeren</Link>
+            <Link to="/box-braids-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Box braids Tongeren</Link>
+            </div>
+          </div>
+        </section>
         <BookingSection />
       </main>
       <Footer />

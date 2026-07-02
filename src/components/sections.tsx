@@ -803,11 +803,21 @@ export function Footer() {
             <li>
               <a
                 className="text-ivory/80 hover:text-gold"
-                href="https://facebook.com"
+                href="https://www.facebook.com/p/GIGI-L-coiffure-100093316226955/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Facebook →
+              </a>
+            </li>
+            <li>
+              <a
+                className="text-ivory/80 hover:text-gold"
+                href="https://www.instagram.com/gigi_l_coiffure/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Instagram →
               </a>
             </li>
           </ul>

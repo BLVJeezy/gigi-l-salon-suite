@@ -64,6 +64,17 @@ export const Route = createFileRoute("/box-braids-tongeren")({
             ))}
           </div>
         </section>
+
+        <section className="bg-sand py-6 px-5">
+          <div className="max-w-3xl mx-auto">
+            <p className="text-smoke text-xs mb-3 uppercase tracking-wider">Gerelateerde diensten</p>
+            <div className="flex flex-wrap gap-4">
+            <Link to="/vlechten-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Vlechten Tongeren</Link>
+            <Link to="/kapsalon-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Kapsalon Tongeren</Link>
+            <Link to="/beauty-salon-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Beauty salon Tongeren</Link>
+            </div>
+          </div>
+        </section>
         <BookingSection />
       </main>
       <Footer />

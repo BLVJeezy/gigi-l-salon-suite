@@ -32,6 +32,9 @@ export const Route = createFileRoute("/nagels-tongeren")({
             <Link to="/reservations" className="mt-8 btn-gold btn-gold-hover inline-flex">Afspraak nagels</Link>
           </div>
         </section>
+        <div className="w-full max-h-80 overflow-hidden">
+          <img src="/gallery/nails-glitter-nude.jpeg" alt="Gelnagels in Tongeren — GiGi L Coiffure" className="w-full h-full object-cover object-center" loading="lazy" />
+        </div>
 
         <section className="py-16 px-5 max-w-3xl mx-auto">
           <h2 className="font-display text-3xl text-ink mb-8">Nageldiensten in Tongeren</h2>
@@ -52,6 +55,17 @@ export const Route = createFileRoute("/nagels-tongeren")({
           </div>
         </section>
 
+
+        <section className="bg-sand py-6 px-5">
+          <div className="max-w-3xl mx-auto">
+            <p className="text-smoke text-xs mb-3 uppercase tracking-wider">Gerelateerde diensten</p>
+            <div className="flex flex-wrap gap-4">
+            <Link to="/beauty-salon-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Beauty salon Tongeren</Link>
+            <Link to="/microshading-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Microshading Tongeren</Link>
+            <Link to="/kapsalon-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Kapsalon Tongeren</Link>
+            </div>
+          </div>
+        </section>
         <BookingSection />
       </main>
       <Footer />

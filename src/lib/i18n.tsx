@@ -22,7 +22,7 @@ export const translations = {
       badges: {
         reviews: "Avis Google",
         clients: "Clientes satisfaites",
-        clientsCount: "500+",
+        clientsCount: "300+",
         certifiedTitle: "Salon certifié",
         certifiedSub: "Coiffure & beauté",
       },
@@ -206,7 +206,7 @@ export const translations = {
       badges: {
         reviews: "Google-reviews",
         clients: "Tevreden klanten",
-        clientsCount: "500+",
+        clientsCount: "300+",
         certifiedTitle: "Gecertificeerd salon",
         certifiedSub: "Haar & schoonheid",
       },
@@ -390,7 +390,7 @@ export const translations = {
       badges: {
         reviews: "Google reviews",
         clients: "Happy clients",
-        clientsCount: "500+",
+        clientsCount: "300+",
         certifiedTitle: "Certified salon",
         certifiedSub: "Hair & beauty",
       },

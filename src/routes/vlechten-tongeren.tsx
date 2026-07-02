@@ -33,6 +33,9 @@ export const Route = createFileRoute("/vlechten-tongeren")({
             <Link to="/reservations" className="mt-8 btn-gold btn-gold-hover inline-flex">Afspraak maken</Link>
           </div>
         </section>
+        <div className="w-full max-h-80 overflow-hidden">
+          <img src="/gallery/burgundy-feedin-braids.jpeg" alt="Vlechten in Tongeren — GiGi L Coiffure" className="w-full h-full object-cover object-center" loading="lazy" />
+        </div>
 
         <section className="py-16 px-5 max-w-3xl mx-auto">
           <h2 className="font-display text-3xl text-ink mb-8">Onze vlecht-diensten in Tongeren</h2>
@@ -62,6 +65,17 @@ export const Route = createFileRoute("/vlechten-tongeren")({
           </div>
         </section>
 
+
+        <section className="bg-sand py-6 px-5">
+          <div className="max-w-3xl mx-auto">
+            <p className="text-smoke text-xs mb-3 uppercase tracking-wider">Gerelateerde diensten</p>
+            <div className="flex flex-wrap gap-4">
+            <Link to="/box-braids-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Box braids Tongeren</Link>
+            <Link to="/kapsalon-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Kapsalon Tongeren</Link>
+            <Link to="/kapster-tongeren" className="text-gold hover:text-gold-deep text-sm underline underline-offset-2">Kapster Tongeren</Link>
+            </div>
+          </div>
+        </section>
         <BookingSection />
       </main>
       <Footer />
