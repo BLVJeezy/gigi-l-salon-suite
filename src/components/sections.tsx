@@ -5,7 +5,10 @@ import { BookingForm } from "./BookingForm";
 import { useT } from "@/lib/i18n";
 import heroBg from "@/assets/hero-nails.png.asset.json";
 import heroBgMobile from "@/assets/hero-nails-mobile.jpg.asset.json";
-import heroBrows from "@/assets/hero-brows-new2.jpg.asset.json";
+
+// Hero slideshow — cornrows and brows served from public/ (Vercel static)
+const HERO_CORNROWS = "/hero-cornrows.jpg";
+const HERO_BROWS = "/hero-brows.jpg";
 
 // ─────────────────────────────────────────────────────────────
 // HERO BROW PHOTO — verticale positie per breakpoint tunen.
@@ -22,8 +25,8 @@ export function Hero() {
   const { t } = useT();
   const SLIDES = [
     { mob: heroBgMobile.url, desk: heroBg.url },
-    { mob: "/hero-cornrows.jpg", desk: "/hero-cornrows.jpg" },
-    { mob: heroBrows.url, desk: heroBrows.url },
+    { mob: HERO_CORNROWS, desk: HERO_CORNROWS },
+    { mob: HERO_BROWS, desk: HERO_BROWS },
   ];
   const [cur, setCur] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
