@@ -79,7 +79,7 @@ type Booking = {
   booking_time: string;
   message: string | null;
   lang: string;
-  status: "new" | "confirmed" | "cancelled";
+  status: "new" | "confirmed" | "cancelled" | "completed" | "no_show";
 };
 
 // ── Category classification + colours ───────────────────────────────────────
@@ -285,7 +285,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const newCount = bookings.filter(b => b.status === "new").length;
 
-  async function setStatus(id: string, status: "confirmed" | "cancelled") {
+  async function setStatus(id: string, status: "confirmed" | "cancelled" | "completed" | "no_show") {
     const token = getToken();
     if (!token) { onLogout(); return; }
     await update({ data: { token, id, status } });
@@ -344,11 +344,14 @@ function StatusBadge({ status }: { status: Booking["status"] }) {
     new: "bg-gold/20 text-gold-deep border border-gold",
     confirmed: "bg-green-100 text-green-800 border border-green-300",
     cancelled: "bg-red-100 text-red-700 border border-red-300 line-through",
+    completed: "bg-emerald-600 text-white border border-emerald-700",
+    no_show: "bg-zinc-200 text-zinc-700 border border-zinc-400",
   } as const;
-  return <span className={`text-xs uppercase tracking-wider px-2 py-1 ${map[status]}`}>{t.admin.status[status]}</span>;
+  const labels = { ...t.admin.status, completed: t.admin.status.completed ?? "Terminé", no_show: t.admin.status.no_show ?? "Absent" } as Record<string, string>;
+  return <span className={`text-xs uppercase tracking-wider px-2 py-1 ${map[status]}`}>{labels[status]}</span>;
 }
 
-function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (id: string, s: "confirmed" | "cancelled") => void }) {
+function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (id: string, s: "confirmed" | "cancelled" | "completed" | "no_show") => void }) {
   const { t } = useT();
   const [filter, setFilter] = useState<"all" | Cat>("all");
   if (bookings.length === 0) return <p className="text-smoke">{t.admin.empty}</p>;
