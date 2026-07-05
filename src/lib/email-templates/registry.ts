@@ -3,6 +3,7 @@ import { template as ownerNewBooking } from './owner-new-booking'
 import { template as clientBookingReceived } from './client-booking-received'
 import { template as clientBookingConfirmed } from './client-booking-confirmed'
 import { template as clientBookingCancelled } from './client-booking-cancelled'
+import { template as clientReviewRequest } from './client-review-request'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -26,4 +27,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'client-booking-received': clientBookingReceived,
   'client-booking-confirmed': clientBookingConfirmed,
   'client-booking-cancelled': clientBookingCancelled,
+  'client-review-request': clientReviewRequest,
 }

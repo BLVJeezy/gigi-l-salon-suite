@@ -79,7 +79,7 @@ type Booking = {
   booking_time: string;
   message: string | null;
   lang: string;
-  status: "new" | "confirmed" | "cancelled";
+  status: "new" | "confirmed" | "cancelled" | "completed" | "no_show";
 };
 
 // ── Category classification + colours ───────────────────────────────────────
@@ -285,7 +285,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const newCount = bookings.filter(b => b.status === "new").length;
 
-  async function setStatus(id: string, status: "confirmed" | "cancelled") {
+  async function setStatus(id: string, status: "confirmed" | "cancelled" | "completed" | "no_show") {
     const token = getToken();
     if (!token) { onLogout(); return; }
     await update({ data: { token, id, status } });
@@ -340,15 +340,17 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
 function StatusBadge({ status }: { status: Booking["status"] }) {
   const { t } = useT();
-  const map = {
+  const map: Record<Booking["status"], string> = {
     new: "bg-gold/20 text-gold-deep border border-gold",
     confirmed: "bg-green-100 text-green-800 border border-green-300",
     cancelled: "bg-red-100 text-red-700 border border-red-300 line-through",
-  } as const;
+    completed: "bg-emerald-600 text-white border border-emerald-700",
+    no_show: "bg-zinc-200 text-zinc-700 border border-zinc-400",
+  };
   return <span className={`text-xs uppercase tracking-wider px-2 py-1 ${map[status]}`}>{t.admin.status[status]}</span>;
 }
 
-function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (id: string, s: "confirmed" | "cancelled") => void }) {
+function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (id: string, s: "confirmed" | "cancelled" | "completed" | "no_show") => void }) {
   const { t } = useT();
   const [filter, setFilter] = useState<"all" | Cat>("all");
   if (bookings.length === 0) return <p className="text-smoke">{t.admin.empty}</p>;
@@ -435,11 +437,17 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <a href={`tel:${b.phone}`} className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 border border-gold text-gold-deep rounded bg-white/60">📞 Call</a>
-              {b.status !== "confirmed" && (
+              {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                 <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
               )}
-              {b.status !== "cancelled" && (
+              {b.status !== "cancelled" && b.status !== "completed" && (
                 <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-red-600 text-white hover:bg-red-700 rounded">{t.admin.actions.cancel}</button>
+              )}
+              {b.status !== "completed" && b.status !== "cancelled" && (
+                <button onClick={() => setStatus(b.id, "completed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-emerald-700 text-white hover:bg-emerald-800 rounded">{t.admin.actions.completed}</button>
+              )}
+              {b.status !== "no_show" && b.status !== "completed" && b.status !== "cancelled" && (
+                <button onClick={() => setStatus(b.id, "no_show")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-zinc-500 text-white hover:bg-zinc-600 rounded">{t.admin.actions.noShow}</button>
               )}
             </div>
           </div>
@@ -478,11 +486,17 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                 <Td><div className="max-w-xs"><BookingMessage message={b.message} /></div></Td>
                 <Td><StatusBadge status={b.status} /></Td>
                 <Td>
-                  {b.status !== "confirmed" && (
-                    <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
+                  {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
+                    <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 mb-1 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
                   )}
-                  {b.status !== "cancelled" && (
-                    <button onClick={() => setStatus(b.id, "cancelled")} className="text-xs px-2 py-1 bg-red-600 text-white hover:bg-red-700 rounded">{t.admin.actions.cancel}</button>
+                  {b.status !== "cancelled" && b.status !== "completed" && (
+                    <button onClick={() => setStatus(b.id, "cancelled")} className="text-xs px-2 py-1 mr-1 mb-1 bg-red-600 text-white hover:bg-red-700 rounded">{t.admin.actions.cancel}</button>
+                  )}
+                  {b.status !== "completed" && b.status !== "cancelled" && (
+                    <button onClick={() => setStatus(b.id, "completed")} className="text-xs px-2 py-1 mr-1 mb-1 bg-emerald-700 text-white hover:bg-emerald-800 rounded">{t.admin.actions.completed}</button>
+                  )}
+                  {b.status !== "no_show" && b.status !== "completed" && b.status !== "cancelled" && (
+                    <button onClick={() => setStatus(b.id, "no_show")} className="text-xs px-2 py-1 mb-1 bg-zinc-500 text-white hover:bg-zinc-600 rounded">{t.admin.actions.noShow}</button>
                   )}
                 </Td>
               </tr>

@@ -9,10 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VlechtenTongerenRouteImport } from './routes/vlechten-tongeren'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReservationsRouteImport } from './routes/reservations'
+import { Route as NagelsTongerenRouteImport } from './routes/nagels-tongeren'
+import { Route as MicroshadingTongerenRouteImport } from './routes/microshading-tongeren'
+import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
+import { Route as KapsalonTongerenRouteImport } from './routes/kapsalon-tongeren'
 import { Route as GalerieRouteImport } from './routes/galerie'
+import { Route as ExtensionsTongerenRouteImport } from './routes/extensions-tongeren'
+import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
+import { Route as BeautySalonTongerenRouteImport } from './routes/beauty-salon-tongeren'
+import { Route as AlgemeneVoorwaardenRouteImport } from './routes/algemene-voorwaarden'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
@@ -21,26 +30,12 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
-import { Route as VlechtenTongerenRouteImport } from './routes/vlechten-tongeren'
-import { Route as NagelsTongerenRouteImport } from './routes/nagels-tongeren'
-import { Route as MicroshadingTongerenRouteImport } from './routes/microshading-tongeren'
-import { Route as BeautySalonTongerenRouteImport } from './routes/beauty-salon-tongeren'
-import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
-import { Route as KapsalonTongerenRouteImport } from './routes/kapsalon-tongeren'
-import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
-import { Route as ExtensionsTongerenRouteImport } from './routes/extensions-tongeren'
-import { Route as AlgemeneVoorwaardenRouteImport } from './routes/algemene-voorwaarden'
 
-const VlechtenTongerenRoute = VlechtenTongerenRouteImport.update({ id: '/vlechten-tongeren', path: '/vlechten-tongeren', getParentRoute: () => rootRouteImport } as any)
-const NagelsTongerenRoute = NagelsTongerenRouteImport.update({ id: '/nagels-tongeren', path: '/nagels-tongeren', getParentRoute: () => rootRouteImport } as any)
-const MicroshadingTongerenRoute = MicroshadingTongerenRouteImport.update({ id: '/microshading-tongeren', path: '/microshading-tongeren', getParentRoute: () => rootRouteImport } as any)
-const BeautySalonTongerenRoute = BeautySalonTongerenRouteImport.update({ id: '/beauty-salon-tongeren', path: '/beauty-salon-tongeren', getParentRoute: () => rootRouteImport } as any)
-const KapsterTongerenRoute = KapsterTongerenRouteImport.update({ id: '/kapster-tongeren', path: '/kapster-tongeren', getParentRoute: () => rootRouteImport } as any)
-const KapsalonTongerenRoute = KapsalonTongerenRouteImport.update({ id: '/kapsalon-tongeren', path: '/kapsalon-tongeren', getParentRoute: () => rootRouteImport } as any)
-const BoxBraidsTongerenRoute = BoxBraidsTongerenRouteImport.update({ id: '/box-braids-tongeren', path: '/box-braids-tongeren', getParentRoute: () => rootRouteImport } as any)
-const ExtensionsTongerenRoute = ExtensionsTongerenRouteImport.update({ id: '/extensions-tongeren', path: '/extensions-tongeren', getParentRoute: () => rootRouteImport } as any)
-const AlgemeneVoorwaardenRoute = AlgemeneVoorwaardenRouteImport.update({ id: '/algemene-voorwaarden', path: '/algemene-voorwaarden', getParentRoute: () => rootRouteImport } as any)
-
+const VlechtenTongerenRoute = VlechtenTongerenRouteImport.update({
+  id: '/vlechten-tongeren',
+  path: '/vlechten-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -56,9 +51,49 @@ const ReservationsRoute = ReservationsRouteImport.update({
   path: '/reservations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NagelsTongerenRoute = NagelsTongerenRouteImport.update({
+  id: '/nagels-tongeren',
+  path: '/nagels-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MicroshadingTongerenRoute = MicroshadingTongerenRouteImport.update({
+  id: '/microshading-tongeren',
+  path: '/microshading-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KapsterTongerenRoute = KapsterTongerenRouteImport.update({
+  id: '/kapster-tongeren',
+  path: '/kapster-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KapsalonTongerenRoute = KapsalonTongerenRouteImport.update({
+  id: '/kapsalon-tongeren',
+  path: '/kapsalon-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GalerieRoute = GalerieRouteImport.update({
   id: '/galerie',
   path: '/galerie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExtensionsTongerenRoute = ExtensionsTongerenRouteImport.update({
+  id: '/extensions-tongeren',
+  path: '/extensions-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BoxBraidsTongerenRoute = BoxBraidsTongerenRouteImport.update({
+  id: '/box-braids-tongeren',
+  path: '/box-braids-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BeautySalonTongerenRoute = BeautySalonTongerenRouteImport.update({
+  id: '/beauty-salon-tongeren',
+  path: '/beauty-salon-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlgemeneVoorwaardenRoute = AlgemeneVoorwaardenRouteImport.update({
+  id: '/algemene-voorwaarden',
+  path: '/algemene-voorwaarden',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -108,10 +143,19 @@ const LovableEmailQueueProcessRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/algemene-voorwaarden': typeof AlgemeneVoorwaardenRoute
+  '/beauty-salon-tongeren': typeof BeautySalonTongerenRoute
+  '/box-braids-tongeren': typeof BoxBraidsTongerenRoute
+  '/extensions-tongeren': typeof ExtensionsTongerenRoute
   '/galerie': typeof GalerieRoute
+  '/kapsalon-tongeren': typeof KapsalonTongerenRoute
+  '/kapster-tongeren': typeof KapsterTongerenRoute
+  '/microshading-tongeren': typeof MicroshadingTongerenRoute
+  '/nagels-tongeren': typeof NagelsTongerenRoute
   '/reservations': typeof ReservationsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vlechten-tongeren': typeof VlechtenTongerenRoute
   '/annuler/$token': typeof AnnulerTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -122,10 +166,19 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/algemene-voorwaarden': typeof AlgemeneVoorwaardenRoute
+  '/beauty-salon-tongeren': typeof BeautySalonTongerenRoute
+  '/box-braids-tongeren': typeof BoxBraidsTongerenRoute
+  '/extensions-tongeren': typeof ExtensionsTongerenRoute
   '/galerie': typeof GalerieRoute
+  '/kapsalon-tongeren': typeof KapsalonTongerenRoute
+  '/kapster-tongeren': typeof KapsterTongerenRoute
+  '/microshading-tongeren': typeof MicroshadingTongerenRoute
+  '/nagels-tongeren': typeof NagelsTongerenRoute
   '/reservations': typeof ReservationsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vlechten-tongeren': typeof VlechtenTongerenRoute
   '/annuler/$token': typeof AnnulerTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -137,10 +190,19 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/algemene-voorwaarden': typeof AlgemeneVoorwaardenRoute
+  '/beauty-salon-tongeren': typeof BeautySalonTongerenRoute
+  '/box-braids-tongeren': typeof BoxBraidsTongerenRoute
+  '/extensions-tongeren': typeof ExtensionsTongerenRoute
   '/galerie': typeof GalerieRoute
+  '/kapsalon-tongeren': typeof KapsalonTongerenRoute
+  '/kapster-tongeren': typeof KapsterTongerenRoute
+  '/microshading-tongeren': typeof MicroshadingTongerenRoute
+  '/nagels-tongeren': typeof NagelsTongerenRoute
   '/reservations': typeof ReservationsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vlechten-tongeren': typeof VlechtenTongerenRoute
   '/annuler/$token': typeof AnnulerTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -153,10 +215,19 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/algemene-voorwaarden'
+    | '/beauty-salon-tongeren'
+    | '/box-braids-tongeren'
+    | '/extensions-tongeren'
     | '/galerie'
+    | '/kapsalon-tongeren'
+    | '/kapster-tongeren'
+    | '/microshading-tongeren'
+    | '/nagels-tongeren'
     | '/reservations'
     | '/services'
     | '/sitemap.xml'
+    | '/vlechten-tongeren'
     | '/annuler/$token'
     | '/email/unsubscribe'
     | '/lovable/email/suppression'
@@ -167,10 +238,19 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/algemene-voorwaarden'
+    | '/beauty-salon-tongeren'
+    | '/box-braids-tongeren'
+    | '/extensions-tongeren'
     | '/galerie'
+    | '/kapsalon-tongeren'
+    | '/kapster-tongeren'
+    | '/microshading-tongeren'
+    | '/nagels-tongeren'
     | '/reservations'
     | '/services'
     | '/sitemap.xml'
+    | '/vlechten-tongeren'
     | '/annuler/$token'
     | '/email/unsubscribe'
     | '/lovable/email/suppression'
@@ -181,10 +261,19 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/algemene-voorwaarden'
+    | '/beauty-salon-tongeren'
+    | '/box-braids-tongeren'
+    | '/extensions-tongeren'
     | '/galerie'
+    | '/kapsalon-tongeren'
+    | '/kapster-tongeren'
+    | '/microshading-tongeren'
+    | '/nagels-tongeren'
     | '/reservations'
     | '/services'
     | '/sitemap.xml'
+    | '/vlechten-tongeren'
     | '/annuler/$token'
     | '/email/unsubscribe'
     | '/lovable/email/suppression'
@@ -196,10 +285,19 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  AlgemeneVoorwaardenRoute: typeof AlgemeneVoorwaardenRoute
+  BeautySalonTongerenRoute: typeof BeautySalonTongerenRoute
+  BoxBraidsTongerenRoute: typeof BoxBraidsTongerenRoute
+  ExtensionsTongerenRoute: typeof ExtensionsTongerenRoute
   GalerieRoute: typeof GalerieRoute
+  KapsalonTongerenRoute: typeof KapsalonTongerenRoute
+  KapsterTongerenRoute: typeof KapsterTongerenRoute
+  MicroshadingTongerenRoute: typeof MicroshadingTongerenRoute
+  NagelsTongerenRoute: typeof NagelsTongerenRoute
   ReservationsRoute: typeof ReservationsRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  VlechtenTongerenRoute: typeof VlechtenTongerenRoute
   AnnulerTokenRoute: typeof AnnulerTokenRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -210,6 +308,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vlechten-tongeren': {
+      id: '/vlechten-tongeren'
+      path: '/vlechten-tongeren'
+      fullPath: '/vlechten-tongeren'
+      preLoaderRoute: typeof VlechtenTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -231,11 +336,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReservationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nagels-tongeren': {
+      id: '/nagels-tongeren'
+      path: '/nagels-tongeren'
+      fullPath: '/nagels-tongeren'
+      preLoaderRoute: typeof NagelsTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/microshading-tongeren': {
+      id: '/microshading-tongeren'
+      path: '/microshading-tongeren'
+      fullPath: '/microshading-tongeren'
+      preLoaderRoute: typeof MicroshadingTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kapster-tongeren': {
+      id: '/kapster-tongeren'
+      path: '/kapster-tongeren'
+      fullPath: '/kapster-tongeren'
+      preLoaderRoute: typeof KapsterTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kapsalon-tongeren': {
+      id: '/kapsalon-tongeren'
+      path: '/kapsalon-tongeren'
+      fullPath: '/kapsalon-tongeren'
+      preLoaderRoute: typeof KapsalonTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/galerie': {
       id: '/galerie'
       path: '/galerie'
       fullPath: '/galerie'
       preLoaderRoute: typeof GalerieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/extensions-tongeren': {
+      id: '/extensions-tongeren'
+      path: '/extensions-tongeren'
+      fullPath: '/extensions-tongeren'
+      preLoaderRoute: typeof ExtensionsTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/box-braids-tongeren': {
+      id: '/box-braids-tongeren'
+      path: '/box-braids-tongeren'
+      fullPath: '/box-braids-tongeren'
+      preLoaderRoute: typeof BoxBraidsTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/beauty-salon-tongeren': {
+      id: '/beauty-salon-tongeren'
+      path: '/beauty-salon-tongeren'
+      fullPath: '/beauty-salon-tongeren'
+      preLoaderRoute: typeof BeautySalonTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/algemene-voorwaarden': {
+      id: '/algemene-voorwaarden'
+      path: '/algemene-voorwaarden'
+      fullPath: '/algemene-voorwaarden'
+      preLoaderRoute: typeof AlgemeneVoorwaardenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -300,19 +461,19 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  AlgemeneVoorwaardenRoute: AlgemeneVoorwaardenRoute,
+  BeautySalonTongerenRoute: BeautySalonTongerenRoute,
+  BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
+  ExtensionsTongerenRoute: ExtensionsTongerenRoute,
   GalerieRoute: GalerieRoute,
+  KapsalonTongerenRoute: KapsalonTongerenRoute,
+  KapsterTongerenRoute: KapsterTongerenRoute,
+  MicroshadingTongerenRoute: MicroshadingTongerenRoute,
+  NagelsTongerenRoute: NagelsTongerenRoute,
   ReservationsRoute: ReservationsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VlechtenTongerenRoute: VlechtenTongerenRoute,
-  NagelsTongerenRoute: NagelsTongerenRoute,
-  MicroshadingTongerenRoute: MicroshadingTongerenRoute,
-  BeautySalonTongerenRoute: BeautySalonTongerenRoute,
-  KapsterTongerenRoute: KapsterTongerenRoute,
-  KapsalonTongerenRoute: KapsalonTongerenRoute,
-  BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
-  ExtensionsTongerenRoute: ExtensionsTongerenRoute,
-  AlgemeneVoorwaardenRoute: AlgemeneVoorwaardenRoute,
   AnnulerTokenRoute: AnnulerTokenRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
