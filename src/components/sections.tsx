@@ -117,7 +117,7 @@ export function Hero() {
         {prev !== null && (
           <div key={`out-${prev}`} className={`hero-slide-out-${dir} absolute inset-0 lg:hidden`} aria-hidden>
             {prev === 2 ? (
-              <img src={SLIDES[prev].mob} alt="" className="hero-brow-img" />
+              <img src={SLIDES[prev].mob} alt="GiGi L Coiffure Tongeren — kapsalon voor haar, nagels en microshading" className="hero-brow-img" />
             ) : (
               <div
                 className="absolute inset-0 bg-cover bg-center"
@@ -132,7 +132,7 @@ export function Hero() {
         {prev !== null && (
           <div key={`out-desk-${prev}`} className={`hero-slide-out-${dir} absolute inset-0 hidden lg:block`} aria-hidden>
             {prev === 2 ? (
-              <img src={SLIDES[prev].desk} alt="" className="hero-brow-img" />
+              <img src={SLIDES[prev].desk} alt="GiGi L Coiffure Tongeren — kapsalon voor haar, nagels en microshading" className="hero-brow-img" />
             ) : (
               <div
                 className="absolute inset-0 bg-cover bg-center"
@@ -149,7 +149,7 @@ export function Hero() {
           aria-hidden
         >
           {cur === 2 ? (
-            <img src={SLIDES[cur].mob} alt="" className="hero-brow-img" />
+            <img src={SLIDES[cur].mob} alt="GiGi L Coiffure Tongeren — kapsalon voor haar, nagels en microshading" className="hero-brow-img" />
           ) : (
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -166,7 +166,7 @@ export function Hero() {
           aria-hidden
         >
           {cur === 2 ? (
-            <img src={SLIDES[cur].desk} alt="" className="hero-brow-img" />
+            <img src={SLIDES[cur].desk} alt="GiGi L Coiffure Tongeren — kapsalon voor haar, nagels en microshading" className="hero-brow-img" />
           ) : (
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -521,7 +521,7 @@ function GalleryColumn({ images, direction }: { images: string[]; direction: "up
             className="mb-3 sm:mb-5 border border-gold/30 p-1.5 bg-ink"
             style={{ height: `${itemH - 12}px` }}
           >
-            <img src={`/gallery/${src}`} alt="" loading="lazy" className="block w-full h-full object-cover" />
+            <img src={`/gallery/${src}`} alt="Kapsel realisatie — GiGi L Coiffure Tongeren" loading="lazy" className="block w-full h-full object-cover" />
           </div>
         ))}
       </div>

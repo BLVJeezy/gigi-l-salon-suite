@@ -10,6 +10,7 @@ export const Route = createFileRoute("/nagels-tongeren")({
       { name: "description", content: "Gelnagels, gel nagels, manicure en pedicure in Tongeren. Volledige set, bijwerking, vernis semi-permanent. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren." },
       { property: "og:title", content: "Nagels Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/nagels-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/nails-glitter-nude.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/nagels-tongeren" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify({

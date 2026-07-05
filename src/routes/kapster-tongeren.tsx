@@ -10,6 +10,7 @@ export const Route = createFileRoute("/kapster-tongeren")({
       { name: "description", content: "Kapster in Tongeren voor dames en heren. Knipbeurt, brushing, haren kleuren, balayage en meer. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Vreren, Lauw en Koninksem." },
       { property: "og:title", content: "Kapster Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/kapster-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/tissage-lisse-brun.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/kapster-tongeren" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify({

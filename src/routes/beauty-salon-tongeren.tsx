@@ -10,6 +10,7 @@ export const Route = createFileRoute("/beauty-salon-tongeren")({
       { name: "description", content: "Beauty salon in Tongeren voor haar, nagels en microshading. Vlechten, gelnagels, wenkbrauwen, brushing en meer. GiGi L Coiffure, Koninksemsteenweg 144, Tongeren." },
       { property: "og:title", content: "Beauty Salon Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/beauty-salon-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/cornrows-homme.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/beauty-salon-tongeren" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify({

@@ -10,9 +10,13 @@ export const Route = createFileRoute("/box-braids-tongeren")({
       { name: "description", content: "Box braids in Tongeren — knotless box braids, klassieke box braids, kleur en lengte naar keuze. GiGi L Coiffure, Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Vreren, Lauw en Koninksem." },
       { property: "og:title", content: "Box Braids Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/box-braids-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/knotless-blond.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/box-braids-tongeren" }],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify({
+    scripts: [ { type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: [{ "@type": "Question", name: 'Hoe lang duren box braids?', acceptedAnswer: { "@type": "Answer", text: 'Kort (tot schouders): 2-3 uur. Middenlang: 3-4 uur. Lang (taille of langer): 4-6 uur.' } }, { "@type": "Question", name: 'Hoe lang blijven box braids mooi?', acceptedAnswer: { "@type": "Answer", text: 'Gemiddeld 6 tot 8 weken bij goede verzorging. Slaap met een satijnen mutsje en bevochtig de haargrens regelmatig.' } }, { "@type": "Question", name: 'Wat kost een set box braids in Tongeren?', acceptedAnswer: { "@type": "Answer", text: 'De prijs varieert per lengte en stijl. Neem contact op voor een offerte op maat.' } }],
+    }) }, { type: "application/ld+json", children: JSON.stringify({
       "@context": "https://schema.org", "@type": "HairSalon",
       name: "GiGi L Coiffure", telephone: "+32484164905",
       address: { "@type": "PostalAddress", streetAddress: "Koninksemsteenweg 144", postalCode: "3700", addressLocality: "Tongeren", addressCountry: "BE" },

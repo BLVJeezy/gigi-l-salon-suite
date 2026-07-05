@@ -12,16 +12,27 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Kapsalon in Tongeren voor Afrikaans & Europees haar, gelnagels en microshading. Box braids, cornrows, brushing, haren kleuren. Koninksemsteenweg 144, Tongeren — ook bereikbaar vanuit Vreren, Lauw, Koninksem en omstreken." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://gigilcoiffure.be/" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/cornrows-homme.jpeg" },
+      { property: "og:image:alt", content: "GiGi L Coiffure — kapsalon in Tongeren" },
     ],
     links: [
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "canonical", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hrefLang: "fr", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hrefLang: "nl", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hrefLang: "en", href: "https://gigilcoiffure.be/" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://gigilcoiffure.be/" },
     ],
     scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "Werken jullie op afspraak?", acceptedAnswer: { "@type": "Answer", text: "Ja, we werken op afspraak zodat elke klant de tijd krijgt die zij verdient. Boek online of bel +32 484 16 49 05." } },
+            { "@type": "Question", name: "Doen jullie ook Europese haartypes?", acceptedAnswer: { "@type": "Answer", text: "Absoluut. Naast onze specialisatie in afro en getextureerd haar knippen, kleuren en stylen we ook Europese haartypes — dames en heren." } },
+            { "@type": "Question", name: "Hoe lang duurt een behandeling met vlechten?", acceptedAnswer: { "@type": "Answer", text: "Afhankelijk van de stijl 2 tot 6 uur. Box braids tot schouderhoogte 2-3 uur, lange knotless braids 4-6 uur." } },
+            { "@type": "Question", name: "Verkopen jullie extensions en pruiken?", acceptedAnswer: { "@type": "Answer", text: "Ja, we verkopen kwaliteitsextensions en pruiken, met professionele plaatsing in het salon in Tongeren." } },
+          ],
+        }),
+      },
       {
         type: "application/ld+json",
         children: JSON.stringify({

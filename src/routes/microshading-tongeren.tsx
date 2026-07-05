@@ -10,9 +10,13 @@ export const Route = createFileRoute("/microshading-tongeren")({
       { name: "description", content: "Microshading in Tongeren — permanente make-up voor wenkbrauwen met een natuurlijk poedereffect. GiGi L Coiffure, Koninksemsteenweg 144, Tongeren. Ook retouche mogelijk." },
       { property: "og:title", content: "Microshading Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/microshading-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/microshading-sourcils.png" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/microshading-tongeren" }],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify({
+    scripts: [ { type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: [{ "@type": "Question", name: 'Doet microshading pijn?', acceptedAnswer: { "@type": "Answer", text: 'Er wordt een verdovingscrème aangebracht vóór de behandeling. De meeste klanten ervaren slechts een licht gevoel van druk.' } }, { "@type": "Question", name: 'Hoe lang duurt het resultaat?', acceptedAnswer: { "@type": "Answer", text: 'Gemiddeld 12 tot 18 maanden, afhankelijk van huidtype en nazorg. Een retouche na 6-8 weken wordt aanbevolen.' } }, { "@type": "Question", name: 'Is microshading geschikt voor mij?', acceptedAnswer: { "@type": "Answer", text: 'Microshading werkt op nagenoeg alle huidtypes. Bij twijfel nemen we tijd voor een consult vóór de boeking.' } }],
+    }) }, { type: "application/ld+json", children: JSON.stringify({
       "@context": "https://schema.org", "@type": "BeautySalon",
       name: "GiGi L Coiffure — Microshading Tongeren", telephone: "+32484164905",
       address: { "@type": "PostalAddress", streetAddress: "Koninksemsteenweg 144", postalCode: "3700", addressLocality: "Tongeren", addressCountry: "BE" },

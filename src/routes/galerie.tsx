@@ -14,6 +14,7 @@ export const Route = createFileRoute("/galerie")({
       { name: "description", content: "Découvrez nos réalisations : tresses africaines, box braids, tissages, microshading, chignons et coupes européennes à Tongres." },
       { property: "og:title", content: "Galerie — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/galerie" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/cornrows-homme.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/galerie" }],
   }),

@@ -366,7 +366,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
                 <a href="/algemene-voorwaarden" target="_blank"
                   className="text-gold underline underline-offset-2 hover:text-ivory transition-colors">
                   {t.form.terms.link}
-                </a>{" "}gelezen en aanvaard.
+                </a>{" "}{t.form.terms.suffix}
               </span>
             </label>
             {termsError && (

@@ -14,6 +14,7 @@ export const Route = createFileRoute("/services")({
       { property: "og:description", content: "Tresses, tissage, locks, microshading, ongles et perruques à Tongres." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://gigilcoiffure.be/services" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/cornrows-homme.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/services" }],
     scripts: [

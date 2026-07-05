@@ -10,9 +10,13 @@ export const Route = createFileRoute("/extensions-tongeren")({
       { name: "description", content: "Hair extensions en pruiken in Tongeren. Clip-in, tape-in, weave extensions en pruiken — professionele plaatsing bij GiGi L Coiffure, Koninksemsteenweg 144, Tongeren." },
       { property: "og:title", content: "Extensions Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/extensions-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/tissage-lisse-brun.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/extensions-tongeren" }],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify({
+    scripts: [ { type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: [{ "@type": "Question", name: 'Welke extensions passen bij mijn haar?', acceptedAnswer: { "@type": "Answer", text: 'Dat hangt af van uw haartype, levensstijl en gewenst resultaat. We bespreken de opties bij de boeking en adviseren eerlijk.' } }, { "@type": "Question", name: 'Hoe lang duren weave extensions?', acceptedAnswer: { "@type": "Answer", text: 'De plaatsing duurt 2 tot 4 uur afhankelijk van de hoeveelheid haar. Ze blijven 6 tot 8 weken mooi bij correcte verzorging.' } }, { "@type": "Question", name: 'Verkopen jullie ook haar?', acceptedAnswer: { "@type": "Answer", text: 'Ja, we werken met zorgvuldig geselecteerde kwaliteitshaar. U kunt ook uw eigen haar meebrengen.' } }],
+    }) }, { type: "application/ld+json", children: JSON.stringify({
       "@context": "https://schema.org", "@type": "HairSalon",
       name: "GiGi L Coiffure", telephone: "+32484164905",
       address: { "@type": "PostalAddress", streetAddress: "Koninksemsteenweg 144", postalCode: "3700", addressLocality: "Tongeren", addressCountry: "BE" },

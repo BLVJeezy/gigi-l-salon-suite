@@ -10,6 +10,7 @@ export const Route = createFileRoute("/kapsalon-tongeren")({
       { name: "description", content: "Kapsalon in Tongeren voor afro en Europees haar. Vlechten, knipbeurten, brushing, haren kleuren en nagels. GiGi L Coiffure, Koninksemsteenweg 144, 3700 Tongeren." },
       { property: "og:title", content: "Kapsalon Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/kapsalon-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/cornrows-homme.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/kapsalon-tongeren" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify({

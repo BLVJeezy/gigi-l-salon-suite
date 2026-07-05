@@ -10,6 +10,7 @@ export const Route = createFileRoute("/vlechten-tongeren")({
       { name: "description", content: "Specialist vlechten in Tongeren. Box braids, cornrows, knotless braids, feed-in braids en twists. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Vreren, Lauw, Koninksem en omstreken." },
       { property: "og:title", content: "Vlechten Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/vlechten-tongeren" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/burgundy-feedin-braids.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/vlechten-tongeren" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify({

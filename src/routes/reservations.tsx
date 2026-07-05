@@ -13,6 +13,7 @@ export const Route = createFileRoute("/reservations")({
       { name: "description", content: "Réservez votre rendez-vous chez GiGi L Coiffure à Tongres. Tresses africaines, tissage, microshading, perruques et coupes européennes." },
       { property: "og:title", content: "Prendre rendez-vous — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/reservations" },
+      { property: "og:image", content: "https://gigilcoiffure.be/gallery/cornrows-homme.jpeg" },
     ],
     links: [{ rel: "canonical", href: "https://gigilcoiffure.be/reservations" }],
   }),
