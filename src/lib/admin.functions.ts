@@ -96,7 +96,7 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
       .object({
         token: z.string(),
         id: z.string().uuid(),
-        status: z.enum(["new", "confirmed", "cancelled"]),
+        status: z.enum(["new", "confirmed", "cancelled", "completed", "no_show"]),
       })
       .parse(input),
   )
@@ -113,7 +113,7 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
 
     // Email client on status change via Lovable queue (best-effort).
     try {
-      if (booking?.email && (data.status === "confirmed" || data.status === "cancelled")) {
+      if (booking?.email) {
         const { enqueueTemplateEmail } = await import("./lovable-email.server");
         if (data.status === "confirmed") {
           const { signCancelToken } = await import("./email.server");
@@ -122,9 +122,12 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
           const cancelUrl = `${origin}/annuler/${token}`;
           const res = await enqueueTemplateEmail("client-booking-confirmed", booking.email, { ...booking, cancelUrl });
           console.log("[status] confirmed email", res);
-        } else {
+        } else if (data.status === "cancelled") {
           const res = await enqueueTemplateEmail("client-booking-cancelled", booking.email, booking);
           console.log("[status] cancelled email", res);
+        } else if (data.status === "completed") {
+          const res = await enqueueTemplateEmail("client-review-request", booking.email, booking);
+          console.log("[status] review email", res);
         }
       }
     } catch (e) {
