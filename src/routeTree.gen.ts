@@ -28,6 +28,7 @@ import { Route as BeautySalonTongerenRouteImport } from './routes/beauty-salon-t
 import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
 import { Route as KapsalonTongerenRouteImport } from './routes/kapsalon-tongeren'
 import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
+import { Route as ExtensionsTongerenRouteImport } from './routes/extensions-tongeren'
 
 const VlechtenTongerenRoute = VlechtenTongerenRouteImport.update({ id: '/vlechten-tongeren', path: '/vlechten-tongeren', getParentRoute: () => rootRouteImport } as any)
 const NagelsTongerenRoute = NagelsTongerenRouteImport.update({ id: '/nagels-tongeren', path: '/nagels-tongeren', getParentRoute: () => rootRouteImport } as any)
@@ -36,6 +37,7 @@ const BeautySalonTongerenRoute = BeautySalonTongerenRouteImport.update({ id: '/b
 const KapsterTongerenRoute = KapsterTongerenRouteImport.update({ id: '/kapster-tongeren', path: '/kapster-tongeren', getParentRoute: () => rootRouteImport } as any)
 const KapsalonTongerenRoute = KapsalonTongerenRouteImport.update({ id: '/kapsalon-tongeren', path: '/kapsalon-tongeren', getParentRoute: () => rootRouteImport } as any)
 const BoxBraidsTongerenRoute = BoxBraidsTongerenRouteImport.update({ id: '/box-braids-tongeren', path: '/box-braids-tongeren', getParentRoute: () => rootRouteImport } as any)
+const ExtensionsTongerenRoute = ExtensionsTongerenRouteImport.update({ id: '/extensions-tongeren', path: '/extensions-tongeren', getParentRoute: () => rootRouteImport } as any)
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -307,6 +309,7 @@ const rootRouteChildren: RootRouteChildren = {
   KapsterTongerenRoute: KapsterTongerenRoute,
   KapsalonTongerenRoute: KapsalonTongerenRoute,
   BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
+  ExtensionsTongerenRoute: ExtensionsTongerenRoute,
   AnnulerTokenRoute: AnnulerTokenRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,

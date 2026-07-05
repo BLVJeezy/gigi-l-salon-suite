@@ -158,6 +158,7 @@ export const translations = {
         { to: "/kapster-tongeren", label: "Coiffeuse" },
         { to: "/kapsalon-tongeren", label: "Salon" },
         { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+        { to: "/extensions-tongeren", label: "Extensions & perruques" },
       ],
     },
     galleryPage: {
@@ -354,6 +355,7 @@ export const translations = {
         { to: "/kapster-tongeren", label: "Kapster" },
         { to: "/kapsalon-tongeren", label: "Kapsalon" },
         { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+        { to: "/extensions-tongeren", label: "Extensions & pruiken" },
       ],
     },
     galleryPage: {
@@ -579,6 +581,7 @@ export const translations = {
         { to: "/kapster-tongeren", label: "Hairdresser" },
         { to: "/kapsalon-tongeren", label: "Hair salon" },
         { to: "/beauty-salon-tongeren", label: "Beauty salon" },
+        { to: "/extensions-tongeren", label: "Extensions & wigs" },
       ],
     },
     galleryPage: {
