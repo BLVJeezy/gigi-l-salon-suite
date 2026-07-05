@@ -6,10 +6,10 @@ import { Hero, Services, Why, Gallery, Reviews, Faq, Footer } from "@/components
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "GiGi L Coiffure — Salon de coiffure africaine & européenne à Tongres" },
-      { name: "description", content: "Salon afro & tresses africaines à Tongres (Limbourg). Spécialiste box braids, cornrows, tissage, locks, microshading et ongles. Le seul salon de Limburg dédié aux cheveux afro et texturés. Accessible depuis Bilzen, Hasselt et Sint-Truiden. Koninksemsteenweg 144, Tongres." },
-      { property: "og:title", content: "GiGi L Coiffure — Salon de coiffure à Tongres" },
-      { property: "og:description", content: "Spécialiste des cheveux bouclés, frisés et crépus. Tresses, tissage, microshading, perruques & mèches à Tongeren." },
+      { title: "GiGi L Coiffure Tongeren — Kapper, Nagels & Microshading" },
+      { name: "description", content: "Kapsalon in Tongeren voor Afrikaans & Europees haar, gelnagels en microshading wenkbrauwen. Box braids, cornrows, vlechten, brushing, haren kleuren. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. ★ 4,6/5 Google." },
+      { property: "og:title", content: "GiGi L Coiffure — Kapper, Nagels & Microshading in Tongeren" },
+      { property: "og:description", content: "Kapsalon in Tongeren voor Afrikaans & Europees haar, gelnagels en microshading. Box braids, cornrows, brushing, haren kleuren. Koninksemsteenweg 144 — ook bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://gigilcoiffure.be/" },
     ],
