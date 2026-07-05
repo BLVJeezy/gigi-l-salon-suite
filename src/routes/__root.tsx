@@ -81,6 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Salon de coiffure africaine et européenne à Tongres : tresses, tissage, locks, microshading, ongles et perruques. Spécialiste des cheveux bouclés, frisés et crépus." },
       { name: "author", content: "GiGi L Coiffure" },
       { name: "robots", content: "index, follow" },
+      { name: "google-site-verification", content: "google67e1cbdf934e290c" },
       { property: "og:title", content: "GiGi L Coiffure — Salon de coiffure à Tongres" },
       { property: "og:description", content: "Salon de coiffure africaine et européenne à Tongres : tresses, tissage, locks, microshading, ongles et perruques. Spécialiste des cheveux bouclés, frisés et crépus." },
       { property: "og:type", content: "website" },
