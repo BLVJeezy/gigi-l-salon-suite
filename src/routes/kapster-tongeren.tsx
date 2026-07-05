@@ -7,7 +7,7 @@ export const Route = createFileRoute("/kapster-tongeren")({
   head: () => ({
     meta: [
       { title: "Kapster Tongeren — Kapper voor dames & heren | GiGi L Coiffure" },
-      { name: "description", content: "Kapster in Tongeren voor dames en heren. Knipbeurt, brushing, haren kleuren, balayage en meer. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Bilzen en Hasselt." },
+      { name: "description", content: "Kapster in Tongeren voor dames en heren. Knipbeurt, brushing, haren kleuren, balayage en meer. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Vreren, Lauw en Koninksem." },
       { property: "og:title", content: "Kapster Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/kapster-tongeren" },
     ],
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/kapster-tongeren")({
             <p className="eyebrow">Tongeren · Kapper & kapster</p>
             <h1 className="mt-4 font-display text-4xl sm:text-5xl text-ivory leading-tight">Kapster in Tongeren</h1>
             <div className="mt-4 gold-rule" />
-            <p className="mt-6 text-ivory/70 text-lg leading-relaxed">GiGi L is uw kapster in Tongeren voor knipbeurten, brushing, haren kleuren, balayage en meer. Gespecialiseerd in afro- en getextureerd haar, maar ook voor Europese coupe en kleurbehandelingen. Bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden.</p>
+            <p className="mt-6 text-ivory/70 text-lg leading-relaxed">GiGi L is uw kapster in Tongeren voor knipbeurten, brushing, haren kleuren, balayage en meer. Gespecialiseerd in afro- en getextureerd haar, maar ook voor Europese coupe en kleurbehandelingen. Bereikbaar vanuit Vreren, Lauw, Koninksem en omstreken.</p>
             <Link to="/reservations" className="mt-8 btn-gold btn-gold-hover inline-flex">Afspraak kapster</Link>
           </div>
         </section>

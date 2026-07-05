@@ -17,7 +17,7 @@ export const translations = {
       eyebrow: "Coiffeur & salon afro — Tongres, Limbourg",
       title: "Spécialiste en cheveux africains & européens, ongles et microshading à Tongres",
       subtitle:
-        "Coiffeuse spécialisée à Tongres : box braids, cornrows, tissage, brushing, coloration, locks et microshading. Le seul salon du Limbourg entièrement dédié aux cheveux afro, bouclés et crépus. Koninksemsteenweg 144, Tongres — accessible depuis Bilzen, Hasselt et Sint-Truiden.",
+        "Coiffeuse spécialisée à Tongres : box braids, cornrows, tissage, brushing, coloration, locks et microshading. Le seul salon du Limbourg entièrement dédié aux cheveux afro, bouclés et crépus. Koninksemsteenweg 144, Tongres — accessible depuis Vreren, Lauw, Koninksem et les environs.",
       ctaBook: "Prendre rendez-vous",
       badges: {
         reviews: "Avis Google",
@@ -102,7 +102,7 @@ export const translations = {
         { t: "Expertise cheveux afro & texturés", d: "Bouclés, frisés, crépus : des techniques maîtrisées pour chaque type de cheveu afro et texturé — sans approximation." },
         { t: "Le salon qui vous comprend vraiment", d: "Conseils honnêtes, écoute et résultats qui vous ressemblent. Pas de coiffure standardisée à Tongres." },
         { t: "Beauté complète sous un même toit à Tongres", d: "Tresses africaines, microshading, ongles, perruques : tout au même endroit à Koninksemsteenweg 144." },
-        { t: "4,6/5 sur Google — la confiance du Limbourg", d: "Des clientes de Tongres, Bilzen, Hasselt et Sint-Truiden nous font confiance chaque semaine." },
+        { t: "4,6/5 sur Google — la confiance du Limbourg", d: "Des clientes de Tongres, Vreren, Lauw, Koninksem et des environs nous font confiance chaque semaine." },
       ],
     },
     gallery: { eyebrow: "Galerie", title: "Nos réalisations" },
@@ -214,7 +214,7 @@ export const translations = {
       eyebrow: "Kapper · Nagels · Microshading — Tongeren, Limburg",
       title: "Specialist in Afrikaans & Europees haar, nagels en microshading in Tongeren",
       subtitle:
-        "Kapper in Tongeren voor afro haar: box braids, cornrows, vlechten, brushing, haren kleuren, weaves, locks en microshading. Het enige kapsalon in Limburg volledig gespecialiseerd in kroes-, krullend en afrohaar. Koninksemsteenweg 144 — bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden.",
+        "Kapper in Tongeren voor afro haar: box braids, cornrows, vlechten, brushing, haren kleuren, weaves, locks en microshading. Het enige kapsalon in Limburg volledig gespecialiseerd in kroes-, krullend en afrohaar. Koninksemsteenweg 144 — bereikbaar vanuit Vreren, Lauw, Koninksem en de ruime omgeving.",
       ctaBook: "Maak een afspraak",
       badges: {
         reviews: "Google-reviews",
@@ -299,7 +299,7 @@ export const translations = {
         { t: "Expertise in afro & getextureerd haar", d: "Krullend, kroes, afro of steil: beheerste technieken specifiek voor getextureerd haar — geen gokwerk." },
         { t: "Een salon dat u écht begrijpt", d: "Eerlijk advies, goed luisteren en resultaten die bij u passen. Geen standaardkapsels in Tongeren." },
         { t: "Kapper, kapster & meer onder één dak in Tongeren", d: "Vlechten, brushing, haren kleuren, microshading, nagels, pruiken: alles in ons kapsalon op Koninksemsteenweg 144." },
-        { t: "4,6/5 op Google — vertrouwen uit heel Limburg", d: "Klanten uit Tongeren, Bilzen, Hasselt en Sint-Truiden komen elke week terug." },
+        { t: "4,6/5 op Google — vertrouwen uit heel Limburg", d: "Klanten uit Tongeren, Vreren, Lauw, Koninksem en omstreken komen elke week terug." },
       ],
     },
     gallery: { eyebrow: "Galerij", title: "Ons werk" },
@@ -411,7 +411,7 @@ export const translations = {
       eyebrow: "Hairdresser · Nails · Microshading — Tongeren, Limburg",
       title: "Specialist in African & European hair, nails and microshading in Tongeren",
       subtitle:
-        "Hair salon in Tongeren for afro hair: box braids, cornrows, blow-dry, hair colouring, weaves, locs and microshading. The only salon in Limburg fully specialised in afro, coily and curly hair. Koninksemsteenweg 144 — easy to reach from Bilzen, Hasselt and Sint-Truiden.",
+        "Hair salon in Tongeren for afro hair: box braids, cornrows, blow-dry, hair colouring, weaves, locs and microshading. The only salon in Limburg fully specialised in afro, coily and curly hair. Koninksemsteenweg 144 — easy to reach from Vreren, Lauw, Koninksem and the surrounding area.",
       ctaBook: "Book an appointment",
       badges: {
         reviews: "Google reviews",
@@ -496,7 +496,7 @@ export const translations = {
         { t: "Afro & textured hair experts", d: "Curly, coily, afro or straight: mastered techniques built for textured hair — no guesswork." },
         { t: "A salon that truly gets you", d: "Honest advice, careful listening and results that look like you. No one-size-fits-all in Tongeren." },
         { t: "Complete beauty under one roof in Tongeren", d: "African braids, microshading, nails, wigs: everything at Koninksemsteenweg 144." },
-        { t: "4.6/5 on Google — trusted across Limburg", d: "Clients from Tongeren, Bilzen, Hasselt and Sint-Truiden come back every week." },
+        { t: "4.6/5 on Google — trusted across Limburg", d: "Clients from Tongeren, Vreren, Lauw, Koninksem and the surrounding area come back every week." },
       ],
     },
     gallery: { eyebrow: "Gallery", title: "Our work" },

@@ -29,7 +29,7 @@ export const Route = createFileRoute("/microshading-tongeren")({
             <p className="eyebrow">Tongeren · Permanente make-up</p>
             <h1 className="mt-4 font-display text-4xl sm:text-5xl text-ivory leading-tight">Microshading in Tongeren</h1>
             <div className="mt-4 gold-rule" />
-            <p className="mt-6 text-ivory/70 text-lg leading-relaxed">Wenkbrauwen die er elke dag perfect uitzien — zonder potlood of poeder. Microshading geeft een zacht, poederachtig effect dat maandenlang mooi blijft. GiGi L Coiffure biedt microshading aan in Tongeren, bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden.</p>
+            <p className="mt-6 text-ivory/70 text-lg leading-relaxed">Wenkbrauwen die er elke dag perfect uitzien — zonder potlood of poeder. Microshading geeft een zacht, poederachtig effect dat maandenlang mooi blijft. GiGi L Coiffure biedt microshading aan in Tongeren, bereikbaar vanuit Vreren, Lauw, Koninksem en omstreken.</p>
             <Link to="/reservations" className="mt-8 btn-gold btn-gold-hover inline-flex">Afspraak microshading</Link>
           </div>
         </section>

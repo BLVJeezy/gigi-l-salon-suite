@@ -7,9 +7,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "GiGi L Coiffure Tongeren — Kapper, Nagels & Microshading" },
-      { name: "description", content: "Kapsalon in Tongeren voor Afrikaans & Europees haar, gelnagels en microshading wenkbrauwen. Box braids, cornrows, vlechten, brushing, haren kleuren. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. ★ 4,6/5 Google." },
+      { name: "description", content: "Kapsalon in Tongeren voor Afrikaans & Europees haar, gelnagels en microshading wenkbrauwen. Box braids, cornrows, vlechten, brushing, haren kleuren. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. Ook bereikbaar vanuit Vreren, Lauw, Koninksem en de ruime omgeving. ★ 4,6/5 Google." },
       { property: "og:title", content: "GiGi L Coiffure — Kapper, Nagels & Microshading in Tongeren" },
-      { property: "og:description", content: "Kapsalon in Tongeren voor Afrikaans & Europees haar, gelnagels en microshading. Box braids, cornrows, brushing, haren kleuren. Koninksemsteenweg 144 — ook bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden." },
+      { property: "og:description", content: "Kapsalon in Tongeren voor Afrikaans & Europees haar, gelnagels en microshading. Box braids, cornrows, brushing, haren kleuren. Koninksemsteenweg 144, Tongeren — ook bereikbaar vanuit Vreren, Lauw, Koninksem en omstreken." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://gigilcoiffure.be/" },
     ],

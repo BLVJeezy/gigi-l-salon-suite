@@ -7,7 +7,7 @@ export const Route = createFileRoute("/vlechten-tongeren")({
   head: () => ({
     meta: [
       { title: "Vlechten Tongeren — Box braids, cornrows & tresses | GiGi L Coiffure" },
-      { name: "description", content: "Specialist vlechten in Tongeren. Box braids, cornrows, knotless braids, feed-in braids en twists. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden." },
+      { name: "description", content: "Specialist vlechten in Tongeren. Box braids, cornrows, knotless braids, feed-in braids en twists. GiGi L Coiffure — Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Vreren, Lauw, Koninksem en omstreken." },
       { property: "og:title", content: "Vlechten Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/vlechten-tongeren" },
     ],
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/vlechten-tongeren")({
             <p className="eyebrow">Tongeren · Limburg</p>
             <h1 className="mt-4 font-display text-4xl sm:text-5xl text-ivory leading-tight">Vlechten in Tongeren</h1>
             <div className="mt-4 gold-rule" />
-            <p className="mt-6 text-ivory/70 text-lg leading-relaxed">Box braids, cornrows, knotless braids, feed-in braids, twists — GiGi L Coiffure is het enige kapsalon in Tongeren volledig gespecialiseerd in Afrikaanse vlechten. Bereikbaar vanuit Bilzen, Hasselt en Sint-Truiden.</p>
+            <p className="mt-6 text-ivory/70 text-lg leading-relaxed">Box braids, cornrows, knotless braids, feed-in braids, twists — GiGi L Coiffure is het enige kapsalon in Tongeren volledig gespecialiseerd in Afrikaanse vlechten. Bereikbaar vanuit Vreren, Lauw, Koninksem en omstreken.</p>
             <Link to="/reservations" className="mt-8 btn-gold btn-gold-hover inline-flex">Afspraak maken</Link>
           </div>
         </section>

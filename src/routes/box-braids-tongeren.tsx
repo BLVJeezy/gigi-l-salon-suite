@@ -7,7 +7,7 @@ export const Route = createFileRoute("/box-braids-tongeren")({
   head: () => ({
     meta: [
       { title: "Box Braids Tongeren — Knotless & klassiek | GiGi L Coiffure" },
-      { name: "description", content: "Box braids in Tongeren — knotless box braids, klassieke box braids, kleur en lengte naar keuze. GiGi L Coiffure, Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Bilzen en Hasselt." },
+      { name: "description", content: "Box braids in Tongeren — knotless box braids, klassieke box braids, kleur en lengte naar keuze. GiGi L Coiffure, Koninksemsteenweg 144, Tongeren. Bereikbaar vanuit Vreren, Lauw en Koninksem." },
       { property: "og:title", content: "Box Braids Tongeren — GiGi L Coiffure" },
       { property: "og:url", content: "https://gigilcoiffure.be/box-braids-tongeren" },
     ],
