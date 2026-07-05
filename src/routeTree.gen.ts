@@ -29,6 +29,7 @@ import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
 import { Route as KapsalonTongerenRouteImport } from './routes/kapsalon-tongeren'
 import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
 import { Route as ExtensionsTongerenRouteImport } from './routes/extensions-tongeren'
+import { Route as AlgemeneVoorwaardenRouteImport } from './routes/algemene-voorwaarden'
 
 const VlechtenTongerenRoute = VlechtenTongerenRouteImport.update({ id: '/vlechten-tongeren', path: '/vlechten-tongeren', getParentRoute: () => rootRouteImport } as any)
 const NagelsTongerenRoute = NagelsTongerenRouteImport.update({ id: '/nagels-tongeren', path: '/nagels-tongeren', getParentRoute: () => rootRouteImport } as any)
@@ -38,6 +39,7 @@ const KapsterTongerenRoute = KapsterTongerenRouteImport.update({ id: '/kapster-t
 const KapsalonTongerenRoute = KapsalonTongerenRouteImport.update({ id: '/kapsalon-tongeren', path: '/kapsalon-tongeren', getParentRoute: () => rootRouteImport } as any)
 const BoxBraidsTongerenRoute = BoxBraidsTongerenRouteImport.update({ id: '/box-braids-tongeren', path: '/box-braids-tongeren', getParentRoute: () => rootRouteImport } as any)
 const ExtensionsTongerenRoute = ExtensionsTongerenRouteImport.update({ id: '/extensions-tongeren', path: '/extensions-tongeren', getParentRoute: () => rootRouteImport } as any)
+const AlgemeneVoorwaardenRoute = AlgemeneVoorwaardenRouteImport.update({ id: '/algemene-voorwaarden', path: '/algemene-voorwaarden', getParentRoute: () => rootRouteImport } as any)
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -310,6 +312,7 @@ const rootRouteChildren: RootRouteChildren = {
   KapsalonTongerenRoute: KapsalonTongerenRoute,
   BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
   ExtensionsTongerenRoute: ExtensionsTongerenRoute,
+  AlgemeneVoorwaardenRoute: AlgemeneVoorwaardenRoute,
   AnnulerTokenRoute: AnnulerTokenRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,

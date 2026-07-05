@@ -48,6 +48,18 @@ export const translations = {
       categoryLabel: "Choisissez une catégorie",
       categories: { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" },
       back: "Retour",
+      terms: {
+        question: "Conditions générales",
+        text: "J'ai lu et j'accepte les",
+        link: "conditions générales",
+        error: "Veuillez accepter les conditions générales pour continuer.",
+        next: "Continuer",
+      },
+      source: {
+        question: "Comment nous avez-vous trouvés ?",
+        options: ["Google", "Bouche à oreille", "Facebook", "Instagram", "TikTok", "Autre"],
+        next: "Continuer",
+      },
       nails: {
         services: ["Pose complète", "Retouche", "Dépose de gel", "Réparation 1 doigt", "Pédicure sans tips", "Vernis semi-permanent"],
         repairHint: "Pour 2 ongles ou plus, choisissez « Retouche ».",
@@ -245,6 +257,18 @@ export const translations = {
       categoryLabel: "Kies een categorie",
       categories: { coiffure: "Kapper", nails: "Nails", microshading: "Microshading" },
       back: "Terug",
+      terms: {
+        question: "Algemene voorwaarden",
+        text: "Ik heb de",
+        link: "algemene voorwaarden",
+        error: "Gelieve de algemene voorwaarden te aanvaarden om verder te gaan.",
+        next: "Verder",
+      },
+      source: {
+        question: "Hoe heeft u ons gevonden?",
+        options: ["Google", "Mond aan mond", "Facebook", "Instagram", "TikTok", "Andere"],
+        next: "Verder",
+      },
       nails: {
         services: ["Volledige set", "Bijwerking", "Gel verwijderen", "Reparatie 1 nagel", "Pedicure zonder tips", "Semi-permanente lak"],
         repairHint: "Voor 2 nagels of meer, kies « Bijwerking ».",
@@ -442,6 +466,18 @@ export const translations = {
       categoryLabel: "Choose a category",
       categories: { coiffure: "Braids & hair", nails: "Nails", microshading: "Microshading" },
       back: "Back",
+      terms: {
+        question: "Terms & conditions",
+        text: "I have read and agree to the",
+        link: "terms and conditions",
+        error: "Please accept the terms and conditions to continue.",
+        next: "Continue",
+      },
+      source: {
+        question: "How did you find us?",
+        options: ["Google", "Word of mouth", "Facebook", "Instagram", "TikTok", "Other"],
+        next: "Continue",
+      },
       nails: {
         services: ["Full set", "Refill", "Gel removal", "Repair 1 nail", "Pedicure without tips", "Semi-permanent polish"],
         repairHint: "For 2 nails or more, choose “Refill”.",

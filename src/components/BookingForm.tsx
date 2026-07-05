@@ -29,7 +29,7 @@ type CategoryKey = "coiffure" | "nails" | "microshading";
 const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 8];
 
 // Internal step ids — we navigate a dynamic list, not fixed numbers.
-type StepId = "category" | "service" | "zone" | "photo" | "date" | "time" | "details";
+type StepId = "category" | "service" | "zone" | "photo" | "terms" | "date" | "time" | "source" | "details";
 
 export function BookingForm({ compact = false }: { compact?: boolean }) {
   const { t, lang } = useT();
@@ -109,11 +109,15 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   // Build the dynamic step order based on current answers.
   const steps: StepId[] = ["category", "service"];
   if (nailsNeedsZone) steps.push("zone", "photo");
-  steps.push("date", "time", "details");
+  steps.push("terms", "date", "time", "source", "details");
 
   const [stepIndex, setStepIndex] = useState(0);
   const current = steps[Math.min(stepIndex, steps.length - 1)];
   const total = steps.length;
+
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsError, setTermsError] = useState(false);
+  const [source, setSource] = useState("");
 
   function goNext() { setStepIndex((i) => Math.min(i + 1, steps.length - 1)); }
   function goBack() { setStepIndex((i) => Math.max(i - 1, 0)); }
@@ -154,6 +158,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
     const parts: string[] = [];
     if (zone) parts.push(`${t.form.zone.label}: ${t.form.zone[zone as "hands" | "feet" | "both"]}`);
     if (photoUrl) parts.push(`${t.form.photo.label}: ${photoUrl}`);
+    if (source) parts.push(`Via: ${source}`);
     return parts.join(" · ");
   }
 
@@ -341,6 +346,73 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
               {photoUrl ? (t.form.next ?? "Volgende →") : t.form.photo.skip}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* ── TERMS ── */}
+      {current === "terms" && (
+        <div className="space-y-4 px-4 pb-4">
+          <Label>{t.form.terms.question}</Label>
+          <div className="bg-ink/40 border border-gold/20 p-4 rounded">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => { setTermsAccepted(e.target.checked); setTermsError(false); }}
+                className="mt-1 w-4 h-4 accent-gold shrink-0"
+              />
+              <span className="text-ivory/80 text-sm leading-relaxed">
+                {t.form.terms.text}{" "}
+                <a href="/algemene-voorwaarden" target="_blank"
+                  className="text-gold underline underline-offset-2 hover:text-ivory transition-colors">
+                  {t.form.terms.link}
+                </a>{" "}gelezen en aanvaard.
+              </span>
+            </label>
+            {termsError && (
+              <p className="text-red-400 text-xs mt-2">{t.form.terms.error}</p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              if (!termsAccepted) { setTermsError(true); return; }
+              goNext();
+            }}
+            className="w-full btn-gold btn-gold-hover py-3"
+          >
+            {t.form.terms.next}
+          </button>
+        </div>
+      )}
+
+      {/* ── SOURCE ── */}
+      {current === "source" && (
+        <div className="space-y-3 px-4 pb-4">
+          <Label>{t.form.source.question}</Label>
+          <div className="grid grid-cols-2 gap-2">
+            {t.form.source.options.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => { setSource(opt); goNext(); }}
+                className={`px-3 py-3 text-sm border transition-colors font-display tracking-wide ${
+                  source === opt
+                    ? "bg-gold text-ivory border-gold"
+                    : "bg-ink border-gold/30 text-ivory hover:border-gold"
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => { if (!source) setSource("Andere"); goNext(); }}
+            className="w-full text-ivory/40 text-xs hover:text-ivory/60 transition-colors pt-1"
+          >
+            {t.form.terms.next} →
+          </button>
         </div>
       )}
 
