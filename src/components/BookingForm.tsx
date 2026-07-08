@@ -419,7 +419,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
 
       {/* ── DATE ── */}
       {current === "date" && (
-        <div className="space-y-4">
+        <div className="space-y-3 bg-carbon/95 border border-gold/30 p-4">
           <Label>{t.form.date} *</Label>
 
           {/* Mobile: native date picker */}
@@ -445,7 +445,9 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
           </div>
 
           {dateError && (
-            <p className="text-red-400 text-xs">{t.form.closedDay}</p>
+            <div className="bg-red-950 border border-red-500/50 px-4 py-3">
+              <p className="text-red-300 text-sm font-medium">{t.form.closedDay}</p>
+            </div>
           )}
           <button type="button" disabled={!date} onClick={goNext}
             className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed">
