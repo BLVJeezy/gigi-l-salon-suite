@@ -332,6 +332,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} />}
         {!loading && tab === "day" && <DayView bookings={bookings} />}
         {!loading && tab === "week" && <WeekView bookings={bookings} />}
+        {tab === "clients" && <ClientsView onLogout={onLogout} />}
         {tab === "diensten" && <ServicesView onLogout={onLogout} />}
         {tab === "gallery" && <GalleryAdmin onLogout={onLogout} />}
       </main>
