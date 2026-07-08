@@ -220,3 +220,118 @@ export const sendTestEmails = createServerFn({ method: "POST" })
     }
     return { ok: true, sent };
   });
+
+// ── Client CRM ──────────────────────────────────────────────────────────────
+// Aggregates unique clients from the bookings table (grouped by phone) and
+// joins private admin notes stored in client_notes.
+
+function normalizePhone(p: string) {
+  return (p || "").replace(/\s+/g, "").trim();
+}
+
+export const listClients = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ token: z.string() }).parse(input))
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: rows, error } = await supabaseAdmin
+      .from("bookings")
+      .select("name,phone,email,service,booking_date,booking_time,status,created_at")
+      .order("booking_date", { ascending: false });
+    if (error) throw new Error(error.message);
+
+    type Client = {
+      phone: string;
+      name: string;
+      email: string | null;
+      totalBookings: number;
+      completedBookings: number;
+      cancelledBookings: number;
+      noShowBookings: number;
+      lastVisit: string | null; // YYYY-MM-DD
+      lastService: string | null;
+      firstSeen: string | null;
+    };
+    const map = new Map<string, Client>();
+    for (const b of rows ?? []) {
+      const key = normalizePhone(b.phone);
+      if (!key) continue;
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, {
+          phone: b.phone,
+          name: b.name,
+          email: b.email,
+          totalBookings: 1,
+          completedBookings: b.status === "completed" ? 1 : 0,
+          cancelledBookings: b.status === "cancelled" ? 1 : 0,
+          noShowBookings: b.status === "no_show" ? 1 : 0,
+          lastVisit: b.booking_date,
+          lastService: b.service,
+          firstSeen: b.created_at,
+        });
+      } else {
+        existing.totalBookings++;
+        if (b.status === "completed") existing.completedBookings++;
+        if (b.status === "cancelled") existing.cancelledBookings++;
+        if (b.status === "no_show") existing.noShowBookings++;
+        // Keep the most recent name/email (rows are sorted DESC by booking_date, so first-seen entry is most recent).
+        if (!existing.email && b.email) existing.email = b.email;
+        if (!existing.lastVisit || b.booking_date > existing.lastVisit) {
+          existing.lastVisit = b.booking_date;
+          existing.lastService = b.service;
+        }
+        if (existing.firstSeen && b.created_at < existing.firstSeen) existing.firstSeen = b.created_at;
+      }
+    }
+
+    const phones = [...map.keys()];
+    let notes: Record<string, { note: string; updated_at: string }> = {};
+    if (phones.length > 0) {
+      const { data: noteRows, error: nErr } = await supabaseAdmin
+        .from("client_notes")
+        .select("phone,note,updated_at")
+        .in("phone", phones);
+      if (nErr) throw new Error(nErr.message);
+      for (const n of noteRows ?? []) notes[n.phone] = { note: n.note, updated_at: n.updated_at };
+    }
+
+    const clients = [...map.values()].map((c) => ({
+      ...c,
+      note: notes[normalizePhone(c.phone)]?.note ?? "",
+      noteUpdatedAt: notes[normalizePhone(c.phone)]?.updated_at ?? null,
+    }));
+    clients.sort((a, b) => (b.lastVisit ?? "").localeCompare(a.lastVisit ?? ""));
+    return { clients };
+  });
+
+export const getClientHistory = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ token: z.string(), phone: z.string() }).parse(input))
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const key = normalizePhone(data.phone);
+    const { data: bookings, error } = await supabaseAdmin
+      .from("bookings")
+      .select("*")
+      .order("booking_date", { ascending: false });
+    if (error) throw new Error(error.message);
+    const filtered = (bookings ?? []).filter((b) => normalizePhone(b.phone) === key);
+    return { bookings: filtered };
+  });
+
+export const upsertClientNote = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string(), phone: z.string().min(1), note: z.string().max(5000) }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const key = normalizePhone(data.phone);
+    const { error } = await supabaseAdmin
+      .from("client_notes")
+      .upsert({ phone: key, note: data.note }, { onConflict: "phone" });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
