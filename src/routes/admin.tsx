@@ -523,6 +523,10 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                 <Td><div className="max-w-xs"><BookingMessage message={b.message} /></div></Td>
                 <Td><StatusBadge status={b.status} /></Td>
                 <Td>
+                  {b.status === "confirmed" && (
+                    <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
+                       className="inline-block text-xs px-2 py-1 mr-1 mb-1 bg-blue-600 text-white hover:bg-blue-700 rounded">📅 Calendar</a>
+                  )}
                   {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                     <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 mb-1 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
                   )}
