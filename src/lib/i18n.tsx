@@ -194,7 +194,7 @@ export const translations = {
     admin: {
       title: "GiGi L — Tableau de bord",
       newBadge: "nouveau",
-      tabs: { leads: "Demandes", day: "Jour", week: "Semaine", planning: "Planning", gallery: "Galerie", diensten: "Services" },
+      tabs: { leads: "Demandes", day: "Jour", week: "Semaine", planning: "Planning", gallery: "Galerie", diensten: "Services", clients: "Clients" },
       logout: "Déconnexion",
       refresh: "Actualiser",
       today: "Aujourd'hui",
@@ -404,7 +404,7 @@ export const translations = {
     admin: {
       title: "GiGi L — Dashboard",
       newBadge: "nieuw",
-      tabs: { leads: "Aanvragen", day: "Dag", week: "Week", planning: "Planning", gallery: "Galerij", diensten: "Diensten" },
+      tabs: { leads: "Aanvragen", day: "Dag", week: "Week", planning: "Planning", gallery: "Galerij", diensten: "Diensten", clients: "Klanten" },
       logout: "Afmelden",
       refresh: "Vernieuwen",
       today: "Vandaag",
@@ -563,7 +563,7 @@ export const translations = {
     admin: {
       title: "GiGi L — Dashboard",
       newBadge: "new",
-      tabs: { leads: "Requests", day: "Day", week: "Week", planning: "Schedule", gallery: "Gallery", diensten: "Services" },
+      tabs: { leads: "Requests", day: "Day", week: "Week", planning: "Schedule", gallery: "Gallery", diensten: "Services", clients: "Clients" },
       logout: "Log out",
       refresh: "Refresh",
       today: "Today",
