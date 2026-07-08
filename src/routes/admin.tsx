@@ -338,6 +338,39 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
+// Build a Google Calendar "add event" template URL from a booking so the owner
+// can drop confirmed appointments into her personal calendar in one click.
+function gcalUrl(b: Booking): string {
+  const cat = categoryOf(b.service);
+  const durationMin = cat === "microshading" ? 120 : cat === "nails" ? 90 : 60;
+  const [y, m, d] = b.booking_date.split("-").map(Number);
+  const [hh, mm] = b.booking_time.slice(0, 5).split(":").map(Number);
+  const start = new Date(y, m - 1, d, hh, mm);
+  const end = new Date(start.getTime() + durationMin * 60_000);
+  const fmt = (dt: Date) =>
+    dt.getFullYear().toString() +
+    String(dt.getMonth() + 1).padStart(2, "0") +
+    String(dt.getDate()).padStart(2, "0") + "T" +
+    String(dt.getHours()).padStart(2, "0") +
+    String(dt.getMinutes()).padStart(2, "0") + "00";
+  const details = [
+    `Client: ${b.name}`,
+    `Tél: ${b.phone}`,
+    b.email ? `Email: ${b.email}` : "",
+    `Service: ${b.service}`,
+    b.message ? `Message: ${b.message}` : "",
+  ].filter(Boolean).join("\n");
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `GIGI L — ${b.service} — ${b.name}`,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    details,
+    location: "GIGI L Coiffure, Tongeren",
+    ctz: "Europe/Brussels",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
 function StatusBadge({ status }: { status: Booking["status"] }) {
   const { t } = useT();
   const map: Record<Booking["status"], string> = {
@@ -437,6 +470,10 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <a href={`tel:${b.phone}`} className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 border border-gold text-gold-deep rounded bg-white/60">📞 Call</a>
+              {b.status === "confirmed" && (
+                <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
+                   className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded">📅 Calendar</a>
+              )}
               {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                 <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
               )}
@@ -486,6 +523,10 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                 <Td><div className="max-w-xs"><BookingMessage message={b.message} /></div></Td>
                 <Td><StatusBadge status={b.status} /></Td>
                 <Td>
+                  {b.status === "confirmed" && (
+                    <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
+                       className="inline-block text-xs px-2 py-1 mr-1 mb-1 bg-blue-600 text-white hover:bg-blue-700 rounded">📅 Calendar</a>
+                  )}
                   {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                     <button onClick={() => setStatus(b.id, "confirmed")} className="text-xs px-2 py-1 mr-1 mb-1 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
                   )}
