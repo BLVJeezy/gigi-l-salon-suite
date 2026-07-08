@@ -581,7 +581,7 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                 </Td>
                 <Td>
                   <div>{b.booking_date}</div>
-                  <div className="text-gold font-medium">{b.booking_time.slice(0,5)}</div>
+                  <div className="text-gold font-medium">{timeRange(b)}</div>
                 </Td>
                 <Td>
                   <a href={`tel:${b.phone}`} className="text-ink hover:text-gold block">{b.phone}</a>
