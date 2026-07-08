@@ -118,6 +118,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [termsError, setTermsError] = useState(false);
   const [source, setSource] = useState("");
+  const [dateError, setDateError] = useState(false);
 
   function goNext() { setStepIndex((i) => Math.min(i + 1, steps.length - 1)); }
   function goBack() { setStepIndex((i) => Math.max(i - 1, 0)); }
@@ -422,7 +423,23 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
           <div>
             <Label>{t.form.date} *</Label>
             <input type="date" required min={today} value={date} autoFocus
-              onChange={(e) => setDate(e.target.value)} className={inputCls} />
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val) {
+                  const day = new Date(val + "T12:00:00").getDay();
+                  if (day === 0 || day === 2) {
+                    // Sunday (0) or Tuesday (2) — closed
+                    setDate("");
+                    setDateError(true);
+                    return;
+                  }
+                }
+                setDateError(false);
+                setDate(val);
+              }} className={inputCls} />
+            {dateError && (
+              <p className="text-red-400 text-xs mt-2">{t.form.closedDay}</p>
+            )}
           </div>
           <button type="button" disabled={!date} onClick={goNext}
             className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed">
