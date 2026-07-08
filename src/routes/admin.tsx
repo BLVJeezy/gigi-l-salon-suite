@@ -514,26 +514,26 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
               )}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <a href={`tel:${b.phone}`} className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 border border-gold text-gold-deep rounded bg-white/60">📞 Call</a>
+              <a href={`tel:${b.phone}`} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] border border-gold text-gold-deep rounded-md bg-white/60">📞 Appeler</a>
               {b.status === "confirmed" && (
                 <>
                   <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
-                     className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded">📅 Google</a>
+                     className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">📅 Google</a>
                   <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
-                     className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 bg-zinc-800 text-white hover:bg-zinc-900 rounded">🍎 Apple</a>
+                     className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">🍎 Apple</a>
                 </>
               )}
               {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
-                <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
+                <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-green-600 text-white hover:bg-green-700 active:bg-green-800 rounded-md shadow-sm">{t.admin.actions.confirm}</button>
               )}
               {b.status !== "cancelled" && b.status !== "completed" && (
-                <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-red-600 text-white hover:bg-red-700 rounded">{t.admin.actions.cancel}</button>
+                <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
               )}
               {b.status !== "completed" && b.status !== "cancelled" && (
-                <button onClick={() => setStatus(b.id, "completed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-emerald-700 text-white hover:bg-emerald-800 rounded">{t.admin.actions.completed}</button>
+                <button onClick={() => setStatus(b.id, "completed")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-emerald-700 text-white hover:bg-emerald-800 active:bg-emerald-900 rounded-md shadow-sm">{t.admin.actions.completed}</button>
               )}
               {b.status !== "no_show" && b.status !== "completed" && b.status !== "cancelled" && (
-                <button onClick={() => setStatus(b.id, "no_show")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-zinc-500 text-white hover:bg-zinc-600 rounded">{t.admin.actions.noShow}</button>
+                <button onClick={() => setStatus(b.id, "no_show")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-800 rounded-md shadow-sm">{t.admin.actions.noShow}</button>
               )}
             </div>
           </div>
