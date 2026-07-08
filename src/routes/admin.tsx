@@ -338,6 +338,39 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
+// Build a Google Calendar "add event" template URL from a booking so the owner
+// can drop confirmed appointments into her personal calendar in one click.
+function gcalUrl(b: Booking): string {
+  const cat = categoryOf(b.service);
+  const durationMin = cat === "microshading" ? 120 : cat === "nails" ? 90 : 60;
+  const [y, m, d] = b.booking_date.split("-").map(Number);
+  const [hh, mm] = b.booking_time.slice(0, 5).split(":").map(Number);
+  const start = new Date(y, m - 1, d, hh, mm);
+  const end = new Date(start.getTime() + durationMin * 60_000);
+  const fmt = (dt: Date) =>
+    dt.getFullYear().toString() +
+    String(dt.getMonth() + 1).padStart(2, "0") +
+    String(dt.getDate()).padStart(2, "0") + "T" +
+    String(dt.getHours()).padStart(2, "0") +
+    String(dt.getMinutes()).padStart(2, "0") + "00";
+  const details = [
+    `Client: ${b.name}`,
+    `Tél: ${b.phone}`,
+    b.email ? `Email: ${b.email}` : "",
+    `Service: ${b.service}`,
+    b.message ? `Message: ${b.message}` : "",
+  ].filter(Boolean).join("\n");
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `GIGI L — ${b.service} — ${b.name}`,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    details,
+    location: "GIGI L Coiffure, Tongeren",
+    ctz: "Europe/Brussels",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
 function StatusBadge({ status }: { status: Booking["status"] }) {
   const { t } = useT();
   const map: Record<Booking["status"], string> = {
