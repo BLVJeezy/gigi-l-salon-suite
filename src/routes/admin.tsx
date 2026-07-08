@@ -78,10 +78,29 @@ type Booking = {
   service: string;
   booking_date: string;
   booking_time: string;
+  duration_min: number | null;
   message: string | null;
   lang: string;
   status: "new" | "confirmed" | "cancelled" | "completed" | "no_show";
 };
+
+// Effective duration: prefer the value stored with the booking; fall back to
+// a per-category estimate so historic rows without duration_min still render.
+function effectiveDuration(b: Booking) {
+  if (b.duration_min && b.duration_min > 0) return b.duration_min;
+  const cat = categoryOf(b.service);
+  return cat === "microshading" ? 120 : cat === "nails" ? 90 : 60;
+}
+
+// "09:00 → 12:00" style range shown in the admin so the owner sees exactly
+// which slot the appointment occupies.
+function timeRange(b: Booking) {
+  const [hh, mm] = b.booking_time.slice(0, 5).split(":").map(Number);
+  const startMin = hh * 60 + mm;
+  const endMin = startMin + effectiveDuration(b);
+  const fmt = (t: number) => `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+  return `${fmt(startMin)} → ${fmt(endMin)}`;
+}
 
 // ── Category classification + colours ───────────────────────────────────────
 // Bookings only store the service name, so we classify it back into a category.
