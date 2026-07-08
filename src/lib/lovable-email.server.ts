@@ -82,7 +82,7 @@ export async function enqueueTemplateEmail(
     const json = (await res.json()) as { id?: string };
     await supabaseAdmin
       .from("email_send_log")
-      .update({ status: "sent", provider_message_id: json.id ?? null })
+      .update({ status: "sent", metadata: { provider: "resend", provider_id: json.id ?? null } })
       .eq("message_id", messageId);
 
     return { ok: true, messageId: json.id ?? messageId };
