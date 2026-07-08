@@ -517,7 +517,7 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
               </div>
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-smoke">Heure</div>
-                <div className="text-gold font-medium">{b.booking_time.slice(0,5)}</div>
+                <div className="text-gold font-medium">{timeRange(b)}</div>
               </div>
               <div className="col-span-2">
                 <div className="text-[10px] uppercase tracking-wider text-smoke">Contact</div>
