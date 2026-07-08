@@ -514,8 +514,12 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
             <div className="mt-4 flex flex-wrap gap-2">
               <a href={`tel:${b.phone}`} className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 border border-gold text-gold-deep rounded bg-white/60">📞 Call</a>
               {b.status === "confirmed" && (
-                <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
-                   className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded">📅 Calendar</a>
+                <>
+                  <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
+                     className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded">📅 Google</a>
+                  <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
+                     className="flex-1 min-w-[100px] text-center text-xs px-3 py-2 bg-zinc-800 text-white hover:bg-zinc-900 rounded">🍎 Apple</a>
+                </>
               )}
               {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                 <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[100px] text-xs px-3 py-2 bg-green-600 text-white hover:bg-green-700 rounded">{t.admin.actions.confirm}</button>
