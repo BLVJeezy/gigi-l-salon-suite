@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
+  listClients, upsertClientNote, getClientHistory,
 } from "@/lib/admin.functions";
 import {
   listServices, updateService, addService, deleteService, seedServices, type ServiceItem,
@@ -264,7 +265,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const update = useServerFn(updateBookingStatus);
 
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [tab, setTab] = useState<"leads" | "day" | "week" | "diensten" | "gallery">("leads");
+  const [tab, setTab] = useState<"leads" | "day" | "week" | "clients" | "diensten" | "gallery">("leads");
   const [loading, setLoading] = useState(true);
 
   const refresh = async () => {
@@ -312,7 +313,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         </div>
         <nav className="mx-auto max-w-7xl px-5 sm:px-8 flex gap-1 overflow-x-auto scrollbar-none">
-          {(["leads", "day", "week", "diensten", "gallery"] as const).map(k => (
+          {(["leads", "day", "week", "clients", "diensten", "gallery"] as const).map(k => (
             <button
               key={k}
               onClick={() => setTab(k)}
@@ -331,6 +332,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} />}
         {!loading && tab === "day" && <DayView bookings={bookings} />}
         {!loading && tab === "week" && <WeekView bookings={bookings} />}
+        {tab === "clients" && <ClientsView onLogout={onLogout} />}
         {tab === "diensten" && <ServicesView onLogout={onLogout} />}
         {tab === "gallery" && <GalleryAdmin onLogout={onLogout} />}
       </main>
@@ -1435,6 +1437,247 @@ function GalleryAdmin({ onLogout }: { onLogout: () => void }) {
           );
         })()}
       </section>
+    </div>
+  );
+}
+
+// ── Clients CRM ─────────────────────────────────────────────────────────────
+type ClientRow = {
+  phone: string;
+  name: string;
+  email: string | null;
+  totalBookings: number;
+  completedBookings: number;
+  cancelledBookings: number;
+  noShowBookings: number;
+  lastVisit: string | null;
+  lastService: string | null;
+  firstSeen: string | null;
+  note: string;
+  noteUpdatedAt: string | null;
+};
+
+function ClientsView({ onLogout }: { onLogout: () => void }) {
+  const list = useServerFn(listClients);
+  const [clients, setClients] = useState<ClientRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
+  const [selected, setSelected] = useState<ClientRow | null>(null);
+
+  async function refresh() {
+    const token = getToken();
+    if (!token) { onLogout(); return; }
+    setLoading(true);
+    try {
+      const r = await list({ data: { token } });
+      setClients(r.clients as ClientRow[]);
+    } catch (e) {
+      console.error("listClients failed", e);
+      onLogout();
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => { void refresh(); /* eslint-disable-next-line */ }, []);
+
+  const filtered = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    if (!s) return clients;
+    return clients.filter((c) =>
+      c.name.toLowerCase().includes(s) ||
+      c.phone.toLowerCase().includes(s) ||
+      (c.email ?? "").toLowerCase().includes(s) ||
+      c.note.toLowerCase().includes(s),
+    );
+  }, [clients, q]);
+
+  if (loading) return <p className="text-smoke">…</p>;
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center gap-3 flex-wrap">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Rechercher (nom, téléphone, email, note)"
+          className="flex-1 min-w-[220px] bg-white border border-gold/30 px-3 py-2 text-sm focus:outline-none focus:border-gold"
+        />
+        <span className="text-xs text-smoke">{filtered.length} client{filtered.length > 1 ? "s" : ""}</span>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="text-smoke">Aucun client.</p>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((c) => (
+            <button
+              key={c.phone}
+              onClick={() => setSelected(c)}
+              className="text-left bg-white border border-border p-4 hover:border-gold transition-colors"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="font-medium text-ink truncate">{c.name}</div>
+                  <div className="text-xs text-smoke truncate">{c.phone}</div>
+                  {c.email && <div className="text-xs text-smoke truncate">{c.email}</div>}
+                </div>
+                {c.note && <span title="Note privée" className="text-lg leading-none">📝</span>}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+                <span className="px-1.5 py-0.5 bg-sand/60 text-ink">{c.totalBookings} RDV</span>
+                {c.completedBookings > 0 && <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800">{c.completedBookings} ✓</span>}
+                {c.noShowBookings > 0 && <span className="px-1.5 py-0.5 bg-zinc-200 text-zinc-700">{c.noShowBookings} absent</span>}
+                {c.cancelledBookings > 0 && <span className="px-1.5 py-0.5 bg-red-100 text-red-700">{c.cancelledBookings} annulé</span>}
+              </div>
+              {c.lastVisit && (
+                <div className="mt-2 text-[11px] text-smoke">
+                  Dernier RDV : {c.lastVisit}{c.lastService ? ` · ${c.lastService}` : ""}
+                </div>
+              )}
+              {c.note && (
+                <div className="mt-2 text-xs text-ink line-clamp-2 whitespace-pre-wrap">{c.note}</div>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {selected && (
+        <ClientDetail
+          client={selected}
+          onClose={() => setSelected(null)}
+          onSaved={(note) => {
+            setClients((prev) => prev.map((x) => x.phone === selected.phone ? { ...x, note, noteUpdatedAt: new Date().toISOString() } : x));
+            setSelected((s) => s ? { ...s, note } : s);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function ClientDetail({
+  client,
+  onClose,
+  onSaved,
+}: {
+  client: ClientRow;
+  onClose: () => void;
+  onSaved: (note: string) => void;
+}) {
+  const save = useServerFn(upsertClientNote);
+  const history = useServerFn(getClientHistory);
+  const [note, setNote] = useState(client.note);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [pastBookings, setPastBookings] = useState<Booking[] | null>(null);
+
+  useEffect(() => { setNote(client.note); }, [client.phone, client.note]);
+  useEffect(() => {
+    const token = getToken();
+    if (!token) return;
+    history({ data: { token, phone: client.phone } })
+      .then((r) => setPastBookings(r.bookings as Booking[]))
+      .catch(() => setPastBookings([]));
+  }, [client.phone, history]);
+
+  async function onSave() {
+    const token = getToken();
+    if (!token) return;
+    setSaving(true); setSaved(false);
+    try {
+      await save({ data: { token, phone: client.phone, note } });
+      onSaved(note);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    } catch (e) {
+      console.error("saveNote failed", e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 bg-ink/70 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-ivory max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gold/30" onClick={(e) => e.stopPropagation()}>
+        <div className="p-5 border-b border-border flex items-start justify-between gap-3 sticky top-0 bg-ivory">
+          <div>
+            <h2 className="font-display text-xl text-ink">{client.name}</h2>
+            <div className="text-sm text-smoke mt-1">
+              <a href={`tel:${client.phone}`} className="text-gold hover:underline">{client.phone}</a>
+              {client.email && <> · <a href={`mailto:${client.email}`} className="text-gold hover:underline">{client.email}</a></>}
+            </div>
+          </div>
+          <button onClick={onClose} className="text-smoke hover:text-ink text-2xl leading-none">×</button>
+        </div>
+
+        <div className="p-5 space-y-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div className="bg-white border border-border p-2 text-center">
+              <div className="text-lg font-medium text-ink">{client.totalBookings}</div>
+              <div className="text-smoke">Total RDV</div>
+            </div>
+            <div className="bg-emerald-50 border border-emerald-200 p-2 text-center">
+              <div className="text-lg font-medium text-emerald-800">{client.completedBookings}</div>
+              <div className="text-emerald-700">Terminés</div>
+            </div>
+            <div className="bg-zinc-100 border border-zinc-300 p-2 text-center">
+              <div className="text-lg font-medium text-zinc-700">{client.noShowBookings}</div>
+              <div className="text-zinc-600">Absents</div>
+            </div>
+            <div className="bg-red-50 border border-red-200 p-2 text-center">
+              <div className="text-lg font-medium text-red-700">{client.cancelledBookings}</div>
+              <div className="text-red-600">Annulés</div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-smoke mb-2">Note privée</label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={6}
+              maxLength={5000}
+              placeholder="Préférences, allergies, couleur, historique, remarques…"
+              className="w-full bg-white border border-gold/30 px-3 py-2 text-sm focus:outline-none focus:border-gold resize-y"
+            />
+            <div className="flex items-center gap-3 mt-2">
+              <button
+                onClick={onSave}
+                disabled={saving}
+                className="btn-gold btn-gold-hover text-sm px-4 py-2 disabled:opacity-60"
+              >
+                {saving ? "…" : "Enregistrer"}
+              </button>
+              {saved && <span className="text-emerald-700 text-sm">Enregistré ✓</span>}
+              {client.noteUpdatedAt && !saved && (
+                <span className="text-xs text-smoke">MAJ : {new Date(client.noteUpdatedAt).toLocaleDateString("fr-BE")}</span>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xs uppercase tracking-wider text-smoke mb-2">Historique des RDV</h3>
+            {pastBookings === null ? (
+              <p className="text-smoke text-sm">…</p>
+            ) : pastBookings.length === 0 ? (
+              <p className="text-smoke text-sm">Aucun RDV.</p>
+            ) : (
+              <ul className="space-y-1.5">
+                {pastBookings.map((b) => (
+                  <li key={b.id} className="bg-white border border-border p-2.5 text-xs flex items-center justify-between gap-2 flex-wrap">
+                    <div>
+                      <div className="text-ink">{b.booking_date} · {b.booking_time.slice(0, 5)}</div>
+                      <div className="text-smoke">{b.service}</div>
+                    </div>
+                    <StatusBadge status={b.status} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
