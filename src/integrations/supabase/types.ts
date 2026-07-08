@@ -19,6 +19,7 @@ export type Database = {
           booking_date: string
           booking_time: string
           created_at: string
+          duration_min: number | null
           email: string | null
           id: string
           lang: string
@@ -32,6 +33,7 @@ export type Database = {
           booking_date: string
           booking_time: string
           created_at?: string
+          duration_min?: number | null
           email?: string | null
           id?: string
           lang?: string
@@ -45,6 +47,7 @@ export type Database = {
           booking_date?: string
           booking_time?: string
           created_at?: string
+          duration_min?: number | null
           email?: string | null
           id?: string
           lang?: string

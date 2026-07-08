@@ -78,10 +78,29 @@ type Booking = {
   service: string;
   booking_date: string;
   booking_time: string;
+  duration_min: number | null;
   message: string | null;
   lang: string;
   status: "new" | "confirmed" | "cancelled" | "completed" | "no_show";
 };
+
+// Effective duration: prefer the value stored with the booking; fall back to
+// a per-category estimate so historic rows without duration_min still render.
+function effectiveDuration(b: Booking) {
+  if (b.duration_min && b.duration_min > 0) return b.duration_min;
+  const cat = categoryOf(b.service);
+  return cat === "microshading" ? 120 : cat === "nails" ? 90 : 60;
+}
+
+// "09:00 → 12:00" style range shown in the admin so the owner sees exactly
+// which slot the appointment occupies.
+function timeRange(b: Booking) {
+  const [hh, mm] = b.booking_time.slice(0, 5).split(":").map(Number);
+  const startMin = hh * 60 + mm;
+  const endMin = startMin + effectiveDuration(b);
+  const fmt = (t: number) => `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+  return `${fmt(startMin)} → ${fmt(endMin)}`;
+}
 
 // ── Category classification + colours ───────────────────────────────────────
 // Bookings only store the service name, so we classify it back into a category.
@@ -343,8 +362,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 // Build calendar event URLs (Google web + Apple/ICS download) from a booking so
 // the owner can drop confirmed appointments into her preferred calendar app.
 function bookingEventInfo(b: Booking) {
-  const cat = categoryOf(b.service);
-  const durationMin = cat === "microshading" ? 120 : cat === "nails" ? 90 : 60;
+  const durationMin = effectiveDuration(b);
   const [y, m, d] = b.booking_date.split("-").map(Number);
   const [hh, mm] = b.booking_time.slice(0, 5).split(":").map(Number);
   const start = new Date(y, m - 1, d, hh, mm);
@@ -499,7 +517,7 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
               </div>
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-smoke">Heure</div>
-                <div className="text-gold font-medium">{b.booking_time.slice(0,5)}</div>
+                <div className="text-gold font-medium">{timeRange(b)}</div>
               </div>
               <div className="col-span-2">
                 <div className="text-[10px] uppercase tracking-wider text-smoke">Contact</div>
@@ -563,7 +581,7 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                 </Td>
                 <Td>
                   <div>{b.booking_date}</div>
-                  <div className="text-gold font-medium">{b.booking_time.slice(0,5)}</div>
+                  <div className="text-gold font-medium">{timeRange(b)}</div>
                 </Td>
                 <Td>
                   <a href={`tel:${b.phone}`} className="text-ink hover:text-gold block">{b.phone}</a>
@@ -849,6 +867,7 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
               <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3">
                 <div className="text-center shrink-0">
                   <div className="font-display text-2xl text-gold-deep leading-none">{b.booking_time.slice(0,5)}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-smoke mt-1">→ {timeRange(b).split(" → ")[1]}</div>
                 </div>
                 <div className="min-w-0">
                   <div className="font-medium text-ink truncate">{b.name}</div>

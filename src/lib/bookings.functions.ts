@@ -26,19 +26,27 @@ export const getDateAvailability = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => availabilitySchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { SERVICE_ALIASES, canonicalServiceName } = await import("./service-aliases");
     const [bookingsRes, servicesRes] = await Promise.all([
       supabaseAdmin
         .from("bookings")
-        .select("booking_time, service")
+        .select("booking_time, service, duration_min")
         .eq("booking_date", data.date)
         .neq("status", "cancelled"),
       supabaseAdmin.from("services").select("name, duration_min"),
     ]);
+    // Canonical (French) name → duration.
+    const canonicalDur: Record<string, number> = {};
+    for (const s of servicesRes.data ?? []) canonicalDur[s.name] = s.duration_min ?? 60;
+    // Expand to every localized alias so the client can look up by the label it shows.
     const durations: Record<string, number> = {};
-    for (const s of servicesRes.data ?? []) durations[s.name] = s.duration_min ?? 60;
+    for (const [alias, canonical] of Object.entries(SERVICE_ALIASES)) {
+      if (canonicalDur[canonical] != null) durations[alias] = canonicalDur[canonical];
+    }
     const booked = (bookingsRes.data ?? []).map((b) => ({
       time: String(b.booking_time).slice(0, 5),
-      durationMin: durations[b.service] ?? 60,
+      durationMin:
+        b.duration_min ?? canonicalDur[canonicalServiceName(b.service)] ?? 60,
     }));
     return { booked, durations };
   });
@@ -47,6 +55,14 @@ export const createBooking = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { canonicalServiceName } = await import("./service-aliases");
+    // Look up duration for the chosen service (via alias → canonical French name).
+    const { data: svc } = await supabaseAdmin
+      .from("services")
+      .select("duration_min")
+      .eq("name", canonicalServiceName(data.service))
+      .maybeSingle();
+    const duration_min = svc?.duration_min ?? 60;
     const payload = {
       name: data.name,
       phone: data.phone,
@@ -56,6 +72,7 @@ export const createBooking = createServerFn({ method: "POST" })
       booking_time: data.booking_time.length === 5 ? `${data.booking_time}:00` : data.booking_time,
       message: data.message ? data.message : null,
       lang: data.lang,
+      duration_min,
       status: "new" as const,
     };
     const { data: inserted, error } = await supabaseAdmin
