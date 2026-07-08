@@ -338,21 +338,15 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
-// Build a Google Calendar "add event" template URL from a booking so the owner
-// can drop confirmed appointments into her personal calendar in one click.
-function gcalUrl(b: Booking): string {
+// Build calendar event URLs (Google web + Apple/ICS download) from a booking so
+// the owner can drop confirmed appointments into her preferred calendar app.
+function bookingEventInfo(b: Booking) {
   const cat = categoryOf(b.service);
   const durationMin = cat === "microshading" ? 120 : cat === "nails" ? 90 : 60;
   const [y, m, d] = b.booking_date.split("-").map(Number);
   const [hh, mm] = b.booking_time.slice(0, 5).split(":").map(Number);
   const start = new Date(y, m - 1, d, hh, mm);
   const end = new Date(start.getTime() + durationMin * 60_000);
-  const fmt = (dt: Date) =>
-    dt.getFullYear().toString() +
-    String(dt.getMonth() + 1).padStart(2, "0") +
-    String(dt.getDate()).padStart(2, "0") + "T" +
-    String(dt.getHours()).padStart(2, "0") +
-    String(dt.getMinutes()).padStart(2, "0") + "00";
   const details = [
     `Client: ${b.name}`,
     `Tél: ${b.phone}`,
@@ -360,16 +354,65 @@ function gcalUrl(b: Booking): string {
     `Service: ${b.service}`,
     b.message ? `Message: ${b.message}` : "",
   ].filter(Boolean).join("\n");
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: `GIGI L — ${b.service} — ${b.name}`,
-    dates: `${fmt(start)}/${fmt(end)}`,
+  return {
+    start,
+    end,
+    title: `GIGI L — ${b.service} — ${b.name}`,
     details,
     location: "GIGI L Coiffure, Tongeren",
+  };
+}
+
+function gcalUrl(b: Booking): string {
+  const { start, end, title, details, location } = bookingEventInfo(b);
+  // Google expects a floating local time paired with the ctz timezone parameter.
+  const fmt = (dt: Date) =>
+    dt.getFullYear().toString() +
+    String(dt.getMonth() + 1).padStart(2, "0") +
+    String(dt.getDate()).padStart(2, "0") + "T" +
+    String(dt.getHours()).padStart(2, "0") +
+    String(dt.getMinutes()).padStart(2, "0") + "00";
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    details,
+    location,
     ctz: "Europe/Brussels",
   });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
+
+// Apple Calendar (and most desktop/mobile calendar apps) opens .ics files directly.
+// Encoding it as a data: URL lets the browser download it with no server round-trip.
+function icsUrl(b: Booking): string {
+  const { start, end, title, details, location } = bookingEventInfo(b);
+  const fmt = (dt: Date) =>
+    dt.getUTCFullYear().toString() +
+    String(dt.getUTCMonth() + 1).padStart(2, "0") +
+    String(dt.getUTCDate()).padStart(2, "0") + "T" +
+    String(dt.getUTCHours()).padStart(2, "0") +
+    String(dt.getUTCMinutes()).padStart(2, "0") +
+    String(dt.getUTCSeconds()).padStart(2, "0") + "Z";
+  const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//GIGI L//Admin//FR",
+    "BEGIN:VEVENT",
+    `UID:${b.id}@gigilcoiffure.be`,
+    `DTSTAMP:${fmt(new Date())}`,
+    `DTSTART:${fmt(start)}`,
+    `DTEND:${fmt(end)}`,
+    `SUMMARY:${esc(title)}`,
+    `DESCRIPTION:${esc(details)}`,
+    `LOCATION:${esc(location)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+  return `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`;
+}
+
 
 function StatusBadge({ status }: { status: Booking["status"] }) {
   const { t } = useT();
