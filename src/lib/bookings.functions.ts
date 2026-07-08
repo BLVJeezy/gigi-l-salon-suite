@@ -55,6 +55,14 @@ export const createBooking = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { canonicalServiceName } = await import("./service-aliases");
+    // Look up duration for the chosen service (via alias → canonical French name).
+    const { data: svc } = await supabaseAdmin
+      .from("services")
+      .select("duration_min")
+      .eq("name", canonicalServiceName(data.service))
+      .maybeSingle();
+    const duration_min = svc?.duration_min ?? 60;
     const payload = {
       name: data.name,
       phone: data.phone,
@@ -64,6 +72,7 @@ export const createBooking = createServerFn({ method: "POST" })
       booking_time: data.booking_time.length === 5 ? `${data.booking_time}:00` : data.booking_time,
       message: data.message ? data.message : null,
       lang: data.lang,
+      duration_min,
       status: "new" as const,
     };
     const { data: inserted, error } = await supabaseAdmin
