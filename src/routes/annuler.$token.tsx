@@ -45,7 +45,7 @@ export const cancelBookingByToken = createServerFn({ method: "POST" })
         const res = await enqueueTemplateEmail("client-booking-cancelled", booking.email, booking);
         console.log("[annuler] client email", res);
       }
-      const owner = process.env.OWNER_EMAIL || "jasonbalongo@gmail.com";
+      const owner = process.env.OWNER_EMAIL || "lahlamoussa18@gmail.com";
       if (owner) {
         // Reuse the cancelled template for the owner too (clear, consistent styling).
         const res = await enqueueTemplateEmail("client-booking-cancelled", owner, booking);

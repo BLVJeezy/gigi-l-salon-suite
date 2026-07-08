@@ -88,7 +88,7 @@ export const createBooking = createServerFn({ method: "POST" })
     // Fire-and-forget emails via Lovable's queue (no Resend key needed).
     try {
       const { enqueueTemplateEmail } = await import("./lovable-email.server");
-      const owner = process.env.OWNER_EMAIL || "jasonbalongo@gmail.com";
+      const owner = process.env.OWNER_EMAIL || "lahlamoussa18@gmail.com";
 
       // Owner notification — always.
       const ownerRes = await enqueueTemplateEmail("owner-new-booking", owner, inserted);
