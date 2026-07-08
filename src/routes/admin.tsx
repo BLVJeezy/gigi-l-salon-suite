@@ -362,8 +362,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 // Build calendar event URLs (Google web + Apple/ICS download) from a booking so
 // the owner can drop confirmed appointments into her preferred calendar app.
 function bookingEventInfo(b: Booking) {
-  const cat = categoryOf(b.service);
-  const durationMin = cat === "microshading" ? 120 : cat === "nails" ? 90 : 60;
+  const durationMin = effectiveDuration(b);
   const [y, m, d] = b.booking_date.split("-").map(Number);
   const [hh, mm] = b.booking_time.slice(0, 5).split(":").map(Number);
   const start = new Date(y, m - 1, d, hh, mm);
