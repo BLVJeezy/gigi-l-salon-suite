@@ -420,27 +420,33 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
       {/* ── DATE ── */}
       {current === "date" && (
         <div className="space-y-4">
-          <div>
-            <Label>{t.form.date} *</Label>
-            <input type="date" required min={today} value={date} autoFocus
+          <Label>{t.form.date} *</Label>
+
+          {/* Mobile: native date picker */}
+          <div className="sm:hidden">
+            <input type="date" required min={today} value={date}
               onChange={(e) => {
                 const val = e.target.value;
                 if (val) {
                   const day = new Date(val + "T12:00:00").getDay();
-                  if (day === 0 || day === 2) {
-                    // Sunday (0) or Tuesday (2) — closed
-                    setDate("");
-                    setDateError(true);
-                    return;
-                  }
+                  if (day === 0 || day === 2) { setDate(""); setDateError(true); return; }
                 }
-                setDateError(false);
-                setDate(val);
+                setDateError(false); setDate(val);
               }} className={inputCls} />
-            {dateError && (
-              <p className="text-red-400 text-xs mt-2">{t.form.closedDay}</p>
-            )}
           </div>
+
+          {/* Desktop: inline calendar */}
+          <div className="hidden sm:block">
+            <CalendarPicker value={date} min={today} onSelect={(val) => {
+              const day = new Date(val + "T12:00:00").getDay();
+              if (day === 0 || day === 2) { setDate(""); setDateError(true); return; }
+              setDateError(false); setDate(val);
+            }} />
+          </div>
+
+          {dateError && (
+            <p className="text-red-400 text-xs">{t.form.closedDay}</p>
+          )}
           <button type="button" disabled={!date} onClick={goNext}
             className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed">
             {t.form.next ?? "Volgende →"}
@@ -501,6 +507,111 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
 }
 
 // ─── Progress bar ──────────────────────────────────────────────────────────────
+// ─── Inline calendar for desktop ──────────────────────────────────────────────
+function CalendarPicker({ value, min, onSelect }: {
+  value: string;
+  min: string;
+  onSelect: (date: string) => void;
+}) {
+  const today = new Date(min + "T12:00:00");
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+
+  const DAYS = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
+  const MONTHS = ["Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December"];
+
+  const firstDay = new Date(viewYear, viewMonth, 1);
+  // Monday-first: 0=Mon, 6=Sun
+  const startOffset = (firstDay.getDay() + 6) % 7;
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+  const toISO = (y: number, m: number, d: number) =>
+    `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+  const isClosed = (iso: string) => {
+    const day = new Date(iso + "T12:00:00").getDay();
+    return day === 0 || day === 2; // Sun or Tue
+  };
+  const isPast = (iso: string) => iso < min;
+
+  const prevMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+  };
+  const nextMonth = () => {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
+  };
+
+  const cells: (number | null)[] = [
+    ...Array(startOffset).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+
+  return (
+    <div className="border border-gold/30 bg-ink select-none">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gold/20">
+        <button type="button" onClick={prevMonth}
+          className="w-7 h-7 flex items-center justify-center text-ivory/60 hover:text-gold transition-colors">
+          ‹
+        </button>
+        <span className="text-ivory text-sm font-display tracking-wide">
+          {MONTHS[viewMonth]} {viewYear}
+        </span>
+        <button type="button" onClick={nextMonth}
+          className="w-7 h-7 flex items-center justify-center text-ivory/60 hover:text-gold transition-colors">
+          ›
+        </button>
+      </div>
+
+      {/* Day labels */}
+      <div className="grid grid-cols-7 border-b border-gold/10">
+        {DAYS.map(d => (
+          <div key={d} className="text-center text-[10px] text-ivory/30 py-2 tracking-wider">{d}</div>
+        ))}
+      </div>
+
+      {/* Day cells */}
+      <div className="grid grid-cols-7 gap-px p-2">
+        {cells.map((day, i) => {
+          if (!day) return <div key={`e-${i}`} />;
+          const iso = toISO(viewYear, viewMonth, day);
+          const closed = isClosed(iso);
+          const past = isPast(iso);
+          const selected = iso === value;
+          const disabled = closed || past;
+
+          return (
+            <button
+              key={iso}
+              type="button"
+              disabled={disabled}
+              onClick={() => !disabled && onSelect(iso)}
+              title={closed ? "Gesloten" : undefined}
+              className={`
+                h-9 w-full text-sm transition-colors rounded-none
+                ${selected ? "bg-gold text-ivory font-medium" : ""}
+                ${!disabled && !selected ? "text-ivory hover:bg-gold/20 hover:text-gold" : ""}
+                ${closed ? "text-red-400/40 line-through cursor-not-allowed" : ""}
+                ${past && !closed ? "text-ivory/20 cursor-not-allowed" : ""}
+              `}
+            >
+              {day}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="px-3 pb-2 flex gap-4 text-[10px] text-ivory/30">
+        <span className="text-red-400/40">Di / Zo = gesloten</span>
+        {value && <span className="text-gold">✓ {value}</span>}
+      </div>
+    </div>
+  );
+}
+
 function ProgressBar({ index, total }: { index: number; total: number }) {
   return (
     <div className="flex items-center gap-1 mb-5">
