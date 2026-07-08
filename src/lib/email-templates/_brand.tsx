@@ -115,7 +115,7 @@ export const SAMPLE: BookingProps = {
   id: 'demo',
   name: 'Jason Balongo',
   phone: '+32 484 16 49 05',
-  email: 'jasonbalongo@gmail.com',
+  email: 'lahlamoussa18@gmail.com',
   service: 'Coupe & brushing',
   booking_date: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
   booking_time: '14:00',
