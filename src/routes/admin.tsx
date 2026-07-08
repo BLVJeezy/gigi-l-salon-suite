@@ -867,6 +867,7 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
               <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3">
                 <div className="text-center shrink-0">
                   <div className="font-display text-2xl text-gold-deep leading-none">{b.booking_time.slice(0,5)}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-smoke mt-1">→ {timeRange(b).split(" → ")[1]}</div>
                 </div>
                 <div className="min-w-0">
                   <div className="font-medium text-ink truncate">{b.name}</div>
