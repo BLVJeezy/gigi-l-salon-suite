@@ -351,8 +351,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
       <main className="mx-auto max-w-7xl px-5 sm:px-8 py-8">
         {loading && <p className="text-smoke">…</p>}
         {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} />}
-        {!loading && tab === "day" && <DayView bookings={bookings} token={token} />}
-        {!loading && tab === "week" && <WeekView bookings={bookings} token={token} />}
+        {!loading && tab === "day" && <DayView bookings={bookings} token={getToken() ?? ""} />}
+        {!loading && tab === "week" && <WeekView bookings={bookings} token={getToken() ?? ""} />}
         {tab === "clients" && <ClientsView onLogout={onLogout} />}
         {tab === "diensten" && <ServicesView onLogout={onLogout} />}
         {tab === "gallery" && <GalleryAdmin onLogout={onLogout} />}
