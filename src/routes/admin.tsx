@@ -339,6 +339,15 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   };
   useEffect(() => { void refresh(); /* eslint-disable-next-line */ }, []);
 
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { id, status } = (e as CustomEvent).detail;
+      void setStatus(id, status);
+    };
+    window.addEventListener("admin-set-status", handler);
+    return () => window.removeEventListener("admin-set-status", handler);
+  }, [bookings]);
+
   const newCount = bookings.filter(b => b.status === "new").length;
 
   async function setStatus(id: string, status: "confirmed" | "cancelled" | "completed" | "no_show") {
@@ -1012,6 +1021,11 @@ function WeekView({ bookings, token }: { bookings: Booking[]; token: string }) {
           iso={selectedDay}
           bookings={dayBookingsFor(selectedDay)}
           onClose={() => setSelectedDay(null)}
+          onSetStatus={(id, status) => {
+            // Propagate to parent via a custom event so Dashboard updates bookings
+            window.dispatchEvent(new CustomEvent("admin-set-status", { detail: { id, status } }));
+          }}
+          token={token}
         />
       )}
       {crmBooking && <ClientProfileModal booking={crmBooking} token={token} onClose={() => setCrmBooking(null)} />}
@@ -1019,18 +1033,35 @@ function WeekView({ bookings, token }: { bookings: Booking[]; token: string }) {
   );
 }
 
-function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Booking[]; onClose: () => void }) {
+function DayDetailsModal({ iso, bookings, onClose, onSetStatus, token }: {
+  iso: string;
+  bookings: Booking[];
+  onClose: () => void;
+  onSetStatus: (id: string, status: "confirmed" | "cancelled" | "completed" | "no_show") => void;
+  token: string;
+}) {
+  const [crmBooking, setCrmBooking] = useState<Booking | null>(null);
+  const [localBookings, setLocalBookings] = useState(bookings);
+  useEffect(() => setLocalBookings(bookings), [bookings]);
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { if (crmBooking) setCrmBooking(null); else onClose(); } };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
-  }, [onClose]);
+  }, [onClose, crmBooking]);
 
   const d = new Date(iso + "T00:00:00");
   const title = d.toLocaleDateString("fr-BE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
+  function handleStatus(id: string, status: "confirmed" | "cancelled" | "completed" | "no_show") {
+    onSetStatus(id, status);
+    setLocalBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
+  }
+
   return (
+    <>
+    {crmBooking && <ClientProfileModal booking={crmBooking} token={token} onClose={() => setCrmBooking(null)} />}
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-ink/60" onClick={onClose}>
       <div
         className="bg-ivory w-full sm:max-w-2xl max-h-[90vh] sm:max-h-[85vh] flex flex-col border border-gold/30 sm:rounded-none"
@@ -1040,15 +1071,15 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
           <div className="min-w-0">
             <div className="font-display text-lg sm:text-xl capitalize truncate">{title}</div>
             <div className="text-xs text-ivory/60 uppercase tracking-wider mt-0.5">
-              {bookings.length} {bookings.length === 1 ? "rendez-vous" : "rendez-vous"}
+              {localBookings.length} {localBookings.length === 1 ? "rendez-vous" : "rendez-vous"}
             </div>
           </div>
           <button onClick={onClose} aria-label="Fermer" className="text-ivory/80 hover:text-gold text-2xl leading-none shrink-0">×</button>
         </div>
 
         <div className="overflow-y-auto p-4 sm:p-5 space-y-3">
-          {bookings.length === 0 && <p className="text-smoke text-center py-8">Aucun rendez-vous</p>}
-          {bookings.map(b => (
+          {localBookings.length === 0 && <p className="text-smoke text-center py-8">Aucun rendez-vous</p>}
+          {localBookings.map(b => (
             <div key={b.id} className={`border p-4 ${b.status === "cancelled" ? "bg-red-50 border-red-200 opacity-60" : b.status === "confirmed" ? "bg-green-50 border-green-300" : "bg-gold/10 border-gold"}`}>
               <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3">
                 <div className="text-center shrink-0">
@@ -1080,6 +1111,34 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
               <div className="mt-2 text-[10px] text-smoke uppercase tracking-wider">
                 Reçu le {new Date(b.created_at).toLocaleString("fr-BE")}
               </div>
+
+              {/* Action buttons */}
+              {b.status !== "cancelled" && b.status !== "completed" && (
+                <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
+                  {b.status !== "confirmed" && (
+                    <button onClick={() => handleStatus(b.id, "confirmed")}
+                      className="flex-1 min-w-[100px] px-3 py-2 bg-green-600 text-white text-sm font-medium hover:bg-green-700">
+                      Confirmer
+                    </button>
+                  )}
+                  <button onClick={() => setCrmBooking(b)}
+                    className="flex-1 min-w-[100px] px-3 py-2 bg-ink text-ivory text-sm font-medium hover:bg-gold">
+                    Fiche client
+                  </button>
+                  <button onClick={() => handleStatus(b.id, "cancelled")}
+                    className="flex-1 min-w-[100px] px-3 py-2 bg-red-600 text-white text-sm font-medium hover:bg-red-700">
+                    Annuler
+                  </button>
+                </div>
+              )}
+              {(b.status === "confirmed" || b.status === "cancelled" || b.status === "completed") && (
+                <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
+                  <button onClick={() => setCrmBooking(b)}
+                    className="flex-1 px-3 py-2 bg-ink text-ivory text-sm font-medium hover:bg-gold">
+                    Fiche client
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -1091,6 +1150,7 @@ function DayDetailsModal({ iso, bookings, onClose }: { iso: string; bookings: Bo
         </div>
       </div>
     </div>
+    </>
   );
 }
 
