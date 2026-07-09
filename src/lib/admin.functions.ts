@@ -297,6 +297,43 @@ export const createAdminBooking = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// Create a standalone client profile (without requiring a booking)
+export const createClient = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({
+      token: z.string(),
+      phone: z.string().min(1),
+      name: z.string().min(1),
+      email: z.string().nullable().optional(),
+      note: z.string().optional(),
+    }).parse(input)
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const norm = normalizePhone(data.phone);
+
+    // Upsert into clients table
+    const { error } = await supabaseAdmin.from("clients").upsert({
+      phone: norm,
+      name: data.name,
+      email: data.email ?? null,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "phone" });
+    if (error) throw new Error(error.message);
+
+    // Save note if provided
+    if (data.note?.trim()) {
+      await supabaseAdmin.from("client_notes").upsert({
+        phone: norm,
+        note: data.note.trim(),
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "phone" });
+    }
+
+    return { ok: true };
+  });
+
 // Aggregates unique clients from the bookings table (grouped by phone) and
 // joins private admin notes stored in client_notes.
 
@@ -310,11 +347,17 @@ export const listClients = createServerFn({ method: "POST" })
     await requireAdmin(data.token);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: rows, error } = await supabaseAdmin
-      .from("bookings")
-      .select("name,phone,email,service,booking_date,booking_time,status,created_at")
-      .order("booking_date", { ascending: false });
-    if (error) throw new Error(error.message);
+    // Fetch bookings + standalone clients + notes in parallel
+    const [bookingsRes, standaloneRes, notesRes] = await Promise.all([
+      supabaseAdmin.from("bookings").select("name,phone,email,service,booking_date,booking_time,status,created_at").order("booking_date", { ascending: false }),
+      supabaseAdmin.from("clients").select("phone,name,email,created_at").order("created_at", { ascending: false }),
+      supabaseAdmin.from("client_notes").select("phone,note,updated_at"),
+    ]);
+
+    if (bookingsRes.error) throw new Error(bookingsRes.error.message);
+    const rows = bookingsRes.data ?? [];
+    const standalone = standaloneRes.data ?? [];
+    const notes = notesRes.data ?? [];
 
     type Client = {
       phone: string;
@@ -351,7 +394,6 @@ export const listClients = createServerFn({ method: "POST" })
         if (b.status === "completed") existing.completedBookings++;
         if (b.status === "cancelled") existing.cancelledBookings++;
         if (b.status === "no_show") existing.noShowBookings++;
-        // Keep the most recent name/email (rows are sorted DESC by booking_date, so first-seen entry is most recent).
         if (!existing.email && b.email) existing.email = b.email;
         if (!existing.lastVisit || b.booking_date > existing.lastVisit) {
           existing.lastVisit = b.booking_date;
@@ -361,23 +403,34 @@ export const listClients = createServerFn({ method: "POST" })
       }
     }
 
-    const phones = [...map.keys()];
-    let notes: Record<string, { note: string; updated_at: string }> = {};
-    if (phones.length > 0) {
-      const { data: noteRows, error: nErr } = await supabaseAdmin
-        .from("client_notes")
-        .select("phone,note,updated_at")
-        .in("phone", phones);
-      if (nErr) throw new Error(nErr.message);
-      for (const n of noteRows ?? []) notes[n.phone] = { note: n.note, updated_at: n.updated_at };
+    // Add standalone clients (created directly in admin without a booking)
+    for (const c of standalone) {
+      const key = normalizePhone(c.phone);
+      if (!key || map.has(key)) continue; // skip if already in bookings
+      map.set(key, {
+        phone: c.phone,
+        name: c.name,
+        email: c.email ?? null,
+        totalBookings: 0,
+        completedBookings: 0,
+        cancelledBookings: 0,
+        noShowBookings: 0,
+        lastVisit: null,
+        lastService: null,
+        firstSeen: c.created_at,
+      });
     }
+
+    // Build notes map from pre-fetched notes
+    const notesMap: Record<string, { note: string; updated_at: string }> = {};
+    for (const n of notes) notesMap[normalizePhone(n.phone)] = { note: n.note, updated_at: n.updated_at };
 
     const clients = [...map.values()].map((c) => ({
       ...c,
-      note: notes[normalizePhone(c.phone)]?.note ?? "",
-      noteUpdatedAt: notes[normalizePhone(c.phone)]?.updated_at ?? null,
+      note: notesMap[normalizePhone(c.phone)]?.note ?? "",
+      noteUpdatedAt: notesMap[normalizePhone(c.phone)]?.updated_at ?? null,
     }));
-    clients.sort((a, b) => (b.lastVisit ?? "").localeCompare(a.lastVisit ?? ""));
+    clients.sort((a, b) => (b.lastVisit ?? b.firstSeen ?? "").localeCompare(a.lastVisit ?? a.firstSeen ?? ""));
     return { clients };
   });
 

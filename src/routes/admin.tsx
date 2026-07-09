@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
   listClients, upsertClientNote, getClientHistory, sendTestEmails,
-  updateAmountPaid, getClientBookings, createAdminBooking, adjustBooking,
+  updateAmountPaid, getClientBookings, createAdminBooking, adjustBooking, createClient,
 } from "@/lib/admin.functions";
 import {
   listServices, updateService, addService, deleteService, seedServices, type ServiceItem,
@@ -1851,25 +1851,24 @@ function CreateClientModal({ onClose, onCreated }: {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
-  const saveNote = useServerFn(upsertClientNote);
+  const createClientFn = useServerFn(createClient);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  async function createClient() {
+  async function save() {
     if (!name || !phone) { setError("Nom et téléphone obligatoires."); return; }
     setSaving(true); setError("");
     try {
       const token = getToken();
       if (!token) return;
-      if (note) await saveNote({ data: { token, phone, note } });
+      await createClientFn({ data: { token, phone, name, email: email || null, note: note || undefined } });
       onCreated();
-      if (showBooking) return; // booking modal takes over
-      onClose();
     } catch (e: any) {
       setError(e.message ?? "Erreur.");
-    } finally {
       setSaving(false);
+      return;
     }
+    setSaving(false);
   }
 
   if (showBooking) {
@@ -1914,12 +1913,13 @@ function CreateClientModal({ onClose, onCreated }: {
           {error && <p className="text-red-600 text-xs">{error}</p>}
           <div className="flex gap-3 pt-1">
             <button onClick={onClose} className="flex-1 border border-border text-sm py-2 hover:bg-sand/50">Annuler</button>
-            <button onClick={() => { createClient().then(() => !error && setShowBooking(true)); }}
+            <button onClick={async () => { await save(); if (!error) setShowBooking(true); }}
               disabled={saving || !name || !phone}
               className="flex-1 border border-gold text-gold text-sm py-2 hover:bg-gold/5 disabled:opacity-40">
               Créer + RDV
             </button>
-            <button onClick={createClient} disabled={saving || !name || !phone}
+            <button onClick={async () => { await save(); if (!error) onClose(); }}
+              disabled={saving || !name || !phone}
               className="flex-1 bg-gold text-ivory text-sm py-2 hover:bg-gold-deep disabled:opacity-60 font-medium">
               {saving ? "…" : "Créer"}
             </button>
