@@ -353,7 +353,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} onBookingsUpdated={(id, patch) => setBookings(prev => prev.map(b => b.id === id ? { ...b, ...patch } : b))} />}
         {!loading && tab === "day" && <DayView bookings={bookings} token={getToken() ?? ""} />}
         {!loading && tab === "week" && <WeekView bookings={bookings} token={getToken() ?? ""} />}
-        {tab === "clients" && <ClientsView onLogout={onLogout} />}
+        {tab === "clients" && <ClientsView onLogout={onLogout} onBookingCreated={refresh} />}
         {tab === "diensten" && <ServicesView onLogout={onLogout} />}
         {tab === "gallery" && <GalleryAdmin onLogout={onLogout} />}
       </main>
@@ -1842,9 +1842,10 @@ function AdminBookingModal({ prefill, onClose, onSaved }: {
 }
 
 // ─── Create Client Modal ──────────────────────────────────────────────────────
-function CreateClientModal({ onClose, onCreated }: {
+function CreateClientModal({ onClose, onCreated, onBookingCreated }: {
   onClose: () => void;
   onCreated: () => void;
+  onBookingCreated?: () => void;
 }) {
   const [showBooking, setShowBooking] = useState(false);
   const [name, setName] = useState("");
@@ -1876,7 +1877,7 @@ function CreateClientModal({ onClose, onCreated }: {
       <AdminBookingModal
         prefill={{ name, phone, email }}
         onClose={onClose}
-        onSaved={onCreated}
+        onSaved={() => { onCreated(); onBookingCreated?.(); }}
       />
     );
   }
@@ -1930,7 +1931,7 @@ function CreateClientModal({ onClose, onCreated }: {
   );
 }
 
-function ClientsView({ onLogout }: { onLogout: () => void }) {
+function ClientsView({ onLogout, onBookingCreated }: { onLogout: () => void; onBookingCreated?: () => void }) {
   const list = useServerFn(listClients);
   const [clients, setClients] = useState<ClientRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1987,6 +1988,7 @@ function ClientsView({ onLogout }: { onLogout: () => void }) {
         <CreateClientModal
           onClose={() => setShowCreate(false)}
           onCreated={() => { setShowCreate(false); void refresh(); }}
+          onBookingCreated={() => { void refresh(); onBookingCreated?.(); }}
         />
       )}
 
@@ -2031,6 +2033,7 @@ function ClientsView({ onLogout }: { onLogout: () => void }) {
         <ClientDetail
           client={selected}
           onClose={() => setSelected(null)}
+          onBookingCreated={() => { void refresh(); onBookingCreated?.(); }}
           onSaved={(note) => {
             setClients((prev) => prev.map((x) => x.phone === selected.phone ? { ...x, note, noteUpdatedAt: new Date().toISOString() } : x));
             setSelected((s) => s ? { ...s, note } : s);
@@ -2045,10 +2048,12 @@ function ClientDetail({
   client,
   onClose,
   onSaved,
+  onBookingCreated,
 }: {
   client: ClientRow;
   onClose: () => void;
   onSaved: (note: string) => void;
+  onBookingCreated?: () => void;
 }) {
   const save = useServerFn(upsertClientNote);
   const history = useServerFn(getClientHistory);
@@ -2113,6 +2118,7 @@ function ClientDetail({
               const token = getToken();
               if (token) history({ data: { token, phone: client.phone } })
                 .then(r => setPastBookings(r.bookings as Booking[]));
+              onBookingCreated?.();
             }}
           />
         )}
