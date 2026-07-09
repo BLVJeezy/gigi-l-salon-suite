@@ -243,7 +243,12 @@ function AdminPage() {
 
   if (authed === null) return <div className="min-h-screen bg-ink text-ivory flex items-center justify-center">…</div>;
   if (!authed) return <LoginScreen onSuccess={() => setAuthed(true)} />;
-  return <Dashboard onLogout={() => { clearToken(); setAuthed(false); }} />;
+  return (
+    <>
+      <EmailToast />
+      <Dashboard onLogout={() => { clearToken(); setAuthed(false); }} />
+    </>
+  );
 }
 
 function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
@@ -280,6 +285,35 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
+// ─── Email toast notification ─────────────────────────────────────────────────
+export function showEmailToast() {
+  window.dispatchEvent(new CustomEvent("email-sent"));
+}
+
+function EmailToast() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handler = () => {
+      setVisible(true);
+      setTimeout(() => setVisible(false), 3000);
+    };
+    window.addEventListener("email-sent", handler);
+    return () => window.removeEventListener("email-sent", handler);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+      <div className="bg-ink text-ivory px-6 py-3 shadow-2xl flex items-center gap-3 animate-fade-in-out border border-gold/30">
+        <span className="text-gold text-lg">✓</span>
+        <span className="font-display tracking-wide text-sm">E-mail envoyé</span>
+      </div>
+    </div>
+  );
+}
+
 function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
@@ -310,8 +344,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   async function setStatus(id: string, status: "confirmed" | "cancelled" | "completed" | "no_show") {
     const token = getToken();
     if (!token) { onLogout(); return; }
+    const booking = bookings.find(b => b.id === id);
     await update({ data: { token, id, status } });
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
+    // Show email toast when an email is triggered
+    if (booking?.email && (status === "confirmed" || status === "cancelled" || status === "completed")) {
+      showEmailToast();
+    }
   }
 
   async function doLogout() { onLogout(); }
@@ -1647,6 +1686,7 @@ function AdjustBookingModal({ booking, onClose, onSaved }: {
       const token = getToken();
       if (!token) return;
       await adjustFn({ data: { token, id: booking.id, booking_date: date, booking_time: time, send_email: sendEmail } });
+      if (sendEmail && booking.email) showEmailToast();
       onSaved(date, time);
       onClose();
     } catch (e: any) {
