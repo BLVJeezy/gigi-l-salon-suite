@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
-  listClients, upsertClientNote, getClientHistory,
+  listClients, upsertClientNote, getClientHistory, sendTestEmails,
   updateAmountPaid, getClientBookings, createAdminBooking, adjustBooking,
 } from "@/lib/admin.functions";
 import {
@@ -284,6 +284,24 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
   const update = useServerFn(updateBookingStatus);
+  const testEmailFn = useServerFn(sendTestEmails);
+  const [testSending, setTestSending] = useState(false);
+  const [testResult, setTestResult] = useState<string | null>(null);
+
+  async function doTestEmail() {
+    const token = getToken();
+    if (!token) return;
+    setTestSending(true); setTestResult(null);
+    try {
+      const r = await testEmailFn({ data: { token, to: "jasonbalongo@gmail.com" } });
+      setTestResult(r.ok ? "✓ Envoyé !" : "✗ Erreur");
+    } catch (e: any) {
+      setTestResult(`✗ ${String(e?.message ?? "").slice(0, 60)}`);
+    } finally {
+      setTestSending(false);
+      setTimeout(() => setTestResult(null), 5000);
+    }
+  }
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<"leads" | "day" | "week" | "clients" | "diensten" | "gallery">("leads");
@@ -328,8 +346,17 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               </span>
             )}
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center">
             <button onClick={refresh} className="btn-gold-outline text-xs px-3 py-2">{t.admin.refresh}</button>
+            <button onClick={doTestEmail} disabled={testSending}
+              className="btn-gold-outline text-xs px-3 py-2 disabled:opacity-50">
+              {testSending ? "…" : "Test e-mail"}
+            </button>
+            {testResult && (
+              <span className={`text-xs font-medium ${testResult.startsWith("✓") ? "text-emerald-400" : "text-red-400"}`}>
+                {testResult}
+              </span>
+            )}
             <button onClick={doLogout} className="btn-gold-outline text-xs px-3 py-2">{t.admin.logout}</button>
           </div>
         </div>

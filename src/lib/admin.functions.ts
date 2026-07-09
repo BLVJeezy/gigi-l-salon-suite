@@ -144,15 +144,8 @@ export const sendTestEmails = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     await requireAdmin(data.token);
-    const React = await import("react");
-    const { render } = await import("@react-email/components");
-    const { TEMPLATES } = await import("./email-templates/registry");
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { enqueueTemplateEmail } = await import("./lovable-email.server");
     const { signCancelToken } = await import("./email.server");
-
-    const SENDER_DOMAIN = "notify.test-solyn.pw";
-    const FROM_DOMAIN = "notify.test-solyn.pw";
-    const SITE_NAME = "gigi-l";
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -168,57 +161,16 @@ export const sendTestEmails = createServerFn({ method: "POST" })
       booking_date: tomorrow.toISOString().slice(0, 10),
       booking_time: "14:00",
       message: "Voorbeeld bericht — een korte opmerking.",
+      cancelUrl: `${origin}/annuler/${cancelToken}`,
     };
 
-    const order = [
-      "owner-new-booking",
-      "client-booking-received",
-      "client-booking-confirmed",
-      "client-booking-cancelled",
-    ];
-
-    let sent = 0;
-    for (const name of order) {
-      const tpl = TEMPLATES[name];
-      if (!tpl) continue;
-      const props: Record<string, any> = { ...baseBooking };
-      if (name === "client-booking-confirmed") {
-        props.cancelUrl = `${origin}/annuler/${cancelToken}`;
-      }
-      const element = React.createElement(tpl.component, props);
-      const html = await render(element);
-      const text = await render(element, { plainText: true });
-      const subject = typeof tpl.subject === "function" ? tpl.subject(props) : tpl.subject;
-      const messageId = crypto.randomUUID();
-
-      await supabaseAdmin.from("email_send_log").insert({
-        message_id: messageId,
-        template_name: name,
-        recipient_email: data.to,
-        status: "pending",
-      });
-
-      const { error } = await supabaseAdmin.rpc("enqueue_email", {
-        queue_name: "transactional_emails",
-        payload: {
-          message_id: messageId,
-          to: data.to,
-          from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-          sender_domain: SENDER_DOMAIN,
-          subject: `[TEST] ${subject}`,
-          html,
-          text,
-          purpose: "transactional",
-          label: name,
-          idempotency_key: messageId,
-          unsubscribe_token: "test-no-unsubscribe",
-          queued_at: new Date().toISOString(),
-        },
-      });
-      if (error) throw new Error(`Enqueue ${name}: ${error.message}`);
-      sent++;
+    const results: Record<string, boolean> = {};
+    for (const name of ["client-booking-confirmed"]) {
+      const r = await enqueueTemplateEmail(name, data.to, baseBooking);
+      results[name] = r.ok;
     }
-    return { ok: true, sent };
+
+    return { ok: true, results };
   });
 
 // ── Client CRM ──────────────────────────────────────────────────────────────

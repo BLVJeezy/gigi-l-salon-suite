@@ -1,18 +1,19 @@
-// Server-only helper: send a transactional email via Resend directly.
-// Works from both Lovable and Vercel hosting.
+// Server-only helper: send a transactional email via Resend through the
+// Lovable connector gateway. Works when hosted on Lovable (secrets auto-available).
 //
-// Requires:
-//   - RESEND_API_KEY (Lovable secret or Vercel env var)
-//   - FROM_EMAIL domain (gigilcoiffure.be) verified in Resend.
+// Requires (Lovable secrets — set automatically via Resend connector):
+//   - LOVABLE_API_KEY
+//   - RESEND_API_KEY
 const FROM_EMAIL = "Gigi L Coiffure <Info@gigilcoiffure.be>";
 const REPLY_TO = "lahlamoussa18@gmail.com";
-const RESEND_API_URL = "https://api.resend.com/emails";
+const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 
 export type EnqueueResult = { ok: boolean; messageId?: string; error?: string };
 
 /**
- * Render a registered template and send it via Resend directly.
- * Name kept as `enqueueTemplateEmail` for call-site compatibility.
+ * Render a registered template and send it via Resend.
+ * Uses the Lovable connector gateway when LOVABLE_API_KEY is present,
+ * falls back to direct Resend API otherwise.
  */
 export async function enqueueTemplateEmail(
   templateName: string,
@@ -27,7 +28,6 @@ export async function enqueueTemplateEmail(
     const tpl = TEMPLATES[templateName];
     if (!tpl) return { ok: false, error: `Unknown template ${templateName}` };
 
-    // Try Resend API key from env (Vercel) or Lovable secrets
     const resendKey = process.env.RESEND_API_KEY;
     if (!resendKey) {
       const error = "Missing RESEND_API_KEY";
@@ -40,13 +40,18 @@ export async function enqueueTemplateEmail(
     const text = await render(element, { plainText: true });
     const subject = typeof tpl.subject === "function" ? tpl.subject(props) : tpl.subject;
 
-    // Call Resend API directly — works from any hosting environment
-    const res = await fetch(RESEND_API_URL, {
+    // Use Lovable gateway if LOVABLE_API_KEY is available, else direct Resend
+    const lovableKey = process.env.LOVABLE_API_KEY;
+    const url = lovableKey ? `${GATEWAY_URL}/emails` : "https://api.resend.com/emails";
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${lovableKey ?? resendKey}`,
+    };
+    if (lovableKey) headers["X-Connection-Api-Key"] = resendKey;
+
+    const res = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendKey}`,
-      },
+      headers,
       body: JSON.stringify({
         from: FROM_EMAIL,
         to: [to],
@@ -59,31 +64,25 @@ export async function enqueueTemplateEmail(
 
     if (!res.ok) {
       const body = await res.text();
-      console.error(`[email] Resend API failed [${res.status}]: ${body}`);
-      // Try to log to Supabase (best-effort)
+      console.error(`[email] send failed [${res.status}]: ${body}`);
       try {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         await supabaseAdmin.from("email_send_log").insert({
-          template_name: templateName,
-          recipient_email: to,
-          status: "failed",
-          error_message: body.slice(0, 500),
+          template_name: templateName, recipient_email: to,
+          status: "failed", error_message: body.slice(0, 500),
         });
       } catch { /* log table may not exist */ }
-      return { ok: false, error: `Resend ${res.status}: ${body}` };
+      return { ok: false, error: `${res.status}: ${body}` };
     }
 
     const json = (await res.json()) as { id?: string };
-    // Log success (best-effort)
     try {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       await supabaseAdmin.from("email_send_log").insert({
-        template_name: templateName,
-        recipient_email: to,
-        status: "sent",
-        metadata: { provider_id: json.id ?? null },
+        template_name: templateName, recipient_email: to,
+        status: "sent", metadata: { provider_id: json.id ?? null },
       });
-    } catch { /* log table may not exist */ }
+    } catch { /* best-effort */ }
 
     return { ok: true, messageId: json.id };
   } catch (e) {
