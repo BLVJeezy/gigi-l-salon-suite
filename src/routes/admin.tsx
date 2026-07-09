@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
   listClients, upsertClientNote, getClientHistory,
-  updateAmountPaid, getClientBookings, createAdminBooking,
+  updateAmountPaid, getClientBookings, createAdminBooking, adjustBooking,
 } from "@/lib/admin.functions";
 import {
   listServices, updateService, addService, deleteService, seedServices, type ServiceItem,
@@ -350,7 +350,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
       <main className="mx-auto max-w-7xl px-5 sm:px-8 py-8">
         {loading && <p className="text-smoke">…</p>}
-        {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} />}
+        {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} onBookingsUpdated={(id, patch) => setBookings(prev => prev.map(b => b.id === id ? { ...b, ...patch } : b))} />}
         {!loading && tab === "day" && <DayView bookings={bookings} token={getToken() ?? ""} />}
         {!loading && tab === "week" && <WeekView bookings={bookings} token={getToken() ?? ""} />}
         {tab === "clients" && <ClientsView onLogout={onLogout} />}
@@ -448,7 +448,12 @@ function StatusBadge({ status }: { status: Booking["status"] }) {
   return <span className={`text-xs uppercase tracking-wider px-2 py-1 ${map[status]}`}>{t.admin.status[status]}</span>;
 }
 
-function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (id: string, s: "confirmed" | "cancelled" | "completed" | "no_show") => void }) {
+function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
+  bookings: Booking[];
+  setStatus: (id: string, s: "confirmed" | "cancelled" | "completed" | "no_show") => void;
+  onBookingsUpdated: (id: string, patch: Partial<Booking>) => void;
+}) {
+  const [adjusting, setAdjusting] = useState<Booking | null>(null);
   const { t } = useT();
   const [filter, setFilter] = useState<"all" | Cat>("all");
   if (bookings.length === 0) return <p className="text-smoke">{t.admin.empty}</p>;
@@ -483,6 +488,16 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
 
   return (
     <>
+      {adjusting && (
+        <AdjustBookingModal
+          booking={adjusting}
+          onClose={() => setAdjusting(null)}
+          onSaved={(newDate, newTime) => {
+            onBookingsUpdated(adjusting.id, { booking_date: newDate, booking_time: newTime, status: "confirmed" });
+            setAdjusting(null);
+          }}
+        />
+      )}
       {/* Category filter */}
       <div className="flex gap-2 overflow-x-auto scrollbar-none mb-5">
         {pill("all", "Tout", filter === "all")}
@@ -546,6 +561,9 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
               {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                 <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-green-600 text-white hover:bg-green-700 active:bg-green-800 rounded-md shadow-sm">{t.admin.actions.confirm}</button>
               )}
+              {b.status !== "completed" && b.status !== "cancelled" && (
+                <button onClick={() => setAdjusting(b)} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">✏️ Modifier</button>
+              )}
               {b.status !== "cancelled" && b.status !== "completed" && (
                 <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
               )}
@@ -603,6 +621,9 @@ function LeadsTable({ bookings, setStatus }: { bookings: Booking[]; setStatus: (
                     )}
                     {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                       <button onClick={() => setStatus(b.id, "confirmed")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-green-600 text-white hover:bg-green-700 active:bg-green-800 rounded-md shadow-sm">{t.admin.actions.confirm}</button>
+                    )}
+                    {b.status !== "completed" && b.status !== "cancelled" && (
+                      <button onClick={() => setAdjusting(b)} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">✏️ Modifier</button>
                     )}
                     {b.status !== "cancelled" && b.status !== "completed" && (
                       <button onClick={() => setStatus(b.id, "cancelled")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
@@ -1631,6 +1652,105 @@ type ClientRow = {
   note: string;
   noteUpdatedAt: string | null;
 };
+
+// ─── Adjust Booking Modal ─────────────────────────────────────────────────────
+function AdjustBookingModal({ booking, onClose, onSaved }: {
+  booking: Booking;
+  onClose: () => void;
+  onSaved: (newDate: string, newTime: string) => void;
+}) {
+  const adjustFn = useServerFn(adjustBooking);
+  const today = new Date().toISOString().slice(0, 10);
+  const [date, setDate] = useState(booking.booking_date);
+  const [time, setTime] = useState(booking.booking_time.slice(0, 5));
+  const [sendEmail, setSendEmail] = useState(!!booking.email);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function submit() {
+    const day = new Date(date + "T12:00:00").getDay();
+    if (day === 0 || day === 2) { setError("Fermé le mardi et dimanche."); return; }
+    setSaving(true); setError("");
+    try {
+      const token = getToken();
+      if (!token) return;
+      await adjustFn({ data: { token, id: booking.id, booking_date: date, booking_time: time, send_email: sendEmail } });
+      onSaved(date, time);
+      onClose();
+    } catch (e: any) {
+      setError(e.message ?? "Erreur.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-ink/80 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="bg-ink text-ivory px-5 py-4 flex justify-between items-center">
+          <div>
+            <h2 className="font-display text-xl">Modifier le rendez-vous</h2>
+            <p className="text-ivory/50 text-xs mt-0.5">{booking.name} · {booking.service}</p>
+          </div>
+          <button onClick={onClose} className="text-ivory/50 hover:text-ivory text-2xl">×</button>
+        </div>
+
+        <div className="p-5 space-y-4">
+          {/* Current */}
+          <div className="bg-sand/50 border border-border px-3 py-2 text-sm">
+            <span className="text-smoke text-xs uppercase tracking-wider">Actuel :</span>
+            <span className="ml-2 text-ink font-medium">{booking.booking_date} à {booking.booking_time.slice(0,5)}</span>
+          </div>
+
+          {/* New date */}
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider block mb-1">Nouvelle date *</label>
+            <input type="date" min={today} value={date}
+              onChange={e => { setDate(e.target.value); setError(""); }}
+              className="w-full border border-border px-3 py-2 text-sm focus:outline-none focus:border-gold" />
+          </div>
+
+          {/* New time */}
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider block mb-1">Nouvelle heure *</label>
+            <select value={time} onChange={e => setTime(e.target.value)}
+              className="w-full border border-border px-3 py-2 text-sm focus:outline-none focus:border-gold bg-white">
+              {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+
+          {/* Email option */}
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" checked={sendEmail} onChange={e => setSendEmail(e.target.checked)}
+              className="w-4 h-4 accent-gold" />
+            <span className="text-sm text-ink">
+              {booking.email
+                ? <>Envoyer un e-mail de confirmation à <span className="text-gold">{booking.email}</span></>
+                : <span className="text-smoke italic">Pas d'e-mail (client sans adresse)</span>
+              }
+            </span>
+          </label>
+          {!booking.email && (
+            <p className="text-xs text-smoke -mt-2">Aucun e-mail enregistré pour ce client.</p>
+          )}
+
+          {error && <p className="text-red-600 text-xs">{error}</p>}
+
+          <div className="flex gap-3 pt-1">
+            <button onClick={onClose}
+              className="flex-1 border border-border text-sm py-2 hover:bg-sand/50">
+              Annuler
+            </button>
+            <button onClick={submit} disabled={saving || !date || !time}
+              className="flex-1 bg-gold text-ivory text-sm py-2 hover:bg-gold-deep disabled:opacity-60 font-medium">
+              {saving ? "…" : "Confirmer"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Admin Booking Modal ──────────────────────────────────────────────────────
 const SERVICES_LIST = [

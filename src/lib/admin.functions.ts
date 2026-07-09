@@ -222,6 +222,45 @@ export const sendTestEmails = createServerFn({ method: "POST" })
   });
 
 // ── Client CRM ──────────────────────────────────────────────────────────────
+// Adjust booking date/time and resend confirmation email
+export const adjustBooking = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({
+      token: z.string(),
+      id: z.string().uuid(),
+      booking_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      booking_time: z.string().regex(/^\d{2}:\d{2}$/),
+      send_email: z.boolean().default(true),
+    }).parse(input)
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: booking, error } = await supabaseAdmin
+      .from("bookings")
+      .update({ booking_date: data.booking_date, booking_time: data.booking_time, status: "confirmed" })
+      .eq("id", data.id)
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+
+    // Resend confirmation email with new date/time
+    if (data.send_email && booking?.email) {
+      try {
+        const { enqueueTemplateEmail } = await import("./lovable-email.server");
+        const { signCancelToken } = await import("./email.server");
+        const cancelToken = await signCancelToken(booking.id);
+        const origin = process.env.SITE_URL || "https://gigi-l-salon-suite.lovable.app";
+        const cancelUrl = `${origin}/annuler/${cancelToken}`;
+        await enqueueTemplateEmail("client-booking-confirmed", booking.email, { ...booking, cancelUrl });
+      } catch (e) {
+        console.error("adjustBooking email error", e);
+      }
+    }
+    return { ok: true, booking };
+  });
+
 // Update amount paid for a booking
 export const updateAmountPaid = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
