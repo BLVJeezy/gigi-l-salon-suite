@@ -41,6 +41,7 @@ export const Route = createFileRoute("/sitemap.xml")({
   <url><loc>${BASE_URL}/kapsalon-tongeren</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>${BASE_URL}/box-braids-tongeren</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>${BASE_URL}/extensions-tongeren</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>${BASE_URL}/prijzen</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
 </urlset>`;
         return new Response(xml, {
           headers: { "Content-Type": "application/xml", "Cache-Control": "public, max-age=3600" },

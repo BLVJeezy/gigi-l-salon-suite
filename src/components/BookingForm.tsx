@@ -422,21 +422,8 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
         <div className="space-y-3 bg-carbon/95 border border-gold/30 p-4">
           <Label>{t.form.date} *</Label>
 
-          {/* Mobile: native date picker */}
-          <div className="sm:hidden">
-            <input type="date" required min={today} value={date}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val) {
-                  const day = new Date(val + "T12:00:00").getDay();
-                  if (day === 0 || day === 2) { setDate(""); setDateError(true); return; }
-                }
-                setDateError(false); setDate(val);
-              }} className={inputCls} />
-          </div>
-
-          {/* Desktop: inline calendar */}
-          <div className="hidden sm:block">
+          {/* All screens: inline calendar */}
+          <div>
             <CalendarPicker value={date} min={today} onSelect={(val) => {
               const day = new Date(val + "T12:00:00").getDay();
               if (day === 0 || day === 2) { setDate(""); setDateError(true); return; }

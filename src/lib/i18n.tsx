@@ -12,7 +12,7 @@ type Dict = typeof translations.fr;
 
 export const translations = {
   fr: {
-    nav: { services: "Services", why: "Pourquoi nous", gallery: "Galerie", faq: "FAQ", contact: "Contact", book: "Prendre RDV", servicesPage: "Nos services", galleryPage: "Galerie", bookingPage: "Réserver" },
+    nav: { services: "Services", why: "Pourquoi nous", gallery: "Galerie", faq: "FAQ", contact: "Contact", book: "Prendre RDV", servicesPage: "Nos services", galleryPage: "Galerie", bookingPage: "Réserver", pricesPage: "Tarifs" },
     hero: {
       eyebrow: "Coiffeur & salon afro — Tongres, Limbourg",
       title: "Spécialiste en cheveux africains & européens, ongles et microshading à Tongres",
@@ -223,7 +223,7 @@ export const translations = {
     },
   },
   nl: {
-    nav: { services: "Diensten", why: "Waarom wij", gallery: "Galerij", faq: "FAQ", contact: "Contact", book: "Reserveer", servicesPage: "Onze diensten", galleryPage: "Galerij", bookingPage: "Reserveren" },
+    nav: { services: "Diensten", why: "Waarom wij", gallery: "Galerij", faq: "FAQ", contact: "Contact", book: "Reserveer", servicesPage: "Onze diensten", galleryPage: "Galerij", bookingPage: "Reserveren", pricesPage: "Prijzen" },
     hero: {
       eyebrow: "Kapper · Nagels · Microshading — Tongeren, Limburg",
       title: "Specialist in Afrikaans & Europees haar, nagels en microshading in Tongeren",
@@ -434,7 +434,7 @@ export const translations = {
     },
   },
   en: {
-    nav: { services: "Services", why: "Why us", gallery: "Gallery", faq: "FAQ", contact: "Contact", book: "Book now", servicesPage: "Our services", galleryPage: "Gallery", bookingPage: "Book" },
+    nav: { services: "Services", why: "Why us", gallery: "Gallery", faq: "FAQ", contact: "Contact", book: "Book now", servicesPage: "Our services", galleryPage: "Gallery", bookingPage: "Book", pricesPage: "Prices" },
     hero: {
       eyebrow: "Hairdresser · Nails · Microshading — Tongeren, Limburg",
       title: "Specialist in African & European hair, nails and microshading in Tongeren",

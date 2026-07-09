@@ -10,6 +10,7 @@ export function Header() {
   // Real page links — used on both desktop and mobile, everywhere.
   const pageLinks = [
     { to: "/services" as const, label: t.nav.servicesPage },
+    { to: "/prijzen" as const, label: t.nav.pricesPage },
     { to: "/galerie" as const, label: t.nav.galleryPage },
   ];
 

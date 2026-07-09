@@ -22,6 +22,7 @@ import { Route as ExtensionsTongerenRouteImport } from './routes/extensions-tong
 import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
 import { Route as BeautySalonTongerenRouteImport } from './routes/beauty-salon-tongeren'
 import { Route as AlgemeneVoorwaardenRouteImport } from './routes/algemene-voorwaarden'
+import { Route as PrijzenRouteImport } from './routes/prijzen'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
@@ -462,6 +463,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AlgemeneVoorwaardenRoute: AlgemeneVoorwaardenRoute,
+  PrijzenRoute: PrijzenRoute,
   BeautySalonTongerenRoute: BeautySalonTongerenRoute,
   BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
   ExtensionsTongerenRoute: ExtensionsTongerenRoute,
