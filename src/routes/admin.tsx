@@ -385,26 +385,6 @@ function bookingEventInfo(b: Booking) {
   };
 }
 
-function gcalUrl(b: Booking): string {
-  const { start, end, title, details, location } = bookingEventInfo(b);
-  // Google expects a floating local time paired with the ctz timezone parameter.
-  const fmt = (dt: Date) =>
-    dt.getFullYear().toString() +
-    String(dt.getMonth() + 1).padStart(2, "0") +
-    String(dt.getDate()).padStart(2, "0") + "T" +
-    String(dt.getHours()).padStart(2, "0") +
-    String(dt.getMinutes()).padStart(2, "0") + "00";
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: title,
-    dates: `${fmt(start)}/${fmt(end)}`,
-    details,
-    location,
-    ctz: "Europe/Brussels",
-  });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
-}
-
 // Apple Calendar (and most desktop/mobile calendar apps) opens .ics files directly.
 // Encoding it as a data: URL lets the browser download it with no server round-trip.
 function icsUrl(b: Booking): string {
@@ -551,12 +531,8 @@ function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
             <div className="mt-4 flex flex-wrap gap-2">
               <a href={`tel:${b.phone}`} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] border border-gold text-gold-deep rounded-md bg-white/60">📞 Appeler</a>
               {b.status === "confirmed" && (
-                <>
-                  <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
-                     className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">📅 Google</a>
-                  <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
-                     className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">🍎 Apple</a>
-                </>
+                <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
+                   className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">📅 Calendrier</a>
               )}
               {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                 <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-green-600 text-white hover:bg-green-700 active:bg-green-800 rounded-md shadow-sm">{t.admin.actions.confirm}</button>
@@ -612,12 +588,8 @@ function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
                 <Td>
                   <div className="flex flex-wrap gap-2 min-w-[220px]">
                     {b.status === "confirmed" && (
-                      <>
-                        <a href={gcalUrl(b)} target="_blank" rel="noopener noreferrer"
-                           className="inline-flex items-center justify-center gap-1 text-sm font-medium px-4 py-2.5 min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">📅 Google</a>
-                        <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
-                           className="inline-flex items-center justify-center gap-1 text-sm font-medium px-4 py-2.5 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">🍎 Apple</a>
-                      </>
+                      <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
+                         className="inline-flex items-center justify-center gap-1 text-sm font-medium px-4 py-2.5 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">📅 Calendrier</a>
                     )}
                     {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                       <button onClick={() => setStatus(b.id, "confirmed")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-green-600 text-white hover:bg-green-700 active:bg-green-800 rounded-md shadow-sm">{t.admin.actions.confirm}</button>
