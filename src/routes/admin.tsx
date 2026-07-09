@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
   listClients, upsertClientNote, getClientHistory,
+  updateAmountPaid, getClientBookings,
 } from "@/lib/admin.functions";
 import {
   listServices, updateService, addService, deleteService, seedServices, type ServiceItem,
@@ -82,6 +83,7 @@ type Booking = {
   message: string | null;
   lang: string;
   status: "new" | "confirmed" | "cancelled" | "completed" | "no_show";
+  amount_paid_cents: number | null;
 };
 
 // Effective duration: prefer the value stored with the booking; fall back to
@@ -349,8 +351,8 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
       <main className="mx-auto max-w-7xl px-5 sm:px-8 py-8">
         {loading && <p className="text-smoke">…</p>}
         {!loading && tab === "leads" && <LeadsTable bookings={bookings} setStatus={setStatus} />}
-        {!loading && tab === "day" && <DayView bookings={bookings} />}
-        {!loading && tab === "week" && <WeekView bookings={bookings} />}
+        {!loading && tab === "day" && <DayView bookings={bookings} token={token} />}
+        {!loading && tab === "week" && <WeekView bookings={bookings} token={token} />}
         {tab === "clients" && <ClientsView onLogout={onLogout} />}
         {tab === "diensten" && <ServicesView onLogout={onLogout} />}
         {tab === "gallery" && <GalleryAdmin onLogout={onLogout} />}
@@ -628,9 +630,150 @@ const Td = ({ children }: { children?: React.ReactNode }) => <td className="px-4
 
 const HOURS = Array.from({ length: 10 }, (_, i) => 9 + i); // 09..18
 
-function DayView({ bookings }: { bookings: Booking[] }) {
+// ─── CRM: Client Profile Modal ───────────────────────────────────────────────
+function ClientProfileModal({ booking, token, onClose }: {
+  booking: Booking;
+  token: string;
+  onClose: () => void;
+}) {
+  const getClientBookingsFn = useServerFn(getClientBookings);
+  const updateAmountPaidFn = useServerFn(updateAmountPaid);
+  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editVal, setEditVal] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    getClientBookingsFn({ data: { token, phone: booking.phone } }).then(r => {
+      setHistory(r.bookings);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, [booking.phone]);
+
+  const totalPaid = history.reduce((sum, b) => sum + (b.amount_paid_cents ?? 0), 0);
+  const completedCount = history.filter(b => b.status === "completed").length;
+
+  async function saveAmount(id: string) {
+    setSaving(true);
+    const cents = editVal === "" ? null : Math.round(parseFloat(editVal.replace(",", ".")) * 100);
+    await updateAmountPaidFn({ data: { token, id, amount_paid_cents: cents } });
+    setHistory(h => h.map(b => b.id === id ? { ...b, amount_paid_cents: cents } : b));
+    setEditId(null);
+    setSaving(false);
+  }
+
+  const statusLabel: Record<string, string> = {
+    new: "Nouveau", confirmed: "Confirmé", completed: "Terminé",
+    cancelled: "Annulé", no_show: "No-show",
+  };
+  const statusColor: Record<string, string> = {
+    new: "text-blue-600", confirmed: "text-green-600", completed: "text-emerald-700",
+    cancelled: "text-red-500", no_show: "text-orange-500",
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+
+        {/* Header */}
+        <div className="bg-ink text-ivory px-5 py-4 flex items-start justify-between">
+          <div>
+            <p className="text-xs text-ivory/40 uppercase tracking-wider mb-1">Profil client</p>
+            <h2 className="font-display text-2xl">{booking.name}</h2>
+            <a href={`tel:${booking.phone}`} className="text-gold text-sm hover:underline">{booking.phone}</a>
+            {booking.email && <p className="text-ivory/50 text-xs mt-0.5">{booking.email}</p>}
+          </div>
+          <button onClick={onClose} className="text-ivory/40 hover:text-ivory text-2xl leading-none mt-1">×</button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 divide-x divide-border border-b border-border">
+          <div className="px-4 py-3 text-center">
+            <div className="font-display text-2xl text-ink">{history.length}</div>
+            <div className="text-smoke text-xs mt-0.5">Rendez-vous</div>
+          </div>
+          <div className="px-4 py-3 text-center">
+            <div className="font-display text-2xl text-ink">{completedCount}</div>
+            <div className="text-smoke text-xs mt-0.5">Terminés</div>
+          </div>
+          <div className="px-4 py-3 text-center">
+            <div className="font-display text-2xl text-gold">€{(totalPaid / 100).toFixed(2)}</div>
+            <div className="text-smoke text-xs mt-0.5">Total payé</div>
+          </div>
+        </div>
+
+        {/* Appointment history */}
+        <div className="px-5 py-4">
+          <h3 className="text-smoke text-xs uppercase tracking-wider mb-3">Historique des rendez-vous</h3>
+          {loading ? (
+            <p className="text-smoke text-sm">Chargement...</p>
+          ) : history.length === 0 ? (
+            <p className="text-smoke text-sm">Aucun rendez-vous trouvé.</p>
+          ) : (
+            <div className="space-y-2">
+              {history.map(b => (
+                <div key={b.id} className="border border-border p-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-ink text-sm font-medium">{b.booking_date}</span>
+                        <span className="text-smoke text-xs">{b.booking_time?.slice(0,5)}</span>
+                        <span className={`text-xs font-medium ${statusColor[b.status] ?? "text-smoke"}`}>
+                          {statusLabel[b.status] ?? b.status}
+                        </span>
+                      </div>
+                      <div className="text-smoke text-xs mt-0.5 truncate">{b.service}</div>
+                    </div>
+
+                    {/* Amount paid */}
+                    <div className="shrink-0 text-right">
+                      {editId === b.id ? (
+                        <div className="flex items-center gap-1">
+                          <span className="text-smoke text-xs">€</span>
+                          <input
+                            type="number" step="0.01" min="0"
+                            value={editVal}
+                            onChange={e => setEditVal(e.target.value)}
+                            className="w-20 border border-gold px-2 py-1 text-sm text-right"
+                            autoFocus
+                            onKeyDown={e => { if (e.key === "Enter") saveAmount(b.id); if (e.key === "Escape") setEditId(null); }}
+                          />
+                          <button onClick={() => saveAmount(b.id)} disabled={saving}
+                            className="text-xs text-green-600 hover:text-green-800 font-medium">✓</button>
+                          <button onClick={() => setEditId(null)}
+                            className="text-xs text-smoke hover:text-red-500">✕</button>
+                        </div>
+                      ) : (
+                        <button onClick={() => { setEditId(b.id); setEditVal(b.amount_paid_cents != null ? (b.amount_paid_cents / 100).toFixed(2) : ""); }}
+                          className="text-right hover:opacity-70 transition-opacity">
+                          {b.amount_paid_cents != null
+                            ? <span className="text-gold font-medium text-sm">€{(b.amount_paid_cents / 100).toFixed(2)}</span>
+                            : <span className="text-smoke/50 text-xs italic">+ Ajouter montant</span>
+                          }
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="border-t border-border px-5 py-3 flex justify-between items-center bg-sand/30">
+          <span className="text-xs text-smoke">Cliquer sur le montant pour modifier</span>
+          <button onClick={onClose} className="text-sm text-smoke hover:text-ink">Fermer</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DayView({ bookings, token }: { bookings: Booking[]; token: string }) {
   const { t } = useT();
   const [day, setDay] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [crmBooking, setCrmBooking] = useState<Booking | null>(null);
   const visible = useMemo(
     () => bookings.filter(b => b.booking_date === day && b.status !== "cancelled"),
     [bookings, day],
@@ -641,6 +784,7 @@ function DayView({ bookings }: { bookings: Booking[] }) {
   };
   return (
     <div>
+      {crmBooking && <ClientProfileModal booking={crmBooking} token={token} onClose={() => setCrmBooking(null)} />}
       <div className="flex items-center gap-2 mb-5">
         <button onClick={() => shift(-1)} className="px-3 py-1 border border-border">←</button>
         <button onClick={() => setDay(new Date().toISOString().slice(0, 10))} className="px-3 py-1 border border-border text-sm">{t.admin.today}</button>
@@ -662,6 +806,10 @@ function DayView({ bookings }: { bookings: Booking[] }) {
                     <div className="flex items-center gap-1.5">
                       <span className={`w-2 h-2 rounded-full ${st.dot}`} />
                       <span className="font-medium">{b.booking_time.slice(0,5)} — {b.name}</span>
+                      <button onClick={() => setCrmBooking(b)}
+                        className="ml-1 text-[10px] bg-ink text-ivory px-1.5 py-0.5 hover:bg-gold transition-colors">
+                        CRM
+                      </button>
                     </div>
                     <div className="text-smoke">{b.service}</div>
                     {b.status === "confirmed" && <div className="text-green-700 text-[10px] uppercase tracking-wider mt-0.5">✓ Confirmé</div>}
@@ -679,9 +827,10 @@ function DayView({ bookings }: { bookings: Booking[] }) {
 
 function fmtISO(d: Date) { return d.toISOString().slice(0, 10); }
 
-function WeekView({ bookings }: { bookings: Booking[] }) {
+function WeekView({ bookings, token }: { bookings: Booking[]; token: string }) {
   const { t } = useT();
   const [anchor, setAnchor] = useState<Date>(new Date());
+  const [crmBooking, setCrmBooking] = useState<Booking | null>(null);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
   const monday = new Date(anchor);
@@ -810,6 +959,10 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
                     <div className="flex items-center gap-1">
                       <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
                       <span className="font-medium">{b.booking_time.slice(0,5)}</span>
+                      <button onClick={(e) => { e.stopPropagation(); setCrmBooking(b); }}
+                        className="ml-auto text-[9px] bg-ink text-ivory px-1 py-0.5 hover:bg-gold transition-colors">
+                        CRM
+                      </button>
                     </div>
                     <div className="truncate">{b.name}</div>
                     <div className="text-smoke truncate">{b.service}</div>
@@ -829,6 +982,7 @@ function WeekView({ bookings }: { bookings: Booking[] }) {
           onClose={() => setSelectedDay(null)}
         />
       )}
+      {crmBooking && <ClientProfileModal booking={crmBooking} token={token} onClose={() => setCrmBooking(null)} />}
     </div>
   );
 }

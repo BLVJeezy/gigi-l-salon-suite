@@ -222,6 +222,42 @@ export const sendTestEmails = createServerFn({ method: "POST" })
   });
 
 // ── Client CRM ──────────────────────────────────────────────────────────────
+// Update amount paid for a booking
+export const updateAmountPaid = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string(), id: z.string().uuid(), amount_paid_cents: z.number().int().min(0).nullable() }).parse(input)
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("bookings")
+      .update({ amount_paid_cents: data.amount_paid_cents })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// Get all bookings for a specific client (by phone)
+export const getClientBookings = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string(), phone: z.string() }).parse(input)
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const norm = (data.phone || "").replace(/\s+/g, "").trim();
+    const { data: rows, error } = await supabaseAdmin
+      .from("bookings")
+      .select("id, booking_date, booking_time, service, status, amount_paid_cents, message, created_at")
+      .order("booking_date", { ascending: false });
+    if (error) throw new Error(error.message);
+    // Filter by normalized phone
+    const filtered = (rows ?? []).filter((b: any) =>
+      (b.phone || "").replace(/\s+/g, "").trim() === norm
+    );
+    return { bookings: filtered };
+  });
+
 // Aggregates unique clients from the bookings table (grouped by phone) and
 // joins private admin notes stored in client_notes.
 
