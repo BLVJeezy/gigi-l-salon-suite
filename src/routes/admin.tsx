@@ -863,6 +863,9 @@ function DayView({ bookings, token }: { bookings: Booking[]; token: string }) {
   const { t } = useT();
   const [day, setDay] = useState<string>(new Date().toISOString().slice(0, 10));
   const [crmBooking, setCrmBooking] = useState<Booking | null>(null);
+  const [quickBooking, setQuickBooking] = useState<Booking | null>(null);
+  const [pendingStatus, setPendingStatus] = useState<{ id: string; status: "cancelled" | "completed" | "no_show" } | null>(null);
+
   const visible = useMemo(
     () => bookings.filter(b => b.booking_date === day && b.status !== "cancelled"),
     [bookings, day],
@@ -871,9 +874,74 @@ function DayView({ bookings, token }: { bookings: Booking[]; token: string }) {
     const d = new Date(day); d.setDate(d.getDate() + n);
     setDay(d.toISOString().slice(0, 10));
   };
+
   return (
     <div>
       {crmBooking && <ClientProfileModal booking={crmBooking} token={token} onClose={() => setCrmBooking(null)} />}
+
+      {/* Confirm dialog */}
+      {pendingStatus && (
+        <ConfirmDialog
+          message={CONFIRM_MESSAGES[pendingStatus.status] ?? "Êtes-vous sûr ?"}
+          onConfirm={() => {
+            window.dispatchEvent(new CustomEvent("admin-set-status", { detail: pendingStatus }));
+            setPendingStatus(null);
+            setQuickBooking(null);
+          }}
+          onCancel={() => setPendingStatus(null)}
+        />
+      )}
+
+      {/* Quick booking popup */}
+      {quickBooking && !pendingStatus && (
+        <div className="fixed inset-0 z-50 bg-ink/60 flex items-end sm:items-center justify-center" onClick={() => setQuickBooking(null)}>
+          <div className="bg-white w-full sm:max-w-sm border border-gold/30 shadow-2xl" onClick={e => e.stopPropagation()}>
+            {/* Header */}
+            <div className="bg-ink text-ivory px-4 py-3 flex justify-between items-start">
+              <div>
+                <div className="font-display text-lg">{quickBooking.name}</div>
+                <div className="text-ivory/60 text-xs mt-0.5">{quickBooking.booking_time.slice(0,5)} · {quickBooking.service}</div>
+              </div>
+              <button onClick={() => setQuickBooking(null)} className="text-ivory/50 hover:text-ivory text-2xl leading-none">×</button>
+            </div>
+
+            {/* Contact */}
+            <div className="px-4 py-3 border-b border-border flex gap-4 text-sm">
+              <a href={`tel:${quickBooking.phone}`} className="flex items-center gap-1.5 text-ink hover:text-gold">
+                📞 <span>{quickBooking.phone}</span>
+              </a>
+              {quickBooking.email && (
+                <a href={`mailto:${quickBooking.email}`} className="flex items-center gap-1.5 text-ink hover:text-gold truncate">
+                  ✉️ <span className="truncate">{quickBooking.email}</span>
+                </a>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="p-4 space-y-2">
+              {quickBooking.status !== "completed" && (
+                <button onClick={() => setPendingStatus({ id: quickBooking.id, status: "completed" })}
+                  className="w-full py-3 bg-emerald-700 text-white text-sm font-medium hover:bg-emerald-800">
+                  Terminé
+                </button>
+              )}
+              <button onClick={() => setPendingStatus({ id: quickBooking.id, status: "no_show" })}
+                className="w-full py-3 bg-zinc-600 text-white text-sm font-medium hover:bg-zinc-700">
+                Absent
+              </button>
+              <button onClick={() => { setCrmBooking(quickBooking); setQuickBooking(null); }}
+                className="w-full py-3 bg-ink text-ivory text-sm font-medium hover:bg-gold">
+                Ouvrir fiche client
+              </button>
+              <button onClick={() => setPendingStatus({ id: quickBooking.id, status: "cancelled" })}
+                className="w-full py-2 border border-red-300 text-red-600 text-sm hover:bg-red-50">
+                Annuler le rendez-vous
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-2 mb-5">
         <button onClick={() => shift(-1)} className="px-3 py-1 border border-border">←</button>
         <button onClick={() => setDay(new Date().toISOString().slice(0, 10))} className="px-3 py-1 border border-border text-sm">{t.admin.today}</button>
@@ -891,18 +959,16 @@ function DayView({ bookings, token }: { bookings: Booking[]; token: string }) {
                   const cat = categoryOf(b.service);
                   const st = CAT_STYLE[cat];
                   return (
-                  <div key={b.id} className={`px-3 py-2 text-xs border rounded ${st.cell} ${b.status === "confirmed" ? "ring-2 ring-green-500/60" : ""}`}>
+                  <button key={b.id}
+                    onClick={() => setQuickBooking(b)}
+                    className={`px-3 py-2 text-xs border rounded text-left w-full sm:w-auto hover:opacity-80 transition-opacity ${st.cell} ${b.status === "confirmed" ? "ring-2 ring-green-500/60" : ""}`}>
                     <div className="flex items-center gap-1.5">
                       <span className={`w-2 h-2 rounded-full ${st.dot}`} />
                       <span className="font-medium">{b.booking_time.slice(0,5)} — {b.name}</span>
-                      <button onClick={() => setCrmBooking(b)}
-                        className="ml-1 text-[10px] bg-ink text-ivory px-1.5 py-0.5 hover:bg-gold transition-colors">
-                        CRM
-                      </button>
                     </div>
                     <div className="text-smoke">{b.service}</div>
                     {b.status === "confirmed" && <div className="text-green-700 text-[10px] uppercase tracking-wider mt-0.5">✓ Confirmé</div>}
-                  </div>
+                  </button>
                   );
                 })}
               </div>
