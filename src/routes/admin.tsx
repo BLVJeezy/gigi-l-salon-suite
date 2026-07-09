@@ -529,16 +529,16 @@ function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
               )}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <a href={`tel:${b.phone}`} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] border border-gold text-gold-deep rounded-md bg-white/60">📞 Appeler</a>
+              <a href={`tel:${b.phone}`} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] border border-gold text-gold-deep rounded-md bg-white/60">Appeler</a>
               {b.status === "confirmed" && (
                 <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
-                   className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">📅 Calendrier</a>
+                   className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">Calendrier</a>
               )}
               {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                 <button onClick={() => setStatus(b.id, "confirmed")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-green-600 text-white hover:bg-green-700 active:bg-green-800 rounded-md shadow-sm">{t.admin.actions.confirm}</button>
               )}
               {b.status !== "completed" && b.status !== "cancelled" && (
-                <button onClick={() => setAdjusting(b)} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">✏️ Modifier</button>
+                <button onClick={() => setAdjusting(b)} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">Modifier</button>
               )}
               {b.status !== "cancelled" && b.status !== "completed" && (
                 <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
@@ -589,13 +589,13 @@ function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
                   <div className="flex flex-wrap gap-2 min-w-[220px]">
                     {b.status === "confirmed" && (
                       <a href={icsUrl(b)} download={`gigil-${b.booking_date}-${b.booking_time.slice(0,5)}.ics`}
-                         className="inline-flex items-center justify-center gap-1 text-sm font-medium px-4 py-2.5 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">📅 Calendrier</a>
+                         className="inline-flex items-center justify-center gap-1 text-sm font-medium px-4 py-2.5 min-h-[44px] bg-zinc-800 text-white hover:bg-zinc-900 active:bg-black rounded-md shadow-sm">Calendrier</a>
                     )}
                     {b.status !== "confirmed" && b.status !== "completed" && b.status !== "no_show" && (
                       <button onClick={() => setStatus(b.id, "confirmed")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-green-600 text-white hover:bg-green-700 active:bg-green-800 rounded-md shadow-sm">{t.admin.actions.confirm}</button>
                     )}
                     {b.status !== "completed" && b.status !== "cancelled" && (
-                      <button onClick={() => setAdjusting(b)} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">✏️ Modifier</button>
+                      <button onClick={() => setAdjusting(b)} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">Modifier</button>
                     )}
                     {b.status !== "cancelled" && b.status !== "completed" && (
                       <button onClick={() => setStatus(b.id, "cancelled")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
