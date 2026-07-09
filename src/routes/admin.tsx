@@ -476,12 +476,53 @@ function StatusBadge({ status }: { status: Booking["status"] }) {
   return <span className={`text-xs uppercase tracking-wider px-2 py-1 ${map[status]}`}>{t.admin.status[status]}</span>;
 }
 
+// ─── Confirmation dialog ──────────────────────────────────────────────────────
+const CONFIRM_MESSAGES: Record<string, string> = {
+  cancelled: "Êtes-vous sûr de vouloir annuler ce rendez-vous ? Un e-mail sera envoyé au client.",
+  completed: "Êtes-vous sûr de marquer ce rendez-vous comme terminé ?",
+  no_show:   "Êtes-vous sûr de marquer ce client comme absent ?",
+};
+
+function ConfirmDialog({ message, onConfirm, onCancel }: {
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[70] bg-ink/70 flex items-center justify-center p-4" onClick={onCancel}>
+      <div className="bg-white w-full max-w-sm shadow-2xl p-6 space-y-4" onClick={e => e.stopPropagation()}>
+        <p className="text-ink text-sm leading-relaxed">{message}</p>
+        <div className="flex gap-3">
+          <button onClick={onCancel}
+            className="flex-1 border border-border text-sm py-2.5 hover:bg-sand/50">
+            Non, retour
+          </button>
+          <button onClick={onConfirm}
+            className="flex-1 bg-ink text-ivory text-sm py-2.5 hover:bg-gold font-medium">
+            Oui, confirmer
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
   bookings: Booking[];
   setStatus: (id: string, s: "confirmed" | "cancelled" | "completed" | "no_show") => void;
   onBookingsUpdated: (id: string, patch: Partial<Booking>) => void;
 }) {
   const [adjusting, setAdjusting] = useState<Booking | null>(null);
+  const [pending, setPending] = useState<{ id: string; status: "cancelled" | "completed" | "no_show" } | null>(null);
+
+  function askConfirm(id: string, status: "cancelled" | "completed" | "no_show") {
+    setPending({ id, status });
+  }
+  function doConfirm() {
+    if (!pending) return;
+    setStatus(pending.id, pending.status);
+    setPending(null);
+  }
   const { t } = useT();
   const [filter, setFilter] = useState<"all" | Cat>("all");
   if (bookings.length === 0) return <p className="text-smoke">{t.admin.empty}</p>;
@@ -516,6 +557,13 @@ function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
 
   return (
     <>
+      {pending && (
+        <ConfirmDialog
+          message={CONFIRM_MESSAGES[pending.status]}
+          onConfirm={doConfirm}
+          onCancel={() => setPending(null)}
+        />
+      )}
       {adjusting && (
         <AdjustBookingModal
           booking={adjusting}
@@ -589,13 +637,13 @@ function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
                 <button onClick={() => setAdjusting(b)} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">Modifier</button>
               )}
               {b.status !== "cancelled" && b.status !== "completed" && (
-                <button onClick={() => setStatus(b.id, "cancelled")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
+                <button onClick={() => askConfirm(b.id, "cancelled")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
               )}
               {b.status !== "completed" && b.status !== "cancelled" && (
-                <button onClick={() => setStatus(b.id, "completed")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-emerald-700 text-white hover:bg-emerald-800 active:bg-emerald-900 rounded-md shadow-sm">{t.admin.actions.completed}</button>
+                <button onClick={() => askConfirm(b.id, "completed")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-emerald-700 text-white hover:bg-emerald-800 active:bg-emerald-900 rounded-md shadow-sm">{t.admin.actions.completed}</button>
               )}
               {b.status !== "no_show" && b.status !== "completed" && b.status !== "cancelled" && (
-                <button onClick={() => setStatus(b.id, "no_show")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-800 rounded-md shadow-sm">{t.admin.actions.noShow}</button>
+                <button onClick={() => askConfirm(b.id, "no_show")} className="flex-1 min-w-[110px] inline-flex items-center justify-center text-sm font-medium px-4 py-3 min-h-[44px] bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-800 rounded-md shadow-sm">{t.admin.actions.noShow}</button>
               )}
             </div>
           </div>
@@ -646,13 +694,13 @@ function LeadsTable({ bookings, setStatus, onBookingsUpdated }: {
                       <button onClick={() => setAdjusting(b)} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 rounded-md shadow-sm">Modifier</button>
                     )}
                     {b.status !== "cancelled" && b.status !== "completed" && (
-                      <button onClick={() => setStatus(b.id, "cancelled")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
+                      <button onClick={() => askConfirm(b.id, "cancelled")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-red-600 text-white hover:bg-red-700 active:bg-red-800 rounded-md shadow-sm">{t.admin.actions.cancel}</button>
                     )}
                     {b.status !== "completed" && b.status !== "cancelled" && (
-                      <button onClick={() => setStatus(b.id, "completed")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-emerald-700 text-white hover:bg-emerald-800 active:bg-emerald-900 rounded-md shadow-sm">{t.admin.actions.completed}</button>
+                      <button onClick={() => askConfirm(b.id, "completed")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-emerald-700 text-white hover:bg-emerald-800 active:bg-emerald-900 rounded-md shadow-sm">{t.admin.actions.completed}</button>
                     )}
                     {b.status !== "no_show" && b.status !== "completed" && b.status !== "cancelled" && (
-                      <button onClick={() => setStatus(b.id, "no_show")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-800 rounded-md shadow-sm">{t.admin.actions.noShow}</button>
+                      <button onClick={() => askConfirm(b.id, "no_show")} className="inline-flex items-center justify-center text-sm font-medium px-4 py-2.5 min-h-[44px] min-w-[110px] bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-800 rounded-md shadow-sm">{t.admin.actions.noShow}</button>
                     )}
                   </div>
                 </Td>
@@ -1042,6 +1090,7 @@ function DayDetailsModal({ iso, bookings, onClose, onSetStatus, token }: {
 }) {
   const [crmBooking, setCrmBooking] = useState<Booking | null>(null);
   const [localBookings, setLocalBookings] = useState(bookings);
+  const [pendingDay, setPendingDay] = useState<{ id: string; status: "confirmed" | "cancelled" | "completed" | "no_show" } | null>(null);
   useEffect(() => setLocalBookings(bookings), [bookings]);
 
   useEffect(() => {
@@ -1061,6 +1110,13 @@ function DayDetailsModal({ iso, bookings, onClose, onSetStatus, token }: {
 
   return (
     <>
+    {pendingDay && (
+      <ConfirmDialog
+        message={CONFIRM_MESSAGES[pendingDay.status] ?? "Êtes-vous sûr ?"}
+        onConfirm={() => { handleStatus(pendingDay.id, pendingDay.status); setPendingDay(null); }}
+        onCancel={() => setPendingDay(null)}
+      />
+    )}
     {crmBooking && <ClientProfileModal booking={crmBooking} token={token} onClose={() => setCrmBooking(null)} />}
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-ink/60" onClick={onClose}>
       <div
@@ -1125,7 +1181,7 @@ function DayDetailsModal({ iso, bookings, onClose, onSetStatus, token }: {
                     className="flex-1 min-w-[100px] px-3 py-2 bg-ink text-ivory text-sm font-medium hover:bg-gold">
                     Fiche client
                   </button>
-                  <button onClick={() => handleStatus(b.id, "cancelled")}
+                  <button onClick={() => setPendingDay({ id: b.id, status: "cancelled" })}
                     className="flex-1 min-w-[100px] px-3 py-2 bg-red-600 text-white text-sm font-medium hover:bg-red-700">
                     Annuler
                   </button>
