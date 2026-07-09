@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
   listClients, upsertClientNote, getClientHistory,
-  updateAmountPaid, getClientBookings,
+  updateAmountPaid, getClientBookings, createAdminBooking,
 } from "@/lib/admin.functions";
 import {
   listServices, updateService, addService, deleteService, seedServices, type ServiceItem,
@@ -1632,12 +1632,219 @@ type ClientRow = {
   noteUpdatedAt: string | null;
 };
 
+// ─── Admin Booking Modal ──────────────────────────────────────────────────────
+const SERVICES_LIST = [
+  "Tresses africaines", "Coupes européennes", "Locks & crochet", "Tissages",
+  "Chignons & événements", "Colorations", "Perruques & mèches",
+  "Pose complète", "Retouche", "Dépose de gel", "Réparation 1 doigt",
+  "Pédicure sans tips", "Vernis semi-permanent",
+  "Microshading", "Retouche microshading",
+];
+
+const TIMES = Array.from({ length: 23 }, (_, i) => {
+  const h = Math.floor(i / 2) + 9;
+  const m = i % 2 === 0 ? "00" : "30";
+  return `${String(h).padStart(2, "0")}:${m}`;
+}).filter(t => t <= "20:00");
+
+function AdminBookingModal({ prefill, onClose, onSaved }: {
+  prefill?: { name: string; phone: string; email?: string | null };
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const createFn = useServerFn(createAdminBooking);
+  const today = new Date().toISOString().slice(0, 10);
+  const [name, setName] = useState(prefill?.name ?? "");
+  const [phone, setPhone] = useState(prefill?.phone ?? "");
+  const [email, setEmail] = useState(prefill?.email ?? "");
+  const [service, setService] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("09:00");
+  const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function submit() {
+    if (!name || !phone || !service || !date || !time) { setError("Tous les champs obligatoires doivent être remplis."); return; }
+    const day = new Date(date + "T12:00:00").getDay();
+    if (day === 0 || day === 2) { setError("Fermé le mardi et dimanche."); return; }
+    setSaving(true); setError("");
+    try {
+      const token = getToken();
+      if (!token) return;
+      await createFn({ data: { token, name, phone, email: email || null, service, booking_date: date, booking_time: time, message: message || null } });
+      onSaved();
+      onClose();
+    } catch (e: any) {
+      setError(e.message ?? "Erreur lors de la création.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-ink/80 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="bg-ink text-ivory px-5 py-4 flex justify-between items-center">
+          <h2 className="font-display text-xl">Nouveau rendez-vous</h2>
+          <button onClick={onClose} className="text-ivory/50 hover:text-ivory text-2xl">×</button>
+        </div>
+        <div className="p-5 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-smoke uppercase tracking-wider">Nom *</label>
+              <input value={name} onChange={e => setName(e.target.value)} placeholder="Nom complet"
+                className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold" />
+            </div>
+            <div>
+              <label className="text-xs text-smoke uppercase tracking-wider">Téléphone *</label>
+              <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+32 4XX XX XX XX"
+                className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold" />
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider">Email</label>
+            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="optionnel"
+              className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider">Service *</label>
+            <select value={service} onChange={e => setService(e.target.value)}
+              className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold bg-white">
+              <option value="">— Choisir un service —</option>
+              {SERVICES_LIST.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-smoke uppercase tracking-wider">Date *</label>
+              <input type="date" min={today} value={date} onChange={e => setDate(e.target.value)}
+                className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold" />
+            </div>
+            <div>
+              <label className="text-xs text-smoke uppercase tracking-wider">Heure *</label>
+              <select value={time} onChange={e => setTime(e.target.value)}
+                className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold bg-white">
+                {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider">Note (optionnel)</label>
+            <textarea value={message} onChange={e => setMessage(e.target.value)} rows={2}
+              placeholder="Remarques, préférences…"
+              className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold resize-none" />
+          </div>
+          {error && <p className="text-red-600 text-xs">{error}</p>}
+          <div className="flex gap-3 pt-1">
+            <button onClick={onClose} className="flex-1 border border-border text-sm py-2 hover:bg-sand/50">Annuler</button>
+            <button onClick={submit} disabled={saving}
+              className="flex-1 bg-gold text-ivory text-sm py-2 hover:bg-gold-deep disabled:opacity-60 font-medium">
+              {saving ? "…" : "Créer le RDV"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Create Client Modal ──────────────────────────────────────────────────────
+function CreateClientModal({ onClose, onCreated }: {
+  onClose: () => void;
+  onCreated: () => void;
+}) {
+  const [showBooking, setShowBooking] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [note, setNote] = useState("");
+  const saveNote = useServerFn(upsertClientNote);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function createClient() {
+    if (!name || !phone) { setError("Nom et téléphone obligatoires."); return; }
+    setSaving(true); setError("");
+    try {
+      const token = getToken();
+      if (!token) return;
+      if (note) await saveNote({ data: { token, phone, note } });
+      onCreated();
+      if (showBooking) return; // booking modal takes over
+      onClose();
+    } catch (e: any) {
+      setError(e.message ?? "Erreur.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (showBooking) {
+    return (
+      <AdminBookingModal
+        prefill={{ name, phone, email }}
+        onClose={onClose}
+        onSaved={onCreated}
+      />
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-ink/80 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="bg-ink text-ivory px-5 py-4 flex justify-between items-center">
+          <h2 className="font-display text-xl">Nouveau client</h2>
+          <button onClick={onClose} className="text-ivory/50 hover:text-ivory text-2xl">×</button>
+        </div>
+        <div className="p-5 space-y-3">
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider">Nom complet *</label>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Prénom Nom"
+              className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold" autoFocus />
+          </div>
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider">Téléphone *</label>
+            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+32 4XX XX XX XX"
+              className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider">Email</label>
+            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="optionnel"
+              className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold" />
+          </div>
+          <div>
+            <label className="text-xs text-smoke uppercase tracking-wider">Note privée</label>
+            <textarea value={note} onChange={e => setNote(e.target.value)} rows={3}
+              placeholder="Préférences, allergies, remarques…"
+              className="w-full border border-border px-3 py-2 text-sm mt-1 focus:outline-none focus:border-gold resize-none" />
+          </div>
+          {error && <p className="text-red-600 text-xs">{error}</p>}
+          <div className="flex gap-3 pt-1">
+            <button onClick={onClose} className="flex-1 border border-border text-sm py-2 hover:bg-sand/50">Annuler</button>
+            <button onClick={() => { createClient().then(() => !error && setShowBooking(true)); }}
+              disabled={saving || !name || !phone}
+              className="flex-1 border border-gold text-gold text-sm py-2 hover:bg-gold/5 disabled:opacity-40">
+              Créer + RDV
+            </button>
+            <button onClick={createClient} disabled={saving || !name || !phone}
+              className="flex-1 bg-gold text-ivory text-sm py-2 hover:bg-gold-deep disabled:opacity-60 font-medium">
+              {saving ? "…" : "Créer"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ClientsView({ onLogout }: { onLogout: () => void }) {
   const list = useServerFn(listClients);
   const [clients, setClients] = useState<ClientRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<ClientRow | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
 
   async function refresh() {
     const token = getToken();
@@ -1678,7 +1885,18 @@ function ClientsView({ onLogout }: { onLogout: () => void }) {
           className="flex-1 min-w-[220px] bg-white border border-gold/30 px-3 py-2 text-sm focus:outline-none focus:border-gold"
         />
         <span className="text-xs text-smoke">{filtered.length} client{filtered.length > 1 ? "s" : ""}</span>
+        <button onClick={() => setShowCreate(true)}
+          className="bg-gold text-ivory text-sm px-4 py-2 hover:bg-gold-deep transition-colors font-medium whitespace-nowrap">
+          + Nouveau client
+        </button>
       </div>
+
+      {showCreate && (
+        <CreateClientModal
+          onClose={() => setShowCreate(false)}
+          onCreated={() => { setShowCreate(false); void refresh(); }}
+        />
+      )}
 
       {filtered.length === 0 ? (
         <p className="text-smoke">Aucun client.</p>
@@ -1746,6 +1964,7 @@ function ClientDetail({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [pastBookings, setPastBookings] = useState<Booking[] | null>(null);
+  const [showBooking, setShowBooking] = useState(false);
 
   useEffect(() => { setNote(client.note); }, [client.phone, client.note]);
   useEffect(() => {
@@ -1783,8 +2002,28 @@ function ClientDetail({
               {client.email && <> · <a href={`mailto:${client.email}`} className="text-gold hover:underline">{client.email}</a></>}
             </div>
           </div>
-          <button onClick={onClose} className="text-smoke hover:text-ink text-2xl leading-none">×</button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setShowBooking(true)}
+              className="bg-gold text-ivory text-xs px-3 py-1.5 hover:bg-gold-deep transition-colors whitespace-nowrap">
+              + Nouveau RDV
+            </button>
+            <button onClick={onClose} className="text-smoke hover:text-ink text-2xl leading-none">×</button>
+          </div>
         </div>
+
+        {showBooking && (
+          <AdminBookingModal
+            prefill={{ name: client.name, phone: client.phone, email: client.email }}
+            onClose={() => setShowBooking(false)}
+            onSaved={() => {
+              setShowBooking(false);
+              // Refresh history
+              const token = getToken();
+              if (token) history({ data: { token, phone: client.phone } })
+                .then(r => setPastBookings(r.bookings as Booking[]));
+            }}
+          />
+        )}
 
         <div className="p-5 space-y-5">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">

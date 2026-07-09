@@ -278,6 +278,34 @@ export const getClientBookings = createServerFn({ method: "POST" })
     };
   });
 
+// Admin creates a booking directly (no form needed)
+export const createAdminBooking = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({
+      token: z.string(),
+      name: z.string().min(1),
+      phone: z.string().min(1),
+      email: z.string().nullable().optional(),
+      service: z.string().min(1),
+      booking_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      booking_time: z.string().regex(/^\d{2}:\d{2}$/),
+      message: z.string().nullable().optional(),
+    }).parse(input)
+  )
+  .handler(async ({ data }) => {
+    await requireAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { token, ...booking } = data;
+    const { error } = await supabaseAdmin.from("bookings").insert({
+      ...booking,
+      status: "confirmed",
+      lang: "fr",
+      created_at: new Date().toISOString(),
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 // Aggregates unique clients from the bookings table (grouped by phone) and
 // joins private admin notes stored in client_notes.
 
