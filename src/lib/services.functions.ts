@@ -32,6 +32,20 @@ export type ServiceItem = {
   active: boolean;
 };
 
+// Public endpoint — no auth needed. Returns name, category, price_cents only.
+export const listPublicServices = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as unknown as { from: (t: string) => any };
+    const { data: rows, error } = await db.from("services")
+      .select("category, name, price_cents, sort_order")
+      .eq("active", true)
+      .order("category", { ascending: true })
+      .order("sort_order", { ascending: true });
+    if (error) throw new Error(error.message);
+    return { services: (rows ?? []) as { category: string; name: string; price_cents: number | null; sort_order: number }[] };
+  });
+
 export const listServices = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ token: z.string() }).parse(input))
   .handler(async ({ data }) => {
