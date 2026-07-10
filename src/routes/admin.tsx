@@ -762,7 +762,7 @@ function ClientProfileModal({ booking, token, onClose }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/70 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-ink/70 backdrop-blur-sm" onClick={onClose}>
       <div className="bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
@@ -894,7 +894,7 @@ function DayView({ bookings, token }: { bookings: Booking[]; token: string }) {
 
       {/* Quick booking popup */}
       {quickBooking && !pendingStatus && (
-        <div className="fixed inset-0 z-50 bg-ink/60 flex items-end sm:items-center justify-center" onClick={() => setQuickBooking(null)}>
+        <div className="fixed inset-0 z-[55] bg-ink/60 flex items-end sm:items-center justify-center" onClick={() => setQuickBooking(null)}>
           <div className="bg-white w-full sm:max-w-sm border border-gold/30 shadow-2xl" onClick={e => e.stopPropagation()}>
             {/* Header */}
             <div className="bg-ink text-ivory px-4 py-3 flex justify-between items-start">
@@ -1184,7 +1184,7 @@ function DayDetailsModal({ iso, bookings, onClose, onSetStatus, token }: {
       />
     )}
     {crmBooking && <ClientProfileModal booking={crmBooking} token={token} onClose={() => setCrmBooking(null)} />}
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-ink/60" onClick={onClose}>
+    <div className="fixed inset-0 z-[55] flex items-end sm:items-center justify-center bg-ink/60" onClick={onClose}>
       <div
         className="bg-ivory w-full sm:max-w-2xl max-h-[90vh] sm:max-h-[85vh] flex flex-col border border-gold/30 sm:rounded-none"
         onClick={(e) => e.stopPropagation()}
