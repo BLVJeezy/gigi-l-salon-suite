@@ -358,6 +358,12 @@ export const translations = {
       linksTitle: "Links",
       rights: "Alle rechten voorbehouden.",
     },
+    about: {
+        eyebrow: "Over ons",
+        title: "Het enige kapsalon in Limburg volledig gewijd aan afro, kroes en krullend haar",
+        body: "Bij GiGi L Coiffure — of je nu licht of donker haar hebt, fijne krullen of dik kroeshaar — vind je een vakmanschap afgestemd op jouw haartype. Afrikaanse vlechten, tissage, kleuren, brushing, locks en microshading onder één dak, in Tongeren.",
+        cta: "Afspraak maken",
+      },
     bookingPage: {
       eyebrow: "Reservering",
       title: "Maak een afspraak",
@@ -598,7 +604,7 @@ export const translations = {
         minUnit: "min",
       },
     },
-      about: {
+    about: {
         eyebrow: "About us",
         title: "The only salon in Limburg fully dedicated to afro, coily and curly hair",
         body: "At GiGi L Coiffure — whether your hair is fine or thick, loose curls or tight coils — you will find expertise tailored to your hair type. African braids, weaves, colouring, blow-dry, locs and microshading all under one roof, in Tongeren.",
