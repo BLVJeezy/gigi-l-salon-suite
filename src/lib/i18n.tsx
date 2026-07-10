@@ -141,17 +141,11 @@ export const translations = {
       linksTitle: "Liens",
       rights: "Tous droits réservés.",
     },
-      about: {
+    about: {
         eyebrow: "À propos",
         title: "Le seul salon du Limbourg dédié aux cheveux afro, bouclés & crépus",
         body: "Chez GiGi L Coiffure, chaque cliente — peau claire ou foncée, boucles fines ou crépues — trouve un savoir-faire pensé pour son type de cheveux et de peau. Tresses africaines, tissage, coloration, brushing, locks et microshading sous un même toit, à Tongres.",
         cta: "Prendre rendez-vous",
-      },
-      about: {
-        eyebrow: "Over ons",
-        title: "Het enige kapsalon in Limburg volledig gewijd aan afro, kroes en krullend haar",
-        body: "Bij GiGi L Coiffure — of je nu licht of donker haar hebt, fijne krullen of dik kroeshaar — vind je een vakmanschap afgestemd op jouw haartype. Afrikaanse vlechten, tissage, kleuren, brushing, locks en microshading onder één dak, in Tongeren.",
-        cta: "Afspraak maken",
       },
     bookingPage: {
       eyebrow: "Réservation",
