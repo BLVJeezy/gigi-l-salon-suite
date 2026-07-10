@@ -239,16 +239,14 @@ export function Hero() {
       {/* À propos — salon intro */}
       <section id="apropos" className="bg-ink text-ivory py-16 lg:py-24">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
-          <p className="eyebrow">À propos</p>
+          <p className="eyebrow">{t.about.eyebrow}</p>
           <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl leading-[1.1] text-ivory">
-            Le seul salon du Limbourg dédié aux cheveux afro, bouclés &amp; crépus
+            {t.about.title}
           </h2>
           <div className="mt-5 gold-rule" />
           <p className="mt-6 text-ivory/70 text-base sm:text-lg leading-relaxed">{t.hero.subtitle}</p>
           <p className="mt-4 text-ivory/55 text-sm sm:text-base leading-relaxed">
-            Chez GiGi L Coiffure, chaque cliente — peau claire ou foncée, boucles fines ou crépues — trouve un
-            savoir-faire pensé pour son type de cheveux et de peau. Tresses africaines, tissage, coloration, brushing,
-            locks et microshading sous un même toit, à Tongres.
+            {t.about.body}
           </p>
 
           <div className="mt-10">
@@ -257,7 +255,7 @@ export function Hero() {
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#contact" className="btn-gold btn-gold-hover">
-              Prendre rendez-vous
+              {t.about.cta}
             </a>
             <a href="tel:+32484164905" className="btn-gold-outline hover:bg-gold hover:text-ivory transition-colors">
               +32 484 16 49 05
