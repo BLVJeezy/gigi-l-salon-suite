@@ -1955,11 +1955,11 @@ const SERVICES_LIST = [
   "Microshading", "Retouche microshading",
 ];
 
-const TIMES = Array.from({ length: 23 }, (_, i) => {
+const TIMES = Array.from({ length: 15 }, (_, i) => {
   const h = Math.floor(i / 2) + 9;
   const m = i % 2 === 0 ? "00" : "30";
   return `${String(h).padStart(2, "0")}:${m}`;
-}).filter(t => t <= "20:00");
+});
 
 function AdminBookingModal({ prefill, onClose, onSaved }: {
   prefill?: { name: string; phone: string; email?: string | null };
