@@ -322,6 +322,27 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [tab, setTab] = useState<"leads" | "day" | "week" | "clients" | "diensten" | "gallery">("leads");
   const [loading, setLoading] = useState(true);
+  const [waClicks, setWaClicks] = useState<number | null>(null);
+
+  // Fetch WhatsApp click count from Supabase directly
+  useEffect(() => {
+    const url = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/click_events?event_name=eq.whatsapp_click&select=id`;
+    fetch(url, {
+      headers: {
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        Prefer: "count=exact",
+        "Range-Unit": "items",
+        Range: "0-0",
+      },
+    }).then(r => {
+      const countHeader = r.headers.get("content-range");
+      if (countHeader) {
+        const total = countHeader.split("/")[1];
+        setWaClicks(total === "*" ? 0 : parseInt(total));
+      }
+    }).catch(() => {});
+  }, []);
 
   const refresh = async () => {
     setLoading(true);
@@ -376,7 +397,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               </span>
             )}
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center">
+            {waClicks !== null && (
+              <span className="text-xs text-ivory/50 border border-gold/20 px-2 py-1 flex items-center gap-1.5">
+                <svg viewBox="0 0 24 24" fill="#25D366" className="w-3 h-3"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.562 4.14 1.541 5.875L.057 23.882l6.184-1.622A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.028-1.384l-.36-.214-3.733.979.999-3.645-.234-.374A9.818 9.818 0 0112 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
+                {waClicks} clics
+              </span>
+            )}
             <button onClick={refresh} className="btn-gold-outline text-xs px-3 py-2">{t.admin.refresh}</button>
             <button onClick={doLogout} className="btn-gold-outline text-xs px-3 py-2">{t.admin.logout}</button>
           </div>
