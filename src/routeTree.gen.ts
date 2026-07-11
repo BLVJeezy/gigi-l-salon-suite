@@ -13,6 +13,7 @@ import { Route as VlechtenTongerenRouteImport } from './routes/vlechten-tongeren
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReservationsRouteImport } from './routes/reservations'
+import { Route as PrijzenRouteImport } from './routes/prijzen'
 import { Route as NagelsTongerenRouteImport } from './routes/nagels-tongeren'
 import { Route as MicroshadingTongerenRouteImport } from './routes/microshading-tongeren'
 import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
@@ -22,7 +23,6 @@ import { Route as ExtensionsTongerenRouteImport } from './routes/extensions-tong
 import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
 import { Route as BeautySalonTongerenRouteImport } from './routes/beauty-salon-tongeren'
 import { Route as AlgemeneVoorwaardenRouteImport } from './routes/algemene-voorwaarden'
-import { Route as PrijzenRouteImport } from './routes/prijzen'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
@@ -50,6 +50,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const ReservationsRoute = ReservationsRouteImport.update({
   id: '/reservations',
   path: '/reservations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrijzenRoute = PrijzenRouteImport.update({
+  id: '/prijzen',
+  path: '/prijzen',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NagelsTongerenRoute = NagelsTongerenRouteImport.update({
@@ -153,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/kapster-tongeren': typeof KapsterTongerenRoute
   '/microshading-tongeren': typeof MicroshadingTongerenRoute
   '/nagels-tongeren': typeof NagelsTongerenRoute
+  '/prijzen': typeof PrijzenRoute
   '/reservations': typeof ReservationsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -176,6 +182,7 @@ export interface FileRoutesByTo {
   '/kapster-tongeren': typeof KapsterTongerenRoute
   '/microshading-tongeren': typeof MicroshadingTongerenRoute
   '/nagels-tongeren': typeof NagelsTongerenRoute
+  '/prijzen': typeof PrijzenRoute
   '/reservations': typeof ReservationsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -200,6 +207,7 @@ export interface FileRoutesById {
   '/kapster-tongeren': typeof KapsterTongerenRoute
   '/microshading-tongeren': typeof MicroshadingTongerenRoute
   '/nagels-tongeren': typeof NagelsTongerenRoute
+  '/prijzen': typeof PrijzenRoute
   '/reservations': typeof ReservationsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -225,6 +233,7 @@ export interface FileRouteTypes {
     | '/kapster-tongeren'
     | '/microshading-tongeren'
     | '/nagels-tongeren'
+    | '/prijzen'
     | '/reservations'
     | '/services'
     | '/sitemap.xml'
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
     | '/kapster-tongeren'
     | '/microshading-tongeren'
     | '/nagels-tongeren'
+    | '/prijzen'
     | '/reservations'
     | '/services'
     | '/sitemap.xml'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/kapster-tongeren'
     | '/microshading-tongeren'
     | '/nagels-tongeren'
+    | '/prijzen'
     | '/reservations'
     | '/services'
     | '/sitemap.xml'
@@ -295,6 +306,7 @@ export interface RootRouteChildren {
   KapsterTongerenRoute: typeof KapsterTongerenRoute
   MicroshadingTongerenRoute: typeof MicroshadingTongerenRoute
   NagelsTongerenRoute: typeof NagelsTongerenRoute
+  PrijzenRoute: typeof PrijzenRoute
   ReservationsRoute: typeof ReservationsRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -335,6 +347,13 @@ declare module '@tanstack/react-router' {
       path: '/reservations'
       fullPath: '/reservations'
       preLoaderRoute: typeof ReservationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prijzen': {
+      id: '/prijzen'
+      path: '/prijzen'
+      fullPath: '/prijzen'
+      preLoaderRoute: typeof PrijzenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/nagels-tongeren': {
@@ -463,7 +482,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AlgemeneVoorwaardenRoute: AlgemeneVoorwaardenRoute,
-  PrijzenRoute: PrijzenRoute,
   BeautySalonTongerenRoute: BeautySalonTongerenRoute,
   BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
   ExtensionsTongerenRoute: ExtensionsTongerenRoute,
@@ -472,6 +490,7 @@ const rootRouteChildren: RootRouteChildren = {
   KapsterTongerenRoute: KapsterTongerenRoute,
   MicroshadingTongerenRoute: MicroshadingTongerenRoute,
   NagelsTongerenRoute: NagelsTongerenRoute,
+  PrijzenRoute: PrijzenRoute,
   ReservationsRoute: ReservationsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

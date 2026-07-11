@@ -1,34 +1,41 @@
-## Goal
+## Problem
 
-When a customer picks a date + service in the booking form, disable the time slots that overlap an already-booked appointment (using each service's `duration_min`), so two clients can't be booked into the same window. Free slots remain fully selectable.
+Booking emails have been failing since the switch to direct Resend API calls. `email_send_log` shows every send from 2026-07-10 onward returning:
 
-## How it works
+```
+401 { "name":"validation_error", "message":"API key is invalid" }
+```
 
-1. Each service in the `services` table already has `duration_min` (nails/coiffure/microshading all covered).
-2. Every existing booking on that date occupies `[booking_time, booking_time + duration_min)`.
-3. The candidate slot the customer wants also occupies `[slot, slot + selectedServiceDuration)`.
-4. A slot is disabled if its window overlaps any existing booking's window.
+Cause: `RESEND_API_KEY` in this project is a **connector-managed key** (visible in the secrets list as "managed by connector"). It is a credential for the Lovable connector gateway, not a real Resend API key. Posting it as `Authorization: Bearer` to `api.resend.com` is rejected as invalid.
 
-## Changes
+My earlier manual test sends worked because they went through `connector-gateway.lovable.dev/resend/emails` with the correct two-header scheme. The booking form's server function does not.
 
-### 1. New server function — `src/lib/bookings.functions.ts`
-Add `getBookedSlotsForDate({ date })` (public, no auth):
-- Uses `supabaseAdmin` inside the handler.
-- Selects **only** `booking_time` and `service` (no name/email/phone/message → no PII leak) where `booking_date = date` and `status != 'cancelled'`.
-- Also fetches `services (name, duration_min)` to resolve each booking's duration; falls back to 60 min if the service name isn't found.
-- Returns `[{ time: "HH:MM", durationMin: number }]`.
+## Fix
 
-### 2. `src/components/BookingForm.tsx`
-- On entering the "time" step (or when `date`/`service` changes), call `getBookedSlotsForDate({ data: { date } })` and also load `listServices` to look up the currently-selected service's duration.
-- Compute a `disabledSlots: Set<string>` by checking overlap between each `TIME_SLOTS[i]` window (using the selected service's duration) and every booked window.
-- Render each slot button with `disabled` + a struck-through / greyed style when blocked, and skip `setTime` for disabled ones.
-- Show a small note under the grid: "Les créneaux grisés sont déjà réservés" (translated FR/NL/EN via i18n).
+Change `src/lib/lovable-email.server.ts` to send via the Lovable Resend connector gateway. Everything else (templates, from/reply_to, logging to `email_send_log`) stays the same.
 
-### 3. i18n — `src/lib/i18n.tsx`
-Add one string per language for the "already booked" hint under the time grid.
+### Change in `enqueueTemplateEmail`
 
-## Out of scope (not requested)
+Replace the direct-Resend fetch with a gateway call:
 
-- No change to the DB schema or RLS.
-- No change to admin, gallery, opening hours, or category management.
-- Closing-time cutoff (blocking slots that would run past 19:30) — only overlap with existing bookings is blocked, as you described.
+- URL: `https://connector-gateway.lovable.dev/resend/emails`
+- Headers:
+  - `Content-Type: application/json`
+  - `Authorization: Bearer ${process.env.LOVABLE_API_KEY}`
+  - `X-Connection-Api-Key: ${process.env.RESEND_API_KEY}`
+- Body: unchanged (`from: "Gigi L Coiffure <Info@gigilcoiffure.be>"`, `to`, `reply_to: "lahlamoussa18@gmail.com"`, `subject`, `html`, `text`)
+- Pre-flight check: require both `LOVABLE_API_KEY` and `RESEND_API_KEY`; log and return `{ ok: false, error }` if either is missing (same shape as today).
+- Response handling and `email_send_log` insert (sent vs failed with truncated error body) remain identical.
+
+### What is not changing
+
+- `src/lib/bookings.functions.ts` — no changes; still calls `enqueueTemplateEmail("owner-new-booking", …)` and `enqueueTemplateEmail("client-booking-received", …)`.
+- React Email templates and registry — untouched.
+- `from` address stays `Info@gigilcoiffure.be`; `reply_to` stays `lahlamoussa18@gmail.com`.
+- No DB migrations, no changes to the queue routes.
+
+## Verification
+
+1. After the edit, trigger a booking (or invoke the server function) with a client email.
+2. Query `email_send_log` for the two new rows — both should be `status = 'sent'` with a provider id in `metadata`.
+3. Confirm the owner email arrives at `OWNER_EMAIL` and the client email at the submitted address, both from `Info@gigilcoiffure.be` with reply-to `lahlamoussa18@gmail.com`.
