@@ -25,7 +25,7 @@ type CategoryKey = "coiffure" | "nails" | "microshading";
 
 // Coiffure services come from the i18n services list (by index).
 // Volgorde: 0 Tresses, 1 Coupes, 2 Locks, 3 Tissages, 4 Chignons, 5 Colorations, 8 Perruques
-const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 8];
+const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 6, 9]; // 0=Tresses, 1=Rasta, 2=Coupes, 3=Locks, 4=Tissages, 5=Chignons, 6=Colorations, 9=Perruques
 
 // Internal step ids — we navigate a dynamic list, not fixed numbers.
 type StepId = "category" | "service" | "zone" | "photo" | "terms" | "date" | "time" | "source" | "details";
@@ -447,7 +447,13 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
         <div className="space-y-4">
           <Label>{t.form.time} *</Label>
           <div className="grid grid-cols-4 gap-1.5">
-            {TIME_SLOTS.map((slot) => {
+            {TIME_SLOTS.filter(slot => {
+              // Tresses / Rasta: last slot 15:00
+              const isTressesRasta = service === t.services.items[0]?.t || service === t.services.items[1]?.t
+                || service?.toLowerCase().includes("rasta") || service?.toLowerCase().includes("tresses");
+              if (isTressesRasta && slot > "15:00") return false;
+              return true;
+            }).map((slot) => {
               const isDisabled = disabledSlots.has(slot);
               return (
                 <button key={slot} type="button" disabled={isDisabled}

@@ -99,6 +99,7 @@ export const translations = {
       ],
       items: [
         { t: "Tresses africaines", d: "Box braids, cornrows, twists — un tressage soigné qui protège et sublime vos cheveux." },
+        { t: "Rasta", d: "Rasta / dreadlocks — pose et entretien de locks naturelles à Tongres." },
         { t: "Coupes européennes", d: "Coupes femmes, hommes et enfants, adaptées à votre style et à votre nature de cheveu." },
         { t: "Locks & crochet", d: "Création et entretien de locks, crochet braids et coiffures protectrices durables." },
         { t: "Tissages", d: "Pose de tissages de qualité pour un volume et une longueur naturels." },
@@ -316,6 +317,7 @@ export const translations = {
       ],
       items: [
         { t: "Afrikaanse vlechten", d: "Box braids, cornrows, twists — zorgvuldig vlechtwerk dat uw haar beschermt en mooier maakt." },
+        { t: "Rasta", d: "Rasta / dreadlocks — aanleg en onderhoud van natuurlijke locks in Tongeren." },
         { t: "Europese knipbeurten", d: "Knipbeurten voor dames, heren en kinderen, afgestemd op uw stijl en haartype." },
         { t: "Locks & crochet", d: "Aanleg en onderhoud van locks, crochet braids en duurzame beschermkapsels." },
         { t: "Weaves", d: "Plaatsing van kwaliteitsweaves voor natuurlijk volume en lengte." },
@@ -533,6 +535,7 @@ export const translations = {
       ],
       items: [
         { t: "African braids", d: "Box braids, cornrows, twists — meticulous braiding that protects and elevates your hair." },
+        { t: "Rasta", d: "Rasta / dreadlocks — creation and maintenance of natural locks in Tongeren." },
         { t: "European cuts", d: "Cuts for women, men and children, tailored to your style and hair type." },
         { t: "Locks & crochet", d: "Creation and maintenance of locks, crochet braids and lasting protective styles." },
         { t: "Weaves", d: "Quality weave installation for natural volume and length." },
