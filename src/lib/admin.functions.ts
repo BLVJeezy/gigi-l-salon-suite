@@ -221,8 +221,9 @@ export const updateAmountPaid = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await requireAdmin(data.token);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as unknown as { from: (t: string) => any };
     try {
-      const { error } = await supabaseAdmin.from("bookings")
+      const { error } = await db.from("bookings")
         .update({ amount_paid_cents: data.amount_paid_cents })
         .eq("id", data.id);
       if (error) throw new Error(error.message);
@@ -255,7 +256,7 @@ export const getClientBookings = createServerFn({ method: "POST" })
     // Try to fetch amount_paid_cents separately (column may not exist yet)
     let amountMap: Record<string, number | null> = {};
     try {
-      const { data: amounts } = await supabaseAdmin
+      const { data: amounts } = await db
         .from("bookings")
         .select("id, amount_paid_cents")
         .in("id", filtered.map((b: any) => b.id));
