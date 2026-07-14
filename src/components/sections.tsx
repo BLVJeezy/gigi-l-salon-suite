@@ -850,8 +850,16 @@ export function Footer() {
         />
       </div>
 
-      <div className="border-t border-gold/15 py-6 text-center text-ivory/40 text-xs">
-        © 2025 GiGi L Coiffure. {t.footer.rights}
+      <div className="border-t border-gold/15 py-6 text-center text-ivory/40 text-xs space-y-1">
+        <div>© 2025 GiGi L Coiffure. {t.footer.rights}</div>
+        <a
+          href="https://solynglobal.be"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block hover:text-gold transition-colors"
+        >
+          Created by Solyn Global
+        </a>
       </div>
     </footer>
   );
