@@ -243,9 +243,10 @@ export const getClientBookings = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await requireAdmin(data.token);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const db = supabaseAdmin as unknown as { from: (t: string) => any };
     const norm = (data.phone || "").replace(/\s+/g, "").trim();
     // Fetch all bookings with phone so we can filter client-side
-    const { data: rows, error } = await supabaseAdmin
+    const { data: rows, error } = await db
       .from("bookings")
       .select("id, phone, booking_date, booking_time, service, status, message, created_at")
       .order("booking_date", { ascending: false });

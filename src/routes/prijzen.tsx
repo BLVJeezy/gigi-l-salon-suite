@@ -67,11 +67,18 @@ function formatPrice(cents: number | null): string {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
 }
 
+type PublicService = {
+  category: string;
+  name: string;
+  price_cents: number | null;
+  sort_order: number;
+};
+
 function PrijzenPage() {
-  const { services } = Route.useLoaderData();
+  const { services } = Route.useLoaderData() as { services: PublicService[] };
 
   // Group by category
-  const byCategory = services.reduce<Record<string, typeof services>>((acc, s) => {
+  const byCategory = services.reduce<Record<string, PublicService[]>>((acc, s) => {
     (acc[s.category] ??= []).push(s);
     return acc;
   }, {});
