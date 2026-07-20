@@ -1,6 +1,6 @@
 // Admin dashboard — password-gated via signed token persisted for installed app use.
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
@@ -246,6 +246,7 @@ function AdminPage() {
   return (
     <>
       <EmailToast />
+      <NewBookingToast />
       <Dashboard onLogout={() => { clearToken(); setAuthed(false); }} />
     </>
   );
@@ -290,6 +291,50 @@ export function showEmailToast() {
   window.dispatchEvent(new CustomEvent("email-sent"));
 }
 
+// ─── New-booking notification ────────────────────────────────────────────────
+// Plays a chime, shows an in-app toast and (if permitted) a browser notification
+// whenever the poller detects a booking that wasn't in the previous snapshot.
+function playChime() {
+  try {
+    const AC = (window.AudioContext || (window as any).webkitAudioContext);
+    if (!AC) return;
+    const ctx = new AC();
+    const notes = [880, 1175]; // A5, D6
+    notes.forEach((freq, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = freq;
+      const start = ctx.currentTime + i * 0.18;
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(0.25, start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, start + 0.35);
+      o.connect(g).connect(ctx.destination);
+      o.start(start);
+      o.stop(start + 0.4);
+    });
+    setTimeout(() => ctx.close().catch(() => {}), 1200);
+  } catch { /* ignore */ }
+}
+
+export function notifyNewBookings(fresh: Array<{ id: string; name?: string | null; service?: string | null; booking_date?: string | null; booking_time?: string | null }>) {
+  playChime();
+  const first = fresh[0];
+  const title = fresh.length === 1
+    ? `Nouvelle réservation — ${first.name ?? ""}`
+    : `${fresh.length} nouvelles réservations`;
+  const body = fresh.length === 1
+    ? `${first.service ?? ""} · ${first.booking_date ?? ""} ${(first.booking_time ?? "").slice(0, 5)}`
+    : fresh.map(b => `${b.name ?? ""} — ${b.service ?? ""}`).slice(0, 3).join("\n");
+  window.dispatchEvent(new CustomEvent("new-booking", { detail: { title, body, count: fresh.length } }));
+  try {
+    if ("Notification" in window && Notification.permission === "granted") {
+      const n = new Notification(title, { body, tag: "gigi-new-booking", icon: "/icon-192.png" });
+      n.onclick = () => { window.focus(); n.close(); };
+    }
+  } catch { /* ignore */ }
+}
+
 function EmailToast() {
   const [visible, setVisible] = useState(false);
 
@@ -310,6 +355,36 @@ function EmailToast() {
         <span className="text-gold text-lg">✓</span>
         <span className="font-display tracking-wide text-sm">E-mail envoyé</span>
       </div>
+    </div>
+  );
+}
+
+function NewBookingToast() {
+  const [msg, setMsg] = useState<{ title: string; body: string } | null>(null);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const d = (e as CustomEvent).detail as { title: string; body: string };
+      setMsg(d);
+      setTimeout(() => setMsg(null), 8000);
+    };
+    window.addEventListener("new-booking", handler);
+    return () => window.removeEventListener("new-booking", handler);
+  }, []);
+  if (!msg) return null;
+  return (
+    <div className="fixed top-4 right-4 z-[100] max-w-sm">
+      <button
+        onClick={() => setMsg(null)}
+        className="w-full text-left bg-ink text-ivory border border-gold/40 shadow-2xl px-5 py-4 hover:border-gold transition-colors"
+      >
+        <div className="flex items-start gap-3">
+          <span className="text-gold text-xl leading-none">🔔</span>
+          <div className="flex-1 min-w-0">
+            <div className="font-display text-sm tracking-wide text-gold mb-1">{msg.title}</div>
+            <div className="text-xs text-ivory/80 whitespace-pre-line">{msg.body}</div>
+          </div>
+        </div>
+      </button>
     </div>
   );
 }
@@ -344,21 +419,41 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     }).catch(() => {});
   }, []);
 
+  const knownIdsRef = useRef<Set<string> | null>(null);
+  const firstLoadRef = useRef(true);
+
   const refresh = async () => {
-    setLoading(true);
     const token = getToken();
     if (!token) { onLogout(); return; }
+    if (firstLoadRef.current) setLoading(true);
     try {
       const r = await list({ data: { token } });
-      setBookings(r.bookings as Booking[]);
+      const next = r.bookings as Booking[];
+      const prevIds = knownIdsRef.current;
+      if (prevIds && !firstLoadRef.current) {
+        const fresh = next.filter(b => !prevIds.has(b.id) && b.status === "new");
+        if (fresh.length > 0) notifyNewBookings(fresh);
+      }
+      knownIdsRef.current = new Set(next.map(b => b.id));
+      setBookings(next);
     } catch (e) {
       console.error("listBookings failed", e);
-      onLogout();
+      if (firstLoadRef.current) onLogout();
     } finally {
-      setLoading(false);
+      if (firstLoadRef.current) { setLoading(false); firstLoadRef.current = false; }
     }
   };
-  useEffect(() => { void refresh(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => {
+    void refresh();
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().catch(() => {});
+    }
+    const iv = setInterval(() => { void refresh(); }, 20000);
+    const onFocus = () => { void refresh(); };
+    window.addEventListener("focus", onFocus);
+    return () => { clearInterval(iv); window.removeEventListener("focus", onFocus); };
+    /* eslint-disable-next-line */
+  }, []);
 
   useEffect(() => {
     const handler = (e: Event) => {
