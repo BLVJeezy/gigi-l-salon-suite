@@ -359,6 +359,36 @@ function EmailToast() {
   );
 }
 
+function NewBookingToast() {
+  const [msg, setMsg] = useState<{ title: string; body: string } | null>(null);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const d = (e as CustomEvent).detail as { title: string; body: string };
+      setMsg(d);
+      setTimeout(() => setMsg(null), 8000);
+    };
+    window.addEventListener("new-booking", handler);
+    return () => window.removeEventListener("new-booking", handler);
+  }, []);
+  if (!msg) return null;
+  return (
+    <div className="fixed top-4 right-4 z-[100] max-w-sm">
+      <button
+        onClick={() => setMsg(null)}
+        className="w-full text-left bg-ink text-ivory border border-gold/40 shadow-2xl px-5 py-4 hover:border-gold transition-colors"
+      >
+        <div className="flex items-start gap-3">
+          <span className="text-gold text-xl leading-none">🔔</span>
+          <div className="flex-1 min-w-0">
+            <div className="font-display text-sm tracking-wide text-gold mb-1">{msg.title}</div>
+            <div className="text-xs text-ivory/80 whitespace-pre-line">{msg.body}</div>
+          </div>
+        </div>
+      </button>
+    </div>
+  );
+}
+
 function Dashboard({ onLogout }: { onLogout: () => void }) {
   const { t } = useT();
   const list = useServerFn(listBookings);
