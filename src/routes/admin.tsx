@@ -290,6 +290,50 @@ export function showEmailToast() {
   window.dispatchEvent(new CustomEvent("email-sent"));
 }
 
+// ─── New-booking notification ────────────────────────────────────────────────
+// Plays a chime, shows an in-app toast and (if permitted) a browser notification
+// whenever the poller detects a booking that wasn't in the previous snapshot.
+function playChime() {
+  try {
+    const AC = (window.AudioContext || (window as any).webkitAudioContext);
+    if (!AC) return;
+    const ctx = new AC();
+    const notes = [880, 1175]; // A5, D6
+    notes.forEach((freq, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = freq;
+      const start = ctx.currentTime + i * 0.18;
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(0.25, start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, start + 0.35);
+      o.connect(g).connect(ctx.destination);
+      o.start(start);
+      o.stop(start + 0.4);
+    });
+    setTimeout(() => ctx.close().catch(() => {}), 1200);
+  } catch { /* ignore */ }
+}
+
+export function notifyNewBookings(fresh: Array<{ id: string; name?: string | null; service?: string | null; booking_date?: string | null; booking_time?: string | null }>) {
+  playChime();
+  const first = fresh[0];
+  const title = fresh.length === 1
+    ? `Nouvelle réservation — ${first.name ?? ""}`
+    : `${fresh.length} nouvelles réservations`;
+  const body = fresh.length === 1
+    ? `${first.service ?? ""} · ${first.booking_date ?? ""} ${(first.booking_time ?? "").slice(0, 5)}`
+    : fresh.map(b => `${b.name ?? ""} — ${b.service ?? ""}`).slice(0, 3).join("\n");
+  window.dispatchEvent(new CustomEvent("new-booking", { detail: { title, body, count: fresh.length } }));
+  try {
+    if ("Notification" in window && Notification.permission === "granted") {
+      const n = new Notification(title, { body, tag: "gigi-new-booking", icon: "/icon-192.png" });
+      n.onclick = () => { window.focus(); n.close(); };
+    }
+  } catch { /* ignore */ }
+}
+
 function EmailToast() {
   const [visible, setVisible] = useState(false);
 
