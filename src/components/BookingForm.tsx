@@ -478,10 +478,10 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
       {current === "details" && (
         <form onSubmit={handleFinalSubmit} className="space-y-4">
           <Field label={t.form.name} value={name} onChange={setName} required autoFocus />
-          <Field label={t.form.email} value={email} onChange={setEmail} type="email" />
+          <Field label={t.form.email} value={email} onChange={setEmail} type="email" required />
           <Field label={t.form.phone} value={phone} onChange={setPhone} type="tel" required />
 
-          <button type="submit" disabled={status === "sending" || !name || !phone}
+          <button type="submit" disabled={status === "sending" || !name || !phone || !email}
             className="btn-gold btn-gold-hover w-full disabled:opacity-40 disabled:cursor-not-allowed">
             {status === "sending" ? t.form.sending : t.form.submit}
           </button>
