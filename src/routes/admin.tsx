@@ -344,21 +344,41 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     }).catch(() => {});
   }, []);
 
+  const knownIdsRef = useRef<Set<string> | null>(null);
+  const firstLoadRef = useRef(true);
+
   const refresh = async () => {
-    setLoading(true);
     const token = getToken();
     if (!token) { onLogout(); return; }
+    if (firstLoadRef.current) setLoading(true);
     try {
       const r = await list({ data: { token } });
-      setBookings(r.bookings as Booking[]);
+      const next = r.bookings as Booking[];
+      const prevIds = knownIdsRef.current;
+      if (prevIds && !firstLoadRef.current) {
+        const fresh = next.filter(b => !prevIds.has(b.id) && b.status === "new");
+        if (fresh.length > 0) notifyNewBookings(fresh);
+      }
+      knownIdsRef.current = new Set(next.map(b => b.id));
+      setBookings(next);
     } catch (e) {
       console.error("listBookings failed", e);
-      onLogout();
+      if (firstLoadRef.current) onLogout();
     } finally {
-      setLoading(false);
+      if (firstLoadRef.current) { setLoading(false); firstLoadRef.current = false; }
     }
   };
-  useEffect(() => { void refresh(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => {
+    void refresh();
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().catch(() => {});
+    }
+    const iv = setInterval(() => { void refresh(); }, 20000);
+    const onFocus = () => { void refresh(); };
+    window.addEventListener("focus", onFocus);
+    return () => { clearInterval(iv); window.removeEventListener("focus", onFocus); };
+    /* eslint-disable-next-line */
+  }, []);
 
   useEffect(() => {
     const handler = (e: Event) => {
