@@ -1,6 +1,6 @@
 // Admin dashboard — password-gated via signed token persisted for installed app use.
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   adminLogin, adminCheck, listBookings, updateBookingStatus, getBookingPhotoUrl,
