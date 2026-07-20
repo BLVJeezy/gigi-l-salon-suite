@@ -246,6 +246,7 @@ function AdminPage() {
   return (
     <>
       <EmailToast />
+      <NewBookingToast />
       <Dashboard onLogout={() => { clearToken(); setAuthed(false); }} />
     </>
   );
