@@ -6,7 +6,7 @@ import { z } from "zod";
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
   phone: z.string().trim().min(4).max(40),
-  email: z.string().trim().email().max(200).optional().or(z.literal("")),
+  email: z.string().trim().email().max(200),
   service: z.string().trim().min(1).max(80),
   booking_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   booking_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/),
