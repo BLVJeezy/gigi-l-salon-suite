@@ -14,6 +14,9 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ReservationsRouteImport } from './routes/reservations'
 import { Route as PrijzenRouteImport } from './routes/prijzen'
+import { Route as SalonCoiffureTongresRouteImport } from './routes/salon-coiffure-tongres'
+import { Route as CoiffeuseTongresRouteImport } from './routes/coiffeuse-tongres'
+import { Route as BraidsLimburgRouteImport } from './routes/braids-limburg'
 import { Route as NagelsTongerenRouteImport } from './routes/nagels-tongeren'
 import { Route as MicroshadingTongerenRouteImport } from './routes/microshading-tongeren'
 import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
@@ -491,6 +494,9 @@ const rootRouteChildren: RootRouteChildren = {
   MicroshadingTongerenRoute: MicroshadingTongerenRoute,
   NagelsTongerenRoute: NagelsTongerenRoute,
   PrijzenRoute: PrijzenRoute,
+  SalonCoiffureTongresRoute: SalonCoiffureTongresRoute,
+  CoiffeuseTongresRoute: CoiffeuseTongresRoute,
+  BraidsLimburgRoute: BraidsLimburgRoute,
   ReservationsRoute: ReservationsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
