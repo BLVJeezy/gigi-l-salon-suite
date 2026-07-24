@@ -21,11 +21,11 @@ const TIME_SLOTS = [
   "13:00","13:30","14:00","14:30","15:00","15:30","16:00",
 ];
 
-type CategoryKey = "coiffure" | "kapsalon" | "nails" | "microshading";
+type CategoryKey = "coiffure" | "nails" | "microshading";
 
 // Coiffure services come from the i18n services list (by index).
 // Volgorde: 0 Tresses, 1 Coupes, 2 Locks, 3 Tissages, 4 Chignons, 5 Colorations, 8 Perruques
-const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 6, 9]; // 0=Tresses, 1=Rasta, 2=Coupes, 3=Locks, 4=Tissages, 5=Chignons, 6=Colorations, 9=Perruques
+const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 11]; // 0=Tresses, 1=Rasta, 2=Brushing coupe, 3=Brushing, 4=Coupes, 5=Locks, 6=Tissages, 7=Chignons, 11=Perruques
 
 // Internal step ids — we navigate a dynamic list, not fixed numbers.
 type StepId = "category" | "service" | "zone" | "photo" | "terms" | "date" | "time" | "source" | "details";
@@ -85,9 +85,8 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
 
 
   const categories: { key: CategoryKey; label: string }[] = [
-    { key: "coiffure",    label: t.form.categories.coiffure },
-    { key: "kapsalon",   label: t.form.categories.kapsalon },
-    { key: "nails",       label: t.form.categories.nails },
+    { key: "coiffure",     label: t.form.categories.coiffure },
+    { key: "nails",        label: t.form.categories.nails },
     { key: "microshading", label: t.form.categories.microshading },
   ];
 
@@ -95,13 +94,10 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   const nailsServices = t.form.nails.services;
   const microServices = t.form.microshading.services;
   const coiffureServices = COIFFURE_SERVICE_INDICES.map((i) => t.services.items[i]?.t).filter(Boolean) as string[];
-  const kapsalonServices = t.form.kapsalon.services;
-
   const serviceOptions =
     category === "nails" ? nailsServices :
     category === "microshading" ? microServices :
-    category === "coiffure" ? coiffureServices :
-    category === "kapsalon" ? kapsalonServices : [];
+    category === "coiffure" ? coiffureServices : [];
 
   // Does this nails service need the zone + photo questions?
   // Pose complète (index 0) and Retouche (index 1) of nails.
@@ -451,9 +447,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
           <Label>{t.form.time} *</Label>
           <div className="grid grid-cols-4 gap-1.5">
             {TIME_SLOTS.filter(slot => {
-              // Tresses / Rasta: last slot 15:00
-              const isTressesRasta = service === t.services.items[0]?.t || service === t.services.items[1]?.t
-                || service?.toLowerCase().includes("rasta") || service?.toLowerCase().includes("tresses");
+              const isTressesRasta = service === t.services.items[0]?.t || service === t.services.items[1]?.t;
               if (isTressesRasta && slot > "15:00") return false;
               return true;
             }).map((slot) => {
