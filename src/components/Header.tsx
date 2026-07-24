@@ -1,16 +1,37 @@
 // Shared header — logo, page nav, lang switcher, square hamburger mobile menu.
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { useT, LANGS, type Lang } from "@/lib/i18n";
+
+const DIENSTEN_LINKS = [
+  { to: "/vlechten-tongeren",      labelNL: "Vlechten & braids",       labelFR: "Tresses africaines",      labelEN: "Braids" },
+  { to: "/box-braids-tongeren",    labelNL: "Box braids",               labelFR: "Box braids",              labelEN: "Box braids" },
+  { to: "/extensions-tongeren",    labelNL: "Extensions & pruiken",     labelFR: "Extensions & perruques",  labelEN: "Extensions & wigs" },
+  { to: "/kapster-tongeren",       labelNL: "Kapsalon",                 labelFR: "Coiffure européenne",     labelEN: "Hair salon" },
+  { to: "/microshading-tongeren",  labelNL: "Microshading",             labelFR: "Microshading sourcils",   labelEN: "Microshading brows" },
+  { to: "/nagels-tongeren",        labelNL: "Nagels",                   labelFR: "Ongles",                  labelEN: "Nails" },
+  { to: "/beauty-salon-tongeren",  labelNL: "Beauty salon",             labelFR: "Beauty salon",            labelEN: "Beauty salon" },
+  { to: "/prijzen",                labelNL: "Prijzen",                  labelFR: "Tarifs",                  labelEN: "Prices" },
+];
 
 export function Header() {
   const { t, lang, setLang } = useT();
   const [open, setOpen] = useState(false);
+  const [dropOpen, setDropOpen] = useState(false);
+  const dropRef = useRef<HTMLDivElement>(null);
 
-  // Real page links — used on both desktop and mobile, everywhere.
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node)) setDropOpen(false);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const getLabel = (l: typeof DIENSTEN_LINKS[0]) =>
+    lang === "fr" ? l.labelFR : lang === "en" ? l.labelEN : l.labelNL;
+
   const pageLinks = [
-    { to: "/services" as const, label: t.nav.servicesPage },
-    { to: "/prijzen" as const, label: t.nav.pricesPage },
     { to: "/galerie" as const, label: t.nav.galleryPage },
   ];
 
@@ -25,12 +46,33 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center gap-7 text-ivory/80 text-sm">
-          {pageLinks.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className="hover:text-gold transition-colors [&.active]:text-gold"
+          {/* Diensten dropdown */}
+          <div className="relative" ref={dropRef}>
+            <button
+              onClick={() => setDropOpen(v => !v)}
+              className={`flex items-center gap-1 hover:text-gold transition-colors ${dropOpen ? "text-gold" : ""}`}
             >
+              {t.nav.servicesPage}
+              <span className={`text-[10px] transition-transform ${dropOpen ? "rotate-180" : ""}`}>▾</span>
+            </button>
+            {dropOpen && (
+              <div className="absolute top-full left-0 mt-2 w-56 bg-ink border border-gold/20 shadow-xl z-50 py-1">
+                <Link to="/services" onClick={() => setDropOpen(false)}
+                  className="block px-4 py-2.5 text-ivory/60 text-xs uppercase tracking-widest border-b border-gold/10 hover:text-gold transition-colors">
+                  {t.nav.servicesPage} →
+                </Link>
+                {DIENSTEN_LINKS.map(l => (
+                  <Link key={l.to} to={l.to as any} onClick={() => setDropOpen(false)}
+                    className="block px-4 py-2 text-ivory/80 hover:text-gold hover:bg-gold/5 transition-colors text-sm">
+                    {getLabel(l)}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+          {pageLinks.map((l) => (
+            <Link key={l.to} to={l.to}
+              className="hover:text-gold transition-colors [&.active]:text-gold">
               {l.label}
             </Link>
           ))}
