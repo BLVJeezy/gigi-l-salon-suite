@@ -91,14 +91,16 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
   ];
 
   // Service options per category
-  const nailsServices = t.form.nails.services;     // array of strings
+  const nailsServices = t.form.nails.services;
   const microServices = t.form.microshading.services;
   const coiffureServices = COIFFURE_SERVICE_INDICES.map((i) => t.services.items[i]?.t).filter(Boolean) as string[];
+  const kapsalonServices = t.form.kapsalon.services;
 
   const serviceOptions =
     category === "nails" ? nailsServices :
     category === "microshading" ? microServices :
-    category === "coiffure" ? coiffureServices : [];
+    category === "coiffure" ? coiffureServices :
+    category === "kapsalon" ? kapsalonServices : [];
 
   // Does this nails service need the zone + photo questions?
   // Pose complète (index 0) and Retouche (index 1) of nails.
