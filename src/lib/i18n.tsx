@@ -64,10 +64,10 @@ export const translations = {
       closedDay: "Nous sommes fermés le mardi et le dimanche. Veuillez choisir un autre jour.",
       nails: {
         services: ["Pose complète", "Retouche", "Dépose de gel", "Réparation 1 doigt", "Pédicure sans tips", "Vernis semi-permanent"],
+        repairHint: "Pour 2 ongles ou plus, choisissez « Retouche ».",
+      },
       kapsalon: {
         services: ["Brushing coupe", "Brushing"],
-      },
-        repairHint: "Pour 2 ongles ou plus, choisissez « Retouche ».",
       },
       microshading: {
         services: ["Microshading", "Retouche"],
@@ -285,10 +285,10 @@ export const translations = {
       closedDay: "Op dinsdag en zondag zijn wij gesloten. Kies een andere dag.",
       nails: {
         services: ["Volledige set", "Bijwerking", "Gel verwijderen", "Reparatie 1 nagel", "Pedicure zonder tips", "Semi-permanente lak"],
+        repairHint: "Voor 2 nagels of meer, kies « Bijwerking ».",
+      },
       kapsalon: {
         services: ["Brushing coupe", "Brushing"],
-      },
-        repairHint: "Voor 2 nagels of meer, kies « Bijwerking ».",
       },
       microshading: {
         services: ["Microshading", "Bijwerking"],
@@ -506,10 +506,10 @@ export const translations = {
       closedDay: "We are closed on Tuesdays and Sundays. Please pick another day.",
       nails: {
         services: ["Full set", "Refill", "Gel removal", "Repair 1 nail", "Pedicure without tips", "Semi-permanent polish"],
+        repairHint: "For 2 nails or more, choose “Refill”.",
+      },
       kapsalon: {
         services: ["Brushing coupe", "Brushing"],
-      },
-        repairHint: "For 2 nails or more, choose “Refill”.",
       },
       microshading: {
         services: ["Microshading", "Touch-up"],
