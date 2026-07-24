@@ -46,7 +46,7 @@ export const translations = {
       bookedHint: "Les créneaux barrés sont déjà réservés.",
       edit: "Modifier",
       categoryLabel: "Choisissez une catégorie",
-      categories: { coiffure: "Coiffure", nails: "Nails", microshading: "Microshading" },
+      categories: { coiffure: "Coiffure", kapsalon: "Salon de coiffure", nails: "Nails", microshading: "Microshading" },
       back: "Retour",
       terms: {
         question: "Conditions générales",
@@ -267,7 +267,7 @@ export const translations = {
       bookedHint: "Doorgestreepte tijden zijn al geboekt.",
       edit: "Wijzigen",
       categoryLabel: "Kies een categorie",
-      categories: { coiffure: "Kapper", nails: "Nails", microshading: "Microshading" },
+      categories: { coiffure: "Kapper", kapsalon: "Kapsalon", nails: "Nails", microshading: "Microshading" },
       back: "Terug",
       terms: {
         question: "Algemene voorwaarden",
@@ -488,7 +488,7 @@ export const translations = {
       bookedHint: "Struck-through times are already booked.",
       edit: "Change",
       categoryLabel: "Choose a category",
-      categories: { coiffure: "Braids & hair", nails: "Nails", microshading: "Microshading" },
+      categories: { coiffure: "Braids & hair", kapsalon: "Hair salon", nails: "Nails", microshading: "Microshading" },
       back: "Back",
       terms: {
         question: "Terms & conditions",

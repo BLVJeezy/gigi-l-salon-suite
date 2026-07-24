@@ -21,7 +21,7 @@ const TIME_SLOTS = [
   "13:00","13:30","14:00","14:30","15:00","15:30","16:00",
 ];
 
-type CategoryKey = "coiffure" | "nails" | "microshading";
+type CategoryKey = "coiffure" | "kapsalon" | "nails" | "microshading";
 
 // Coiffure services come from the i18n services list (by index).
 // Volgorde: 0 Tresses, 1 Coupes, 2 Locks, 3 Tissages, 4 Chignons, 5 Colorations, 8 Perruques
@@ -85,8 +85,9 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
 
 
   const categories: { key: CategoryKey; label: string }[] = [
-    { key: "coiffure", label: t.form.categories.coiffure },
-    { key: "nails", label: t.form.categories.nails },
+    { key: "coiffure",    label: t.form.categories.coiffure },
+    { key: "kapsalon",   label: t.form.categories.kapsalon },
+    { key: "nails",       label: t.form.categories.nails },
     { key: "microshading", label: t.form.categories.microshading },
   ];
 
