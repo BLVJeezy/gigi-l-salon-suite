@@ -447,7 +447,7 @@ export function BookingForm({ compact = false }: { compact?: boolean }) {
           <Label>{t.form.time} *</Label>
           <div className="grid grid-cols-4 gap-1.5">
             {TIME_SLOTS.filter(slot => {
-              const isTressesRasta = service === t.services.items[0]?.t || service === t.services.items[1]?.t;
+              const isTressesRasta = service === t.services.items[1]?.t || service === t.services.items[2]?.t;
               if (isTressesRasta && slot > "15:00") return false;
               return true;
             }).map((slot) => {
