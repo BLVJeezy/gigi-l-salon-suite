@@ -12,17 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VlechtenTongerenRouteImport } from './routes/vlechten-tongeren'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SalonCoiffureTongresRouteImport } from './routes/salon-coiffure-tongres'
 import { Route as ReservationsRouteImport } from './routes/reservations'
 import { Route as PrijzenRouteImport } from './routes/prijzen'
-import { Route as SalonCoiffureTongresRouteImport } from './routes/salon-coiffure-tongres'
-import { Route as CoiffeuseTongresRouteImport } from './routes/coiffeuse-tongres'
-import { Route as BraidsLimburgRouteImport } from './routes/braids-limburg'
 import { Route as NagelsTongerenRouteImport } from './routes/nagels-tongeren'
 import { Route as MicroshadingTongerenRouteImport } from './routes/microshading-tongeren'
 import { Route as KapsterTongerenRouteImport } from './routes/kapster-tongeren'
 import { Route as KapsalonTongerenRouteImport } from './routes/kapsalon-tongeren'
 import { Route as GalerieRouteImport } from './routes/galerie'
 import { Route as ExtensionsTongerenRouteImport } from './routes/extensions-tongeren'
+import { Route as CoiffeuseTongresRouteImport } from './routes/coiffeuse-tongres'
+import { Route as BraidsLimburgRouteImport } from './routes/braids-limburg'
 import { Route as BoxBraidsTongerenRouteImport } from './routes/box-braids-tongeren'
 import { Route as BeautySalonTongerenRouteImport } from './routes/beauty-salon-tongeren'
 import { Route as AlgemeneVoorwaardenRouteImport } from './routes/algemene-voorwaarden'
@@ -48,6 +48,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalonCoiffureTongresRoute = SalonCoiffureTongresRouteImport.update({
+  id: '/salon-coiffure-tongres',
+  path: '/salon-coiffure-tongres',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReservationsRoute = ReservationsRouteImport.update({
@@ -88,6 +93,16 @@ const GalerieRoute = GalerieRouteImport.update({
 const ExtensionsTongerenRoute = ExtensionsTongerenRouteImport.update({
   id: '/extensions-tongeren',
   path: '/extensions-tongeren',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoiffeuseTongresRoute = CoiffeuseTongresRouteImport.update({
+  id: '/coiffeuse-tongres',
+  path: '/coiffeuse-tongres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BraidsLimburgRoute = BraidsLimburgRouteImport.update({
+  id: '/braids-limburg',
+  path: '/braids-limburg',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BoxBraidsTongerenRoute = BoxBraidsTongerenRouteImport.update({
@@ -155,6 +170,8 @@ export interface FileRoutesByFullPath {
   '/algemene-voorwaarden': typeof AlgemeneVoorwaardenRoute
   '/beauty-salon-tongeren': typeof BeautySalonTongerenRoute
   '/box-braids-tongeren': typeof BoxBraidsTongerenRoute
+  '/braids-limburg': typeof BraidsLimburgRoute
+  '/coiffeuse-tongres': typeof CoiffeuseTongresRoute
   '/extensions-tongeren': typeof ExtensionsTongerenRoute
   '/galerie': typeof GalerieRoute
   '/kapsalon-tongeren': typeof KapsalonTongerenRoute
@@ -163,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/nagels-tongeren': typeof NagelsTongerenRoute
   '/prijzen': typeof PrijzenRoute
   '/reservations': typeof ReservationsRoute
+  '/salon-coiffure-tongres': typeof SalonCoiffureTongresRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/vlechten-tongeren': typeof VlechtenTongerenRoute
@@ -179,6 +197,8 @@ export interface FileRoutesByTo {
   '/algemene-voorwaarden': typeof AlgemeneVoorwaardenRoute
   '/beauty-salon-tongeren': typeof BeautySalonTongerenRoute
   '/box-braids-tongeren': typeof BoxBraidsTongerenRoute
+  '/braids-limburg': typeof BraidsLimburgRoute
+  '/coiffeuse-tongres': typeof CoiffeuseTongresRoute
   '/extensions-tongeren': typeof ExtensionsTongerenRoute
   '/galerie': typeof GalerieRoute
   '/kapsalon-tongeren': typeof KapsalonTongerenRoute
@@ -187,6 +207,7 @@ export interface FileRoutesByTo {
   '/nagels-tongeren': typeof NagelsTongerenRoute
   '/prijzen': typeof PrijzenRoute
   '/reservations': typeof ReservationsRoute
+  '/salon-coiffure-tongres': typeof SalonCoiffureTongresRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/vlechten-tongeren': typeof VlechtenTongerenRoute
@@ -204,6 +225,8 @@ export interface FileRoutesById {
   '/algemene-voorwaarden': typeof AlgemeneVoorwaardenRoute
   '/beauty-salon-tongeren': typeof BeautySalonTongerenRoute
   '/box-braids-tongeren': typeof BoxBraidsTongerenRoute
+  '/braids-limburg': typeof BraidsLimburgRoute
+  '/coiffeuse-tongres': typeof CoiffeuseTongresRoute
   '/extensions-tongeren': typeof ExtensionsTongerenRoute
   '/galerie': typeof GalerieRoute
   '/kapsalon-tongeren': typeof KapsalonTongerenRoute
@@ -212,6 +235,7 @@ export interface FileRoutesById {
   '/nagels-tongeren': typeof NagelsTongerenRoute
   '/prijzen': typeof PrijzenRoute
   '/reservations': typeof ReservationsRoute
+  '/salon-coiffure-tongres': typeof SalonCoiffureTongresRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/vlechten-tongeren': typeof VlechtenTongerenRoute
@@ -230,6 +254,8 @@ export interface FileRouteTypes {
     | '/algemene-voorwaarden'
     | '/beauty-salon-tongeren'
     | '/box-braids-tongeren'
+    | '/braids-limburg'
+    | '/coiffeuse-tongres'
     | '/extensions-tongeren'
     | '/galerie'
     | '/kapsalon-tongeren'
@@ -238,6 +264,7 @@ export interface FileRouteTypes {
     | '/nagels-tongeren'
     | '/prijzen'
     | '/reservations'
+    | '/salon-coiffure-tongres'
     | '/services'
     | '/sitemap.xml'
     | '/vlechten-tongeren'
@@ -254,6 +281,8 @@ export interface FileRouteTypes {
     | '/algemene-voorwaarden'
     | '/beauty-salon-tongeren'
     | '/box-braids-tongeren'
+    | '/braids-limburg'
+    | '/coiffeuse-tongres'
     | '/extensions-tongeren'
     | '/galerie'
     | '/kapsalon-tongeren'
@@ -262,6 +291,7 @@ export interface FileRouteTypes {
     | '/nagels-tongeren'
     | '/prijzen'
     | '/reservations'
+    | '/salon-coiffure-tongres'
     | '/services'
     | '/sitemap.xml'
     | '/vlechten-tongeren'
@@ -278,6 +308,8 @@ export interface FileRouteTypes {
     | '/algemene-voorwaarden'
     | '/beauty-salon-tongeren'
     | '/box-braids-tongeren'
+    | '/braids-limburg'
+    | '/coiffeuse-tongres'
     | '/extensions-tongeren'
     | '/galerie'
     | '/kapsalon-tongeren'
@@ -286,6 +318,7 @@ export interface FileRouteTypes {
     | '/nagels-tongeren'
     | '/prijzen'
     | '/reservations'
+    | '/salon-coiffure-tongres'
     | '/services'
     | '/sitemap.xml'
     | '/vlechten-tongeren'
@@ -303,6 +336,8 @@ export interface RootRouteChildren {
   AlgemeneVoorwaardenRoute: typeof AlgemeneVoorwaardenRoute
   BeautySalonTongerenRoute: typeof BeautySalonTongerenRoute
   BoxBraidsTongerenRoute: typeof BoxBraidsTongerenRoute
+  BraidsLimburgRoute: typeof BraidsLimburgRoute
+  CoiffeuseTongresRoute: typeof CoiffeuseTongresRoute
   ExtensionsTongerenRoute: typeof ExtensionsTongerenRoute
   GalerieRoute: typeof GalerieRoute
   KapsalonTongerenRoute: typeof KapsalonTongerenRoute
@@ -311,6 +346,7 @@ export interface RootRouteChildren {
   NagelsTongerenRoute: typeof NagelsTongerenRoute
   PrijzenRoute: typeof PrijzenRoute
   ReservationsRoute: typeof ReservationsRoute
+  SalonCoiffureTongresRoute: typeof SalonCoiffureTongresRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VlechtenTongerenRoute: typeof VlechtenTongerenRoute
@@ -343,6 +379,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salon-coiffure-tongres': {
+      id: '/salon-coiffure-tongres'
+      path: '/salon-coiffure-tongres'
+      fullPath: '/salon-coiffure-tongres'
+      preLoaderRoute: typeof SalonCoiffureTongresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reservations': {
@@ -399,6 +442,20 @@ declare module '@tanstack/react-router' {
       path: '/extensions-tongeren'
       fullPath: '/extensions-tongeren'
       preLoaderRoute: typeof ExtensionsTongerenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coiffeuse-tongres': {
+      id: '/coiffeuse-tongres'
+      path: '/coiffeuse-tongres'
+      fullPath: '/coiffeuse-tongres'
+      preLoaderRoute: typeof CoiffeuseTongresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/braids-limburg': {
+      id: '/braids-limburg'
+      path: '/braids-limburg'
+      fullPath: '/braids-limburg'
+      preLoaderRoute: typeof BraidsLimburgRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/box-braids-tongeren': {
@@ -487,6 +544,8 @@ const rootRouteChildren: RootRouteChildren = {
   AlgemeneVoorwaardenRoute: AlgemeneVoorwaardenRoute,
   BeautySalonTongerenRoute: BeautySalonTongerenRoute,
   BoxBraidsTongerenRoute: BoxBraidsTongerenRoute,
+  BraidsLimburgRoute: BraidsLimburgRoute,
+  CoiffeuseTongresRoute: CoiffeuseTongresRoute,
   ExtensionsTongerenRoute: ExtensionsTongerenRoute,
   GalerieRoute: GalerieRoute,
   KapsalonTongerenRoute: KapsalonTongerenRoute,
@@ -494,10 +553,8 @@ const rootRouteChildren: RootRouteChildren = {
   MicroshadingTongerenRoute: MicroshadingTongerenRoute,
   NagelsTongerenRoute: NagelsTongerenRoute,
   PrijzenRoute: PrijzenRoute,
-  SalonCoiffureTongresRoute: SalonCoiffureTongresRoute,
-  CoiffeuseTongresRoute: CoiffeuseTongresRoute,
-  BraidsLimburgRoute: BraidsLimburgRoute,
   ReservationsRoute: ReservationsRoute,
+  SalonCoiffureTongresRoute: SalonCoiffureTongresRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VlechtenTongerenRoute: VlechtenTongerenRoute,
@@ -511,3 +568,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
