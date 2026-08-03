@@ -327,6 +327,7 @@ export const translations = {
         { key: "nails", t: "Nails", d: "Volledige set, gel, semi-permanente lak en pedicure.", img: "/gallery/cat-nails.jpeg" },
       ],
       items: [
+        { t: "Vlechten kinderen", d: "Box braids, cornrows en zachte twists voor kinderen, met een nette en kindvriendelijke afwerking." },
         { t: "Afrikaanse vlechten", d: "Box braids, cornrows, twists — zorgvuldig vlechtwerk dat uw haar beschermt en mooier maakt." },
         { t: "Rasta", d: "Rasta / dreadlocks — aanleg en onderhoud van natuurlijke locks in Tongeren." },
         { t: "Brushing coupe", d: "Knipbeurt + professionele brushing." },
@@ -336,6 +337,8 @@ export const translations = {
         { t: "Weaves", d: "Plaatsing van kwaliteitsweaves voor natuurlijk volume en lengte." },
         { t: "Opsteekkapsels & events", d: "Bruiloften, ceremonies en grote gelegenheden: een kapsel het moment waardig." },
         { t: "Kleuringen", d: "Kleur en verzorging aangepast aan zowel getextureerd als fijn haar." },
+        { t: "Ponytail", d: "Gestylde paardenstaart, hoog of laag, voor een chique en snel resultaat." },
+        { t: "Kleuren", d: "Volledige kleuring, highlights of balayage voor een frisse kleur." },
         { t: "Microshading", d: "Wenkbrauwen opnieuw getekend met een natuurlijk poedereffect, precies aangebracht." },
         { t: "Nagels & make-up", d: "Professionele nagelstyling en semi-permanente make-up voor een complete look." },
         { t: "Pruiken & extensions", d: "Verkoop en plaatsing van pruiken, plus zorgvuldig geselecteerde kwaliteitsextensions." },
