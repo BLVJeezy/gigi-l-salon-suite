@@ -62,6 +62,7 @@ export const translations = {
         next: "Continuer",
       },
       closedDay: "Nous sommes fermés le mardi et le dimanche. Veuillez choisir un autre jour.",
+      priceOnRequest: "Prix sur demande",
       nails: {
         services: ["Pose complète", "Retouche", "Dépose de gel", "Réparation 1 doigt", "Pédicure sans tips", "Vernis semi-permanent"],
         repairHint: "Pour 2 ongles ou plus, choisissez « Retouche ».",
@@ -102,10 +103,13 @@ export const translations = {
       ],
       items: [
         { t: "Tresses enfants", d: "Box braids, cornrows et twists doux pour enfants, avec une finition soignée et adaptée." },
+        { t: "Vlechten kinderen", d: "Tresses et nattes pour enfants — doux et soigné." },
         { t: "Tresses africaines", d: "Box braids, cornrows, twists — un tressage soigné qui protège et sublime vos cheveux." },
         { t: "Rasta", d: "Rasta / dreadlocks — pose et entretien de locks naturelles à Tongres." },
         { t: "Brushing coupe", d: "Coupe + brushing professionnel." },
         { t: "Brushing", d: "Brushing professionnel pour volume et brillance." },
+        { t: "Ponytail", d: "Queue de cheval — coiffée et soignée." },
+        { t: "Kleuren", d: "Coloration — tarif sur demande." },
         { t: "Coupes européennes", d: "Coupes femmes, hommes et enfants, adaptées à votre style et à votre nature de cheveu." },
         { t: "Locks & crochet", d: "Création et entretien de locks, crochet braids et coiffures protectrices durables." },
         { t: "Tissages", d: "Pose de tissages de qualité pour un volume et une longueur naturels." },
@@ -288,6 +292,7 @@ export const translations = {
         next: "Verder",
       },
       closedDay: "Op dinsdag en zondag zijn wij gesloten. Kies een andere dag.",
+      priceOnRequest: "Prijs op aanvraag",
       nails: {
         services: ["Volledige set", "Bijwerking", "Gel verwijderen", "Reparatie 1 nagel", "Pedicure zonder tips", "Semi-permanente lak"],
         repairHint: "Voor 2 nagels of meer, kies « Bijwerking ».",
@@ -514,6 +519,7 @@ export const translations = {
         next: "Continue",
       },
       closedDay: "We are closed on Tuesdays and Sundays. Please pick another day.",
+      priceOnRequest: "Price on request",
       nails: {
         services: ["Full set", "Refill", "Gel removal", "Repair 1 nail", "Pedicure without tips", "Semi-permanent polish"],
         repairHint: "For 2 nails or more, choose “Refill”.",
@@ -554,10 +560,13 @@ export const translations = {
       ],
       items: [
         { t: "Children's braids", d: "Box braids, cornrows and gentle twists for kids, finished neatly and child-friendly." },
+        { t: "Vlechten kinderen", d: "Braids for children — gentle and careful." },
         { t: "African braids", d: "Box braids, cornrows, twists — meticulous braiding that protects and elevates your hair." },
         { t: "Rasta", d: "Rasta / dreadlocks — creation and maintenance of natural locks in Tongeren." },
         { t: "Brushing coupe", d: "Cut + professional blow-dry." },
         { t: "Brushing", d: "Professional blow-dry for volume and shine." },
+        { t: "Ponytail", d: "Ponytail — styled and neat." },
+        { t: "Kleuren", d: "Hair colour — price on request." },
         { t: "European cuts", d: "Cuts for women, men and children, tailored to your style and hair type." },
         { t: "Locks & crochet", d: "Creation and maintenance of locks, crochet braids and lasting protective styles." },
         { t: "Weaves", d: "Quality weave installation for natural volume and length." },

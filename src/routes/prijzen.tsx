@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { BookingSection, Footer } from "@/components/sections";
-import { LangProvider } from "@/lib/i18n";
+import { LangProvider, useT } from "@/lib/i18n";
 import { listPublicServices } from "@/lib/services.functions";
 
 export const Route = createFileRoute("/prijzen")({
