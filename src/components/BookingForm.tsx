@@ -24,8 +24,8 @@ const TIME_SLOTS = [
 type CategoryKey = "coiffure" | "nails" | "microshading";
 
 // Coiffure services come from the i18n services list (by index).
-// Volgorde: 0 Tresses, 1 Coupes, 2 Locks, 3 Tissages, 4 Chignons, 5 Colorations, 8 Perruques
-const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 11]; // 0=Tresses, 1=Rasta, 2=Brushing coupe, 3=Brushing, 4=Coupes, 5=Locks, 6=Tissages, 7=Chignons, 11=Perruques
+// Volgorde: 0 Vlechten kinderen, 1 Tresses, 2 Rasta, 3 Brushing coupe, 4 Brushing, 5 Coupes, 6 Locks, 7 Tissages, 8 Chignons, 9 Colorations, 10 Ponytail, 11 Coloration, 14 Perruques
+const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14];
 
 // Internal step ids — we navigate a dynamic list, not fixed numbers.
 type StepId = "category" | "service" | "zone" | "photo" | "terms" | "date" | "time" | "source" | "details";
