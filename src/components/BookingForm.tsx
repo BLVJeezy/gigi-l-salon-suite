@@ -25,7 +25,7 @@ type CategoryKey = "coiffure" | "nails" | "microshading";
 
 // Coiffure services come from the i18n services list (by index).
 // Volgorde: 0 Vlechten kinderen, 1 Tresses, 2 Rasta, 3 Brushing coupe, 4 Brushing, 5 Coupes, 6 Locks, 7 Tissages, 8 Chignons, 9 Colorations, 10 Ponytail, 11 Coloration, 14 Perruques
-const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; // 0=Vlechten kinderen 1=Afrikaanse vlechten 2=Rasta 3=Brushing coupe 4=Brushing 5=Europese knipbeurten 6=Locks 7=Weaves 8=Opsteekkapsels 9=Kleuringen 10=Ponytail 11=Kleuren
+const COIFFURE_SERVICE_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; // 0=Vlechten kinderen 1=Afrikaanse vlechten 2=Rasta 3=Brushing coupe 4=Brushing 5=Europese knipbeurten 6=Locks 7=Weaves 8=Opsteekkapsels 9=Kleuringen 10=Ponytail 11=Kleuren
 
 // Internal step ids — we navigate a dynamic list, not fixed numbers.
 type StepId = "category" | "service" | "zone" | "photo" | "terms" | "date" | "time" | "source" | "details";
