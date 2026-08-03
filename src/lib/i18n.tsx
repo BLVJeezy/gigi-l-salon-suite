@@ -553,6 +553,7 @@ export const translations = {
         { key: "nails", t: "Nails", d: "Full set, gel, semi-permanent polish and pedicure.", img: "/gallery/cat-nails.jpeg" },
       ],
       items: [
+        { t: "Children's braids", d: "Box braids, cornrows and gentle twists for kids, finished neatly and child-friendly." },
         { t: "African braids", d: "Box braids, cornrows, twists — meticulous braiding that protects and elevates your hair." },
         { t: "Rasta", d: "Rasta / dreadlocks — creation and maintenance of natural locks in Tongeren." },
         { t: "Brushing coupe", d: "Cut + professional blow-dry." },
@@ -562,6 +563,8 @@ export const translations = {
         { t: "Weaves", d: "Quality weave installation for natural volume and length." },
         { t: "Updos & event styling", d: "Weddings, ceremonies and big occasions: a hairstyle worthy of the moment." },
         { t: "Colouring", d: "Colour and care adapted to textured as well as fine hair." },
+        { t: "Ponytail", d: "Styled ponytail, high or low, for a chic and quick look." },
+        { t: "Hair colouring", d: "Full colour, highlights or balayage to refresh your look." },
         { t: "Microshading", d: "Brows redefined with a natural powdered effect, applied with precision." },
         { t: "Nails & make-up", d: "Professional nail styling and semi-permanent make-up for a complete look." },
         { t: "Wigs & extensions", d: "Sale and fitting of wigs, plus carefully selected quality extensions." },
