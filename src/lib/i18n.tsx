@@ -101,6 +101,7 @@ export const translations = {
         { key: "nails", t: "Nails", d: "Pose complète, gel, vernis semi-permanent et pédicure.", img: "/gallery/cat-nails.jpeg" },
       ],
       items: [
+        { t: "Tresses enfants", d: "Box braids, cornrows et twists doux pour enfants, avec une finition soignée et adaptée." },
         { t: "Tresses africaines", d: "Box braids, cornrows, twists — un tressage soigné qui protège et sublime vos cheveux." },
         { t: "Rasta", d: "Rasta / dreadlocks — pose et entretien de locks naturelles à Tongres." },
         { t: "Brushing coupe", d: "Coupe + brushing professionnel." },
@@ -110,6 +111,8 @@ export const translations = {
         { t: "Tissages", d: "Pose de tissages de qualité pour un volume et une longueur naturels." },
         { t: "Chignons & événements", d: "Mariages, cérémonies et grandes occasions : une coiffure à la hauteur du moment." },
         { t: "Colorations", d: "Couleur et soin adaptés aux cheveux texturés comme aux cheveux fins." },
+        { t: "Ponytail", d: "Queue de cheval stylisée, haute ou basse, pour un look chic et rapide." },
+        { t: "Coloration", d: "Coloration complète, mèches ou balayage pour sublimer votre couleur." },
         { t: "Microshading", d: "Sourcils redessinés avec un effet poudré naturel, posés avec précision." },
         { t: "Ongles & maquillage", d: "Stylisme d'ongles professionnel et maquillage semi-permanent pour un look complet." },
         { t: "Perruques & mèches", d: "Vente et pose de perruques, mèches et extensions soigneusement sélectionnées." },
