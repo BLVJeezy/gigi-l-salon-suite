@@ -114,13 +114,15 @@ export const deleteService = createServerFn({ method: "POST" })
 
 // Canonical service list — mirrors the booking form exactly.
 const SEED: { category: "coiffure" | "nails" | "microshading"; name: string; duration_min: number; sort_order: number }[] = [
+  { category: "coiffure", name: "Tresses enfants", duration_min: 120, sort_order: 0 },
   { category: "coiffure", name: "Tresses africaines", duration_min: 180, sort_order: 1 },
   { category: "coiffure", name: "Coupes européennes", duration_min: 60, sort_order: 2 },
   { category: "coiffure", name: "Locks & crochet", duration_min: 120, sort_order: 3 },
   { category: "coiffure", name: "Tissages", duration_min: 120, sort_order: 4 },
   { category: "coiffure", name: "Chignons & événements", duration_min: 90, sort_order: 5 },
   { category: "coiffure", name: "Colorations", duration_min: 120, sort_order: 6 },
-  { category: "coiffure", name: "Perruques & mèches", duration_min: 90, sort_order: 7 },
+  { category: "coiffure", name: "Ponytail", duration_min: 60, sort_order: 7 },
+  { category: "coiffure", name: "Perruques & mèches", duration_min: 90, sort_order: 8 },
   { category: "nails", name: "Pose complète", duration_min: 90, sort_order: 1 },
   { category: "nails", name: "Retouche", duration_min: 60, sort_order: 2 },
   { category: "nails", name: "Dépose de gel", duration_min: 30, sort_order: 3 },
